@@ -21,7 +21,7 @@ export default async function Home() {
               </CardDescription>
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col justify-between">
               <div className="flex items-center gap-1">
                 <div className="h-2 w-2 rounded-md bg-emerald-500" />
                 <p className="text-muted-foreground text-xs">Disponível</p>
