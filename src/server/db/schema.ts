@@ -18,11 +18,12 @@ import {
  */
 export const createTable = pgTableCreator((name) => `juit_${name}`);
 
-export const posts = createTable(
-  "post",
+export const users = createTable(
+  "users",
   {
     uuid: uuid("uuid").defaultRandom().primaryKey(),
     name: varchar("name", { length: 256 }).notNull(),
+    email: varchar("email", { length: 100 }).notNull().unique(),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
