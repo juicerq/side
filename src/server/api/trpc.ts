@@ -40,12 +40,15 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
 
   const parsedToken = jwtSchema.parse(rawToken);
 
+  const user = await db
+    .select()
+    .from(users)
+    .where(eq(users.uuid, parsedToken?.uuid));
+
   return {
     db,
     ...opts,
-    user: {
-      uuid: parsedToken.uuid,
-    },
+    user: user[0],
   };
 };
 
@@ -94,16 +97,17 @@ export const createTRPCRouter = t.router;
 
 export const publicProcedure = t.procedure;
 export const adminProcedure = publicProcedure.use(async ({ ctx, next }) => {
-  const user = await ctx.db
-    .select()
-    .from(users)
-    .where(eq(users.uuid, ctx.user?.uuid));
+  if (!ctx.user) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
 
-  if (!user[0]?.isAdmin) {
+  if (!ctx.user.isAdmin) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
   return next({
-    ctx,
+    ctx: {
+      user: ctx.user,
+    },
   });
 });
