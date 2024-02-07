@@ -5,27 +5,49 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 
 export const CreateUserInputSchema = z.object({
-  name: z.string(),
-  email: z.string().email("Email inválido"),
+  first_name: z
+    .string()
+    .min(
+      2,
+      "O limite mínimo de caractéres é 2! Por favor, diminuia e tente novamente.",
+    )
+    .max(
+      50,
+      "O limite máximo de caractéres é 50! Por favor, diminuia e tente novamente.",
+    ),
+  last_name: z
+    .string()
+    .min(
+      2,
+      "O limite mínimo de caractéres é 2! Por favor, diminuia e tente novamente.",
+    )
+    .max(
+      50,
+      "O limite máximo de caractéres é 50! Por favor, diminuia e tente novamente.",
+    ),
+  email: z.string().email(),
+  // login_code: z.string(),
 });
 
 export type CreateUserInput = z.infer<typeof CreateUserInputSchema>;
 
 export const UserUtils = {
-  create: async ({ name, email }: CreateUserInput) => {
+  create: async ({ first_name, last_name, email }: CreateUserInput) => {
     const alreadyExists = await db
-      .select({ name: users.name, email: users.email })
+      .select()
       .from(users)
       .where(eq(users.email, email));
 
     if (alreadyExists) {
       return {
         success: false,
-        error: "Usário com esse email ja existe",
+        error: "Usuário com esse email já existe.",
       };
     }
 
-    const newUser = await db.insert(users).values({ name, email });
+    const newUser = await db
+      .insert(users)
+      .values({ first_name, last_name, email });
 
     if (!newUser) {
       throw new TRPCError({

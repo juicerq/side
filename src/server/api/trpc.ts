@@ -93,9 +93,7 @@ export const createTRPCRouter = t.router;
  */
 
 export const publicProcedure = t.procedure;
-export const adminProcedure = publicProcedure.use(async (opts) => {
-  const { ctx } = opts;
-
+export const adminProcedure = publicProcedure.use(async ({ ctx, next }) => {
   const user = await ctx.db
     .select()
     .from(users)
@@ -105,7 +103,7 @@ export const adminProcedure = publicProcedure.use(async (opts) => {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
-  return opts.next({
+  return next({
     ctx,
   });
 });

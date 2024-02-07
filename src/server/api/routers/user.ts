@@ -10,7 +10,11 @@ export const userRouter = createTRPCRouter({
   create: publicProcedure
     .input(CreateUserInputSchema)
     .mutation(async ({ ctx, input }) => {
-      UserUtils.create({ name: input.name, email: input.email });
+      UserUtils.create({
+        first_name: input.first_name,
+        last_name: input.last_name,
+        email: input.email,
+      });
     }),
 
   verify: publicProcedure.query(({ ctx }) => {

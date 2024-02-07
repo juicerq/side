@@ -53,7 +53,7 @@ export default async function Home() {
           </Card>
         </>
       ) : (
-        <div>Heelo</div>
+        <div>Não autenticado.</div>
       )}
     </main>
   );
