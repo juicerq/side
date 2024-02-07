@@ -6,12 +6,15 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
-import { initTRPC } from "@trpc/server";
+import { TRPCError, initTRPC } from "@trpc/server";
 import superjson from "superjson";
-import { ZodError } from "zod";
+import { ZodError, z } from "zod";
+import jwt from "jsonwebtoken";
 
 import { db } from "@/server/db";
-
+import { env } from "@/env";
+import { users } from "../db/schema";
+import { eq } from "drizzle-orm";
 /**
  * 1. CONTEXT
  *
@@ -24,10 +27,25 @@ import { db } from "@/server/db";
  *
  * @see https://trpc.io/docs/server/context
  */
+const jwtSchema = z.object({
+  uuid: z.string(),
+});
+
 export const createTRPCContext = async (opts: { headers: Headers }) => {
+  const token = opts.headers.get("Authorization")?.replace("Bearer ", "");
+
+  if (!token) throw new Error("Usuário não está autenticado");
+
+  const rawToken = jwt.verify(token, env.NEXT_PUBLIC_JWT_SECRET);
+
+  const parsedToken = jwtSchema.parse(rawToken);
+
   return {
     db,
     ...opts,
+    user: {
+      uuid: parsedToken.uuid,
+    },
   };
 };
 
@@ -73,4 +91,21 @@ export const createTRPCRouter = t.router;
  * guarantee that a user querying is authorized, but you can still access user session data if they
  * are logged in.
  */
+
 export const publicProcedure = t.procedure;
+export const adminProcedure = publicProcedure.use(async (opts) => {
+  const { ctx } = opts;
+
+  const user = await ctx.db
+    .select()
+    .from(users)
+    .where(eq(users.uuid, ctx.user?.uuid));
+
+  if (!user[0]?.isAdmin) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
+  return opts.next({
+    ctx,
+  });
+});
