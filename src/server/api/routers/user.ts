@@ -2,6 +2,9 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { CreateUserInputSchema, UserUtils } from "../utils/UserUtils";
+import { users } from "@/server/db/schema";
+import { db } from "@/server/db";
+import { eq } from "drizzle-orm";
 
 export const userRouter = createTRPCRouter({
   create: publicProcedure
@@ -9,6 +12,15 @@ export const userRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       UserUtils.create({ name: input.name, email: input.email });
     }),
+
+  verify: publicProcedure.query(({ ctx }) => {
+    const verified = db
+      .select()
+      .from(users)
+      .where(eq(users.uuid, ctx.user.uuid));
+
+    return !!verified;
+  }),
 
   // hello: publicProcedure
   //   .input(z.object({ text: z.string() }))
