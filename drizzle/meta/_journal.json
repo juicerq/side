@@ -22,6 +22,13 @@
       "when": 1707067786610,
       "tag": "0002_thankful_stranger",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1707351389512,
+      "tag": "0003_bored_stick",
+      "breakpoints": true
     }
   ]
 }
