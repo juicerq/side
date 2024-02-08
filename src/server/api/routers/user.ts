@@ -1,29 +1,41 @@
-import { z } from "zod";
-
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
-import { CreateUserInputSchema, UserUtils } from "../utils/UserUtils";
-import { users } from "@/server/db/schema";
-import { db } from "@/server/db";
-import { eq } from "drizzle-orm";
+import { UserUtils } from "../utils/UserUtils";
+import {
+  CreateUserInputSchema,
+  LoginUserInputSchema,
+} from "../schemas/input/User";
 
 export const userRouter = createTRPCRouter({
   create: publicProcedure
     .input(CreateUserInputSchema)
-    .mutation(async ({ ctx, input }) => {
-      UserUtils.create({
-        first_name: input.first_name,
-        last_name: input.last_name,
+    .mutation(async ({ input }) => {
+      const res = await UserUtils.create({
+        firstName: input.firstName,
+        lastName: input.lastName,
         email: input.email,
       });
+
+      return res;
+    }),
+
+  login: publicProcedure
+    .input(LoginUserInputSchema)
+    .mutation(async ({ input }) => {
+      const token = await UserUtils.login({
+        email: input.email,
+      });
+
+      return {
+        token,
+      };
     }),
 
   verify: publicProcedure.query(({ ctx }) => {
-    const verified = db
-      .select()
-      .from(users)
-      .where(eq(users.uuid, ctx.user.uuid));
+    if (!ctx.user) {
+      return false;
+    }
 
-    return !!verified;
+    return true;
   }),
 
   // hello: publicProcedure

@@ -2,43 +2,19 @@ import { db } from "@/server/db";
 import { users } from "@/server/db/schema";
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
-import { z } from "zod";
-
-export const CreateUserInputSchema = z.object({
-  first_name: z
-    .string()
-    .min(
-      2,
-      "O limite mínimo de caractéres é 2! Por favor, diminuia e tente novamente.",
-    )
-    .max(
-      50,
-      "O limite máximo de caractéres é 50! Por favor, diminuia e tente novamente.",
-    ),
-  last_name: z
-    .string()
-    .min(
-      2,
-      "O limite mínimo de caractéres é 2! Por favor, diminuia e tente novamente.",
-    )
-    .max(
-      50,
-      "O limite máximo de caractéres é 50! Por favor, diminuia e tente novamente.",
-    ),
-  email: z.string().email(),
-  // login_code: z.string(),
-});
-
-export type CreateUserInput = z.infer<typeof CreateUserInputSchema>;
+import jwt from "jsonwebtoken";
+import { CreateUserInput, LoginUserInput } from "../schemas/input/User";
+import { takeUniqueOrThrow } from "./DrizzleUtils";
+import { env } from "@/env";
 
 export const UserUtils = {
-  create: async ({ first_name, last_name, email }: CreateUserInput) => {
+  async create({ firstName, lastName, email }: CreateUserInput) {
     const alreadyExists = await db
       .select()
       .from(users)
       .where(eq(users.email, email));
 
-    if (alreadyExists) {
+    if (!!!alreadyExists) {
       return {
         success: false,
         error: "Usuário com esse email já existe.",
@@ -47,7 +23,7 @@ export const UserUtils = {
 
     const newUser = await db
       .insert(users)
-      .values({ first_name, last_name, email });
+      .values({ firstName, lastName, email });
 
     if (!newUser) {
       throw new TRPCError({
@@ -57,5 +33,19 @@ export const UserUtils = {
     }
 
     return { success: true };
+  },
+
+  async login({ email }: LoginUserInput) {
+    const userUuid = await db
+      .select({ uuid: users.uuid })
+      .from(users)
+      .where(eq(users.email, email))
+      .then(takeUniqueOrThrow);
+
+    const token = jwt.sign({ userUuid }, env.JWT_SECRET, {
+      expiresIn: 60 * 60 * 24 * 365,
+    });
+
+    return token;
   },
 };
