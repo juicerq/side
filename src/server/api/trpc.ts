@@ -15,6 +15,8 @@ import { db } from "@/server/db";
 import { env } from "@/env";
 import { users } from "../db/schema";
 import { eq } from "drizzle-orm";
+import { verifyToken } from "./utils/trpcUtils";
+import { getUser } from "./utils/getUser";
 /**
  * 1. CONTEXT
  *
@@ -27,28 +29,18 @@ import { eq } from "drizzle-orm";
  *
  * @see https://trpc.io/docs/server/context
  */
-const jwtSchema = z.object({
-  uuid: z.string(),
-});
 
 export const createTRPCContext = async (opts: { headers: Headers }) => {
   const token = opts.headers.get("Authorization")?.replace("Bearer ", "");
 
-  if (!token) throw new Error("Usuário não está autenticado");
+  const userUuid = verifyToken(token);
 
-  const rawToken = jwt.verify(token, env.NEXT_PUBLIC_JWT_SECRET);
-
-  const parsedToken = jwtSchema.parse(rawToken);
-
-  const user = await db
-    .select()
-    .from(users)
-    .where(eq(users.uuid, parsedToken?.uuid));
+  const res = await getUser(userUuid);
 
   return {
     db,
     ...opts,
-    user: user[0],
+    user: res?.user,
   };
 };
 
