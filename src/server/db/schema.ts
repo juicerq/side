@@ -24,8 +24,8 @@ export const users = createTable(
   "users",
   {
     uuid: uuid("uuid").defaultRandom().primaryKey(),
-    first_name: varchar("first_name", { length: 256 }).notNull(),
-    last_name: varchar("last_name", { length: 256 }).notNull(),
+    firstName: varchar("firstName", { length: 256 }).notNull(),
+    lastName: varchar("lastName", { length: 256 }).notNull(),
     email: varchar("email", { length: 100 }).notNull().unique(),
     isAdmin: boolean("isAdmin").default(false).notNull(),
     createdAt: timestamp("createdAt")
