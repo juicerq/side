@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback } from "./ui/avatar";
 
-export const Account = () => {
+export default function Account() {
   return (
     <div className="fixed top-0 flex h-12 w-screen items-center justify-end">
       <div className="flex items-center gap-2 px-12 pt-6">
@@ -16,4 +16,4 @@ export const Account = () => {
       </div>
     </div>
   );
-};
+}

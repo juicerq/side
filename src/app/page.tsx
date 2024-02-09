@@ -1,9 +1,8 @@
 "use client";
 
 import { api } from "@/trpc/react";
-import { Schedule } from "./components/Schedule";
-import CreateAccountForm from "./components/CreateAccountForm";
 import { useRouter } from "next/navigation";
+import Schedule from "./components/Schedule";
 
 export default function Home() {
   const { data } = api.user.verify.useQuery();

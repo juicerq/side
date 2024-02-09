@@ -1,6 +1,6 @@
 "use client";
 
-import { Account } from "./Account";
+import Account from "./Account";
 import {
   Card,
   CardContent,
@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "./ui/card";
 
-export const Schedule = () => {
+export default function Schedule() {
   return (
     <div>
       <Account />
@@ -48,4 +48,4 @@ export const Schedule = () => {
       </Card>
     </div>
   );
-};
+}
