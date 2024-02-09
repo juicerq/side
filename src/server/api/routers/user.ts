@@ -40,10 +40,10 @@ export const userRouter = createTRPCRouter({
   }),
 
   hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
+    .input(z.object({ email: z.string() }))
+    .mutation(({ input }) => {
       return {
-        greeting: `Hello ${input.text}`,
+        greeting: `Hello ${input.email}`,
       };
     }),
   // create: publicProcedure
