@@ -12,7 +12,7 @@ function getBaseUrl() {
 }
 
 export function getUrl() {
-  return "https://side-psi.vercel.app" + "/api/trpc";
+  return getBaseUrl() + "/api/trpc";
 }
 
 /**
