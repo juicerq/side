@@ -31,25 +31,15 @@ export function LoginUser() {
     },
   });
 
-  const { mutate } = api.user.hello.useMutation({
+  const { mutate } = api.user.login.useMutation({
     onSuccess: (response) => {
-      // Cookies.set("access_token", response.token);
+      Cookies.set("access_token", response.token);
       form.reset();
     },
     onError: (error) => {
       console.log(error);
     },
   });
-
-  // const { mutate } = api.user.login.useMutation({
-  //   onSuccess: (response) => {
-  //     Cookies.set("access_token", response.token);
-  //     form.reset();
-  //   },
-  //   onError: (error) => {
-  //     console.log(error);
-  //   },
-  // });
 
   const handleSubmit = (data: FormType) => {
     mutate(data);

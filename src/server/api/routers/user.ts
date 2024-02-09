@@ -1,10 +1,9 @@
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
-import { UserUtils } from "../utils/UserUtils";
 import {
   CreateUserInputSchema,
   LoginUserInputSchema,
 } from "../schemas/input/User";
-import { z } from "zod";
+import { UserUtils } from "../utils/UserUtils";
 
 export const userRouter = createTRPCRouter({
   create: publicProcedure
@@ -38,26 +37,4 @@ export const userRouter = createTRPCRouter({
 
     return true;
   }),
-
-  hello: publicProcedure
-    .input(z.object({ email: z.string() }))
-    .mutation(({ input }) => {
-      return {
-        greeting: `Hello ${input.email}`,
-      };
-    }),
-  // create: publicProcedure
-  //   .input(z.object({ name: z.string().min(1) }))
-  //   .mutation(async ({ ctx, input }) => {
-  //     // simulate a slow db call
-  //     await new Promise((resolve) => setTimeout(resolve, 1000));
-  //     await ctx.db.insert(posts).values({
-  //       name: input.name,
-  //     });
-  //   }),
-  // getLatest: publicProcedure.query(({ ctx }) => {
-  //   return ctx.db.query.posts.findFirst({
-  //     orderBy: (posts, { desc }) => [desc(posts.createdAt)],
-  //   });
-  // }),
 });
