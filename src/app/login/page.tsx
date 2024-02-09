@@ -1,3 +1,5 @@
+"use client";
+
 import { api } from "@/trpc/react";
 import { LoginUser } from "../components/LoginUser";
 
