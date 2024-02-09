@@ -10,6 +10,8 @@ export default function Home() {
 
   if (data === false) router.push("/login");
 
+  const query = api.user.hello.useQuery({ text: "funciona" });
+
   if (data)
     return (
       <main className="flex min-h-screen flex-col items-center justify-center">
