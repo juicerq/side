@@ -27,7 +27,7 @@ export const env = createEnv({
    */
   client: {
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
-    NEXT_PUBLIC_JWT_SECRET: z.string(),
+    NEXT_PUBLIC_VERCEL_URL: z.string()
   },
 
   /**
@@ -38,8 +38,8 @@ export const env = createEnv({
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
-    NEXT_PUBLIC_JWT_SECRET: process.env.JWT_SECRET,
     JWT_SECRET: process.env.JWT_SECRET,
+    NEXT_PUBLIC_VERCEL_URL: process.env.NEXT_PUBLIC_VERCEL_URL,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

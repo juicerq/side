@@ -10,7 +10,7 @@ export const verifyToken = (token: string | undefined) => {
   if (!token) return null;
 
   try {
-    const rawToken = jwt.verify(token, env.NEXT_PUBLIC_JWT_SECRET);
+    const rawToken = jwt.verify(token, env.JWT_SECRET);
 
     const parsed = jwtSchema.parse(rawToken);
 
