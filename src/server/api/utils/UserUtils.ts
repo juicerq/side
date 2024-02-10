@@ -36,13 +36,13 @@ export const UserUtils = {
   },
 
   async login({ email }: LoginUserInput) {
-    const userUuid = await db
+    const { uuid } = await db
       .select({ uuid: users.uuid })
       .from(users)
       .where(eq(users.email, email))
       .then(takeUniqueOrThrow);
 
-    const token = jwt.sign({ userUuid }, env.JWT_SECRET, {
+    const token = jwt.sign({ uuid }, env.JWT_SECRET, {
       expiresIn: 60 * 60 * 24 * 365,
     });
 

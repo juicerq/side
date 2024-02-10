@@ -13,7 +13,7 @@ export default function Schedule() {
   return (
     <div>
       <Account />
-      <Card className="">
+      <Card>
         <CardHeader>
           <div className="flex justify-between">
             <div>

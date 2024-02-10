@@ -4,6 +4,9 @@ import {
   LoginUserInputSchema,
 } from "../schemas/input/User";
 import { UserUtils } from "../utils/UserUtils";
+import jwt from "jsonwebtoken";
+import { env } from "@/env";
+import Cookies from "js-cookie";
 
 export const userRouter = createTRPCRouter({
   create: publicProcedure
@@ -31,10 +34,7 @@ export const userRouter = createTRPCRouter({
     }),
 
   verify: publicProcedure.query(({ ctx }) => {
-    if (!ctx.user) {
-      return false;
-    }
-
-    return true;
+    if (ctx.user?.uuid) return true;
+    return false;
   }),
 });

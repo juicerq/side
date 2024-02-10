@@ -31,7 +31,13 @@ import { getUser } from "./utils/getUser";
  */
 
 export const createTRPCContext = async (opts: { headers: Headers }) => {
-  const token = opts.headers.get("Authorization")?.replace("Bearer ", "");
+  const allCookies = opts.headers.get("Cookie");
+
+  const accessTokenCookie = allCookies
+    ?.split(";")
+    .find((cookie) => cookie.trim().startsWith("access_token="));
+
+  const token = accessTokenCookie?.split("=")[1];
 
   const userUuid = verifyToken(token);
 

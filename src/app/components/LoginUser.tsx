@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Input } from "./ui/input";
+import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
   email: z.string().email("Por favor, insira um email válido."),
@@ -24,6 +25,8 @@ const FormSchema = z.object({
 type FormType = z.infer<typeof FormSchema>;
 
 export function LoginUser() {
+  const router = useRouter();
+
   const form = useForm<FormType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -35,6 +38,7 @@ export function LoginUser() {
     onSuccess: (response) => {
       Cookies.set("access_token", response.token);
       form.reset();
+      router.push("/");
     },
     onError: (error) => {
       console.log(error);
