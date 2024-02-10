@@ -15,6 +15,7 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Input } from "./ui/input";
+import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
   firstName: z
@@ -43,6 +44,8 @@ const FormSchema = z.object({
 type FormType = z.infer<typeof FormSchema>;
 
 export default function CreateAccountForm() {
+  const router = useRouter();
+
   const form = useForm<FormType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -55,6 +58,7 @@ export default function CreateAccountForm() {
   const { mutate } = api.user.create.useMutation({
     onSuccess: () => {
       form.reset();
+      router.push("/login");
     },
     onError: (error) => {
       console.log(error);

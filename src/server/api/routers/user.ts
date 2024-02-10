@@ -33,6 +33,16 @@ export const userRouter = createTRPCRouter({
       };
     }),
 
+  info: publicProcedure.query(({ ctx }) => {
+    if (!ctx.user) return;
+
+    return {
+      email: ctx.user.email,
+      firstName: ctx.user.firstName,
+      lastName: ctx.user.lastName,
+    };
+  }),
+
   verify: publicProcedure.query(({ ctx }) => {
     if (ctx.user?.uuid) return true;
     return false;
