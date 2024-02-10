@@ -12,9 +12,10 @@ export const UserUtils = {
     const alreadyExists = await db
       .select()
       .from(users)
-      .where(eq(users.email, email));
+      .where(eq(users.email, email))
+      .then(takeUniqueOrThrow);
 
-    if (!!!alreadyExists) {
+    if (!!alreadyExists) {
       throw new TRPCError({
         code: "CONFLICT",
         message: "User already exists.",
