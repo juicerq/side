@@ -16,6 +16,8 @@ import {
 } from "./ui/form";
 import { Input } from "./ui/input";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 const FormSchema = z.object({
   firstName: z
@@ -55,13 +57,23 @@ export default function CreateAccountForm() {
     },
   });
 
-  const { mutate } = api.user.create.useMutation({
+  const { mutate, isLoading } = api.user.create.useMutation({
     onSuccess: () => {
       form.reset();
-      router.push("/login");
+      toast("Account successfully created.", {
+        position: "bottom-center",
+      });
+      setTimeout(() => {
+        router.push("/login");
+      }, 500);
     },
     onError: (error) => {
-      console.log(error);
+      toast(error.message, {
+        classNames: {
+          toast: "bg-red-500 text-red-100 text-center",
+        },
+        position: "bottom-center",
+      });
     },
   });
 
@@ -81,7 +93,7 @@ export default function CreateAccountForm() {
             name="firstName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nome</FormLabel>
+                <FormLabel>First Name</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -94,7 +106,7 @@ export default function CreateAccountForm() {
             name="lastName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Sobrenome</FormLabel>
+                <FormLabel>Last Name</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -117,12 +129,22 @@ export default function CreateAccountForm() {
           )}
         />
         <div className="flex items-end justify-between">
-          <Button type="submit">Criar Conta</Button>
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className={`${isLoading && "w-[129px]"}`}
+          >
+            {isLoading ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              "Create Account"
+            )}
+          </Button>
           <Link
             href={"/login"}
             className="cursor-pointer text-xs text-primary hover:underline hover:underline-offset-1"
           >
-            Fazer Login
+            Login
           </Link>
         </div>
       </form>

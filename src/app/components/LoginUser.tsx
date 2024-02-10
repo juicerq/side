@@ -17,6 +17,8 @@ import {
 } from "./ui/form";
 import { Input } from "./ui/input";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 const FormSchema = z.object({
   email: z.string().email("Por favor, insira um email válido."),
@@ -34,14 +36,17 @@ export function LoginUser() {
     },
   });
 
-  const { mutate } = api.user.login.useMutation({
+  const { mutate, isLoading } = api.user.login.useMutation({
     onSuccess: (response) => {
       Cookies.set("access_token", response.token);
       form.reset();
       router.push("/");
     },
     onError: (error) => {
-      console.log(error);
+      toast(error.message, {
+        description: "Please, try again.",
+        position: "bottom-center",
+      });
     },
   });
 
@@ -69,12 +74,18 @@ export function LoginUser() {
           )}
         />
         <div className="flex items-end justify-between">
-          <Button type="submit">Entrar</Button>
+          <Button type="submit" className={`${isLoading && "w-[67px]"}`}>
+            {isLoading ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              "Login"
+            )}
+          </Button>
           <Link
             href={"/register"}
             className="cursor-pointer text-xs text-primary hover:underline hover:underline-offset-1"
           >
-            Criar Conta
+            Register a new account
           </Link>
         </div>
       </form>

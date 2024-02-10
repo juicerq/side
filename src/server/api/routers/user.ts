@@ -12,6 +12,7 @@ export const userRouter = createTRPCRouter({
   create: publicProcedure
     .input(CreateUserInputSchema)
     .mutation(async ({ input }) => {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       const res = await UserUtils.create({
         firstName: input.firstName,
         lastName: input.lastName,
@@ -24,6 +25,7 @@ export const userRouter = createTRPCRouter({
   login: publicProcedure
     .input(LoginUserInputSchema)
     .mutation(async ({ input }) => {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       const token = await UserUtils.login({
         email: input.email,
       });

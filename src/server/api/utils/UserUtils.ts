@@ -37,13 +37,20 @@ export const UserUtils = {
   },
 
   async login({ email }: LoginUserInput) {
-    const { uuid } = await db
+    const user = await db
       .select({ uuid: users.uuid })
       .from(users)
       .where(eq(users.email, email))
       .then(takeUniqueOrThrow);
 
-    const token = jwt.sign({ uuid }, env.JWT_SECRET, {
+    if (!!!user) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "User with the email provived does not exist.",
+      });
+    }
+
+    const token = jwt.sign({ uuid: user.uuid }, env.JWT_SECRET, {
       expiresIn: 60 * 60 * 24 * 365,
     });
 
