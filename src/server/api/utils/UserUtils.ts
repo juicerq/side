@@ -15,10 +15,10 @@ export const UserUtils = {
       .where(eq(users.email, email));
 
     if (!!!alreadyExists) {
-      return {
-        success: false,
-        error: "Usuário com esse email já existe.",
-      };
+      throw new TRPCError({
+        code: "CONFLICT",
+        message: "User already exists.",
+      });
     }
 
     const newUser = await db
@@ -28,7 +28,7 @@ export const UserUtils = {
     if (!newUser) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Erro ao criar o usuário",
+        message: "Error when creating user.",
       });
     }
 
