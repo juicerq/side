@@ -4,6 +4,7 @@ type SendEmail = { code: string; userEmail: string };
 import { toast } from "sonner";
 import { z } from "zod";
 import axios from "axios";
+import { env } from "@/env";
 
 const resSchema = z.object({
   data: z.object({
@@ -17,7 +18,7 @@ export const Email = {
       method: "POST",
       url: `https://api.elasticemail.com/v2/email/send`,
       params: {
-        apiKey: process.env.ELASTICMAIL_API_KEY,
+        apiKey: env.NEXT_PUBLIC_ELASTICMAIL_API_KEY,
         subject: "Code",
         from: "julio.cerqueiira@gmail.com",
         to: userEmail,
