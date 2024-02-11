@@ -26,13 +26,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans ${inter.variable}`}>
-        <TRPCReactProvider>
-          <ThemeProvider attribute="class" enableSystem defaultTheme="dark">
-            <Toaster />
-            <Analytics />
-            {children}
-          </ThemeProvider>
-        </TRPCReactProvider>
+        <>
+          <TRPCReactProvider>
+            <ThemeProvider attribute="class" enableSystem defaultTheme="dark">
+              <Toaster />
+              {children}
+            </ThemeProvider>
+          </TRPCReactProvider>
+          <Analytics />
+        </>
       </body>
     </html>
   );
