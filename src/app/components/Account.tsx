@@ -21,7 +21,7 @@ export default function Account() {
           <p className="text-sm">{`${data?.firstName} ${data?.lastName}`}</p>
           <p
             onClick={() => {
-              console.log(Cookies.get("access_token"));
+              Cookies.remove("access_token");
               router.push("/login");
             }}
             className="w-fit cursor-pointer text-xs text-red-700 hover:underline hover:underline-offset-1 "
