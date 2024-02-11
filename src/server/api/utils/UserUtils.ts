@@ -1,4 +1,3 @@
-
 import { db } from "@/server/db";
 import { users } from "@/server/db/schema";
 import { TRPCError } from "@trpc/server";
@@ -34,7 +33,7 @@ export const UserUtils = {
       });
     }
 
-    return { success: true };
+    return { email };
   },
 
   async login({ email }: LoginUserInput) {

@@ -16,7 +16,11 @@ export const userRouter = createTRPCRouter({
         email: input.email,
       });
 
-      return res;
+      const token = await UserUtils.login({
+        email: res.email,
+      });
+
+      return { ...res, token };
     }),
 
   login: publicProcedure

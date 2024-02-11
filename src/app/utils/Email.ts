@@ -32,6 +32,9 @@ export const Email = {
       return toast("Error when sendind email", { position: "bottom-center" });
     }
 
-    return toast("Code sent!", { position: "bottom-center" });
+    return toast("The code has been sent to your email!", {
+      position: "bottom-center",
+      description: "The email will probably be in your trash",
+    });
   },
 };

@@ -75,15 +75,14 @@ export function LoginUser() {
     }
 
     if (codeSended && codeInput === "") {
-      toast("Please, enter the code.", {
+      return toast("Please, enter the code.", {
         position: "bottom-center",
         description: "The code cannot be empty.",
       });
-      return;
     }
 
     if (codeSended && codeInput !== code) {
-      toast("The code is not correct.", {
+      return toast("The code is not correct.", {
         position: "bottom-center",
         description: "Please, check the code and try again.",
       });

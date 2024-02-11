@@ -22,6 +22,7 @@ import { useState } from "react";
 import { Email } from "../utils/Email";
 import { generateRandomString } from "../utils/generateRandomString";
 import { Label } from "./ui/label";
+import Cookies from "js-cookie";
 
 const FormSchema = z.object({
   firstName: z
@@ -52,15 +53,15 @@ export default function CreateAccountForm() {
     },
   });
 
-  const { mutate, isLoading } = api.user.create.useMutation({
-    onSuccess: () => {
-      form.reset();
-      toast("Account successfully created.", {
+  const { mutate: createAccount, isLoading } = api.user.create.useMutation({
+    onSuccess: (response) => {
+      toast("Account successfully created. You are now logged in.", {
         position: "bottom-center",
       });
+      Cookies.set("access_token", response.token);
       setTimeout(() => {
-        router.push("/login");
-      }, 500);
+        router.push("/");
+      }, 1000);
     },
     onError: (error) => {
       toast(error.message, {
@@ -78,9 +79,11 @@ export default function CreateAccountForm() {
       Email.send({
         code: codeToSend,
         userEmail: data.email,
-      }).catch((err: {message: string}) => toast(err.message, {
-        position: "bottom-center",
-      }));
+      }).catch((err: { message: string }) =>
+        toast(err.message, {
+          position: "bottom-center",
+        }),
+      );
       return setCodeSended(true);
     }
 
@@ -100,7 +103,7 @@ export default function CreateAccountForm() {
     }
 
     if (codeInput === code) {
-      return mutate(data);
+      return createAccount(data);
     }
 
     toast("Something went wrong!", {
@@ -158,7 +161,7 @@ export default function CreateAccountForm() {
         />
         {codeSended && (
           <div className="space-y-2">
-            <Label htmlFor="code">Code sended to your email</Label>
+            <Label htmlFor="code">Code sent to your email</Label>
             <Input
               id="code"
               value={codeInput}
