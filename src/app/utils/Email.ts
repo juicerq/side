@@ -1,9 +1,9 @@
+/* eslint-disable */
+
 type SendEmail = { code: string; userEmail: string };
 import { toast } from "sonner";
 import { z } from "zod";
 import axios from "axios";
-
-// const resend = new Resend("re_7NU9gPqc_EDWaNfteUiVTLHmpJpCdXRYn");
 
 const resSchema = z.object({
   data: z.object({
@@ -29,6 +29,8 @@ export const Email = {
     const parsedRes = resSchema.parse(res);
 
     if (parsedRes.data.success === false) {
+      toast("Error when sendind email", { position: "bottom-center" });
+    } else if (!parsedRes.data.success) {
       toast("Error when sendind email", { position: "bottom-center" });
     }
 

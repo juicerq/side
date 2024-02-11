@@ -78,7 +78,9 @@ export default function CreateAccountForm() {
       Email.send({
         code: codeToSend,
         userEmail: data.email,
-      });
+      }).catch((err) => toast(err.message, {
+        position: "bottom-center",
+      }));
       return setCodeSended(true);
     }
 

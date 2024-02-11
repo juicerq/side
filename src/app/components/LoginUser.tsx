@@ -66,7 +66,11 @@ export function LoginUser() {
       Email.send({
         code: codeToSend,
         userEmail: data.email,
-      });
+      }).catch((err) =>
+        toast(err.message, {
+          position: "bottom-center",
+        }),
+      );
       return setCodeSended(true);
     }
 
