@@ -5,10 +5,6 @@
 await import("./src/env.js");
 
 /** @type {import("next").NextConfig} */
-const config = {
-  "rules": {
-    "@typescript-eslint/no-unsafe-member-access": "off"
-  }
-};
+const config = {};
 
 export default config;
