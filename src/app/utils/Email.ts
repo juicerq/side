@@ -29,7 +29,7 @@ export const Email = {
     const parsedRes = resSchema.parse(res);
 
     if (parsedRes.data.success === false) {
-      toast("Error when sendind email", { position: "bottom-center" });
+      return toast("Error when sendind email", { position: "bottom-center" });
     }
 
     return toast("Code sent!", { position: "bottom-center" });
