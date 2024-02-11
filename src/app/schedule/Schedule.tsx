@@ -1,13 +1,13 @@
 "use client";
 
-import Account from "./Account";
+import Account from "../components/Account";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "./ui/card";
+} from "../components/ui/card";
 
 export default function Schedule() {
   return (

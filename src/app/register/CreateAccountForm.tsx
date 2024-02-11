@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from "./ui/button";
+import { Button } from "../components/ui/button";
 import {
   Form,
   FormControl,
@@ -13,15 +13,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "./ui/form";
-import { Input } from "./ui/input";
+} from "../components/ui/form";
+import { Input } from "../components/ui/input";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Email } from "../utils/Email";
 import { generateRandomString } from "../utils/generateRandomString";
-import { Label } from "./ui/label";
+import { Label } from "../components/ui/label";
 import Cookies from "js-cookie";
 
 const FormSchema = z.object({

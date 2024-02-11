@@ -1,5 +1,5 @@
 import React from "react";
-import CreateAccountForm from "../components/CreateAccountForm";
+import CreateAccountForm from "./CreateAccountForm";
 
 export default function RegisterPage() {
   return (
