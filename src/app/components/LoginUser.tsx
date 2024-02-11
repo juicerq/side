@@ -51,7 +51,7 @@ export function LoginUser() {
         router.push("/");
       }, 500);
     },
-    onError: (error) => {
+    onError: (error: { message: string }) => {
       toast(error.message, {
         description: "Please, try again.",
         position: "bottom-center",
