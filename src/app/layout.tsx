@@ -29,8 +29,8 @@ export default function RootLayout({
         <TRPCReactProvider>
           <ThemeProvider attribute="class" enableSystem defaultTheme="dark">
             <Toaster />
-            {children}
             <Analytics />
+            {children}
           </ThemeProvider>
         </TRPCReactProvider>
       </body>
