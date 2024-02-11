@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import { TRPCReactProvider } from "@/trpc/react";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { Toaster } from "./components/ui/sonner";
+import { Analytics } from "@vercel/analytics/react";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -29,6 +30,7 @@ export default function RootLayout({
           <ThemeProvider attribute="class" enableSystem defaultTheme="dark">
             <Toaster />
             {children}
+            <Analytics />
           </ThemeProvider>
         </TRPCReactProvider>
       </body>
