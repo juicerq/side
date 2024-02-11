@@ -4,9 +4,6 @@ import {
   LoginUserInputSchema,
 } from "../schemas/input/User";
 import { UserUtils } from "../utils/UserUtils";
-import jwt from "jsonwebtoken";
-import { env } from "@/env";
-import Cookies from "js-cookie";
 
 export const userRouter = createTRPCRouter({
   create: publicProcedure

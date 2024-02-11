@@ -18,34 +18,29 @@ import { Input } from "./ui/input";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import { Email } from "../utils/Email";
+import { generateRandomString } from "../utils/generateRandomString";
+import { Label } from "./ui/label";
 
 const FormSchema = z.object({
   firstName: z
     .string()
-    .min(
-      2,
-      "O limite mínimo de caractéres é 2! Por favor, diminuia e tente novamente.",
-    )
-    .max(
-      50,
-      "O limite máximo de caractéres é 50! Por favor, diminuia e tente novamente.",
-    ),
+    .min(2, "Nome deve ser maior que 2 caracteres.")
+    .max(50, "Nome deve ser menor que 50 caracteres."),
   lastName: z
     .string()
-    .min(
-      2,
-      "O limite mínimo de caractéres é 2! Por favor, diminuia e tente novamente.",
-    )
-    .max(
-      50,
-      "O limite máximo de caractéres é 50! Por favor, diminuia e tente novamente.",
-    ),
-  email: z.string().email("Por favor, insira um email válido."),
+    .min(2, "Sobrenome deve ser maior que 2 caracteres.")
+    .max(50, "Sobrenome deve ser menor que 50 caracteres."),
+  email: z.string().email("Email não é válido."),
 });
 
 type FormType = z.infer<typeof FormSchema>;
 
 export default function CreateAccountForm() {
+  const [codeSended, setCodeSended] = useState<boolean>(false);
+  const [code, setCode] = useState<string>("");
+  const [codeInput, setCodeInput] = useState<string>("");
   const router = useRouter();
 
   const form = useForm<FormType>({
@@ -69,16 +64,47 @@ export default function CreateAccountForm() {
     },
     onError: (error) => {
       toast(error.message, {
-        classNames: {
-          toast: "bg-red-500 text-red-100 text-center",
-        },
         position: "bottom-center",
+        description: "Please, try again.",
       });
     },
   });
 
   const handleSubmit = (data: FormType) => {
-    mutate(data);
+    // Acho que vou ter que passar pra api o email e o code
+    if (!codeSended) {
+      const codeToSend = generateRandomString();
+      setCode(codeToSend);
+      Email.send({
+        code: codeToSend,
+        userEmail: data.email,
+      });
+      return setCodeSended(true);
+    }
+
+    if (codeSended && codeInput === "") {
+      toast("Please, enter the code.", {
+        position: "bottom-center",
+        description: "The code cannot be empty.",
+      });
+      return;
+    }
+
+    if (codeSended && codeInput !== code) {
+      toast("The code is not correct.", {
+        position: "bottom-center",
+        description: "Please, check the code and try again.",
+      });
+    }
+
+    if (codeInput === code) {
+      return mutate(data);
+    }
+
+    toast("Something went wrong!", {
+      position: "bottom-center",
+      description: "It's probably a bug. Sorry!",
+    });
   };
 
   return (
@@ -128,7 +154,17 @@ export default function CreateAccountForm() {
             </FormItem>
           )}
         />
-        <div className="flex items-end justify-between">
+        {codeSended && (
+          <div className="space-y-2">
+            <Label htmlFor="code">Code sended to your email</Label>
+            <Input
+              id="code"
+              value={codeInput}
+              onChange={(e) => setCodeInput(e.target.value)}
+            />
+          </div>
+        )}
+        <div className="flex gap-2">
           <Button
             type="submit"
             disabled={isLoading}
@@ -137,15 +173,17 @@ export default function CreateAccountForm() {
             {isLoading ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
-              "Create Account"
+              <p>{codeSended ? "Send Code" : "Create Account"}</p>
             )}
           </Button>
-          <Link
-            href={"/login"}
-            className="cursor-pointer text-xs text-primary hover:underline hover:underline-offset-1"
-          >
-            Login
-          </Link>
+          <Button type="button" variant={"ghost"}>
+            <Link
+              href={"/login"}
+              className="cursor-pointer text-xs text-primary"
+            >
+              Login
+            </Link>
+          </Button>
         </div>
       </form>
     </Form>
