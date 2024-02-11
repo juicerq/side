@@ -17,8 +17,7 @@ export const Email = {
       method: "POST",
       url: `https://api.elasticemail.com/v2/email/send`,
       params: {
-        apiKey:
-          "E60DC0809E97D93B52241F07D1C2F2D97DF84F973861D6844D7BC71C7594B8175609EBBFF95866A7BABBE7459AE19995",
+        apiKey: process.env.ELASTICMAIL_API_KEY,
         subject: "Code",
         from: "julio.cerqueiira@gmail.com",
         to: userEmail,
@@ -29,8 +28,6 @@ export const Email = {
     const parsedRes = resSchema.parse(res);
 
     if (parsedRes.data.success === false) {
-      toast("Error when sendind email", { position: "bottom-center" });
-    } else if (!parsedRes.data.success) {
       toast("Error when sendind email", { position: "bottom-center" });
     }
 
