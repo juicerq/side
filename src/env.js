@@ -39,7 +39,7 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
     JWT_SECRET: process.env.JWT_SECRET,
-    ELASTICMAIL_API_KEY: process.env.NEXT_PUBLIC_ELASTICMAIL_API_KEY,
+    ELASTICMAIL_API_KEY: process.env.ELASTICMAIL_API_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
