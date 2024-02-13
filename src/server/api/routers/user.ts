@@ -4,12 +4,12 @@ import {
   LoginUserInputSchema,
 } from "../schemas/input/User";
 import { UserUtils } from "../utils/UserUtils";
+import { z } from "zod";
 
 export const userRouter = createTRPCRouter({
   create: publicProcedure
     .input(CreateUserInputSchema)
     .mutation(async ({ input }) => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
       const res = await UserUtils.create({
         firstName: input.firstName,
         lastName: input.lastName,
@@ -26,7 +26,6 @@ export const userRouter = createTRPCRouter({
   login: publicProcedure
     .input(LoginUserInputSchema)
     .mutation(async ({ input }) => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
       const token = await UserUtils.login({
         email: input.email,
       });
@@ -34,6 +33,21 @@ export const userRouter = createTRPCRouter({
       return {
         token,
       };
+    }),
+
+  sendConfirmationCode: publicProcedure
+    .input(
+      z.object({
+        email: z.string().email("Email must be an valid email."),
+        code: z.string().min(4).max(4, "Code must be 4 characters exactly."),
+        type: z.enum(["login", "register"]),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const { email, code, type } = input;
+      const res = await UserUtils.sendConfirmationCode({ email, code, type });
+
+      return res;
     }),
 
   info: publicProcedure.query(({ ctx }) => {

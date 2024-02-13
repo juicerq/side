@@ -1,4 +1,4 @@
-export function generateRandomString() {
+export function generateCode() {
   const characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   let result = "";

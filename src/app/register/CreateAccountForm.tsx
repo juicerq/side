@@ -19,21 +19,21 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
-import { Email } from "../utils/Email";
-import { generateRandomString } from "../utils/generateRandomString";
+import { Email } from "../../server/api/utils/Email";
+import { generateCode } from "../utils/generateCode";
 import { Label } from "../components/ui/label";
 import Cookies from "js-cookie";
 
 const FormSchema = z.object({
   firstName: z
     .string()
-    .min(2, "Nome deve ser maior que 2 caracteres.")
-    .max(50, "Nome deve ser menor que 50 caracteres."),
+    .min(2, "First Name must be greater than 2 characters.")
+    .max(50, "First Name must be less than 50 characters."),
   lastName: z
     .string()
-    .min(2, "Sobrenome deve ser maior que 2 caracteres.")
-    .max(50, "Sobrenome deve ser menor que 50 caracteres."),
-  email: z.string().email("Email não é válido."),
+    .min(2, "Last Name must be greater than 2 characters.")
+    .max(50, "Last name must be less than 50 characters."),
+  email: z.string().email("The email must be a valid email."),
 });
 
 type FormType = z.infer<typeof FormSchema>;
@@ -53,50 +53,60 @@ export default function CreateAccountForm() {
     },
   });
 
-  const { mutate: createAccount, isLoading } = api.user.create.useMutation({
-    onSuccess: (response) => {
-      toast("Account successfully created. You are now logged in.", {
-        position: "bottom-center",
-      });
-      Cookies.set("access_token", response.token);
-      setTimeout(() => {
-        router.push("/");
-      }, 1000);
-    },
-    onError: (error) => {
-      toast(error.message, {
-        position: "bottom-center",
-        description: "Please, try again.",
-      });
-    },
-  });
+  const { mutate: createAccount, isLoading: creatingAccount } =
+    api.user.create.useMutation({
+      onSuccess: (response) => {
+        toast("Account successfully created. You are now logged in.", {
+          position: "bottom-center",
+        });
+        Cookies.set("access_token", response.token);
+        setTimeout(() => {
+          router.push("/");
+        }, 1000);
+      },
+      onError: (error) => {
+        toast(error.message, {
+          position: "bottom-center",
+          description: "Please, try again.",
+        });
+      },
+    });
+
+  const { mutate: sendCode, isLoading: sendingCode } =
+    api.user.sendConfirmationCode.useMutation({
+      onSuccess: (response) => {
+        if (response.success === true) {
+          setCodeSended(true);
+          toast(response.message, {
+            description: response.description ?? "",
+            position: "bottom-center",
+          });
+        }
+      },
+      onError: (err) => {
+        toast(err.message, {
+          description: "Please, try again.",
+          position: "bottom-center",
+        });
+      },
+    });
 
   const handleSubmit = (data: FormType) => {
-    // Acho que vou ter que passar pra api o email e o code
     if (!codeSended) {
-      const codeToSend = generateRandomString();
+      const codeToSend = generateCode();
       setCode(codeToSend);
-      Email.send({
-        code: codeToSend,
-        userEmail: data.email,
-      }).catch((err: { message: string }) =>
-        toast(err.message, {
-          position: "bottom-center",
-        }),
-      );
-      return setCodeSended(true);
+      return sendCode({ code: codeToSend, email: data.email, type: "register" });
     }
 
     if (codeSended && codeInput === "") {
-      toast("Please, enter the code.", {
+      return toast("Please, enter the code.", {
         position: "bottom-center",
         description: "The code cannot be empty.",
       });
-      return;
     }
 
     if (codeSended && codeInput !== code) {
-      toast("The code is not correct.", {
+      return toast("The code is not correct.", {
         position: "bottom-center",
         description: "Please, check the code and try again.",
       });
@@ -161,7 +171,7 @@ export default function CreateAccountForm() {
         />
         {codeSended && (
           <div className="space-y-2">
-            <Label htmlFor="code">Code sent to your email</Label>
+            <Label htmlFor="code">Code</Label>
             <Input
               id="code"
               value={codeInput}
@@ -172,11 +182,11 @@ export default function CreateAccountForm() {
         <div className="flex gap-2">
           <Button
             type="submit"
-            disabled={isLoading}
-            className={`${isLoading && "w-[129px]"}`}
+            disabled={creatingAccount || sendingCode}
+            className={`${creatingAccount || (sendingCode && "w-[107px]")}`}
           >
-            {isLoading ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            {creatingAccount || sendingCode ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
               <p>{codeSended ? "Send Code" : "Create Account"}</p>
             )}

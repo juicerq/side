@@ -20,12 +20,12 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
-import { Email } from "../utils/Email";
-import { generateRandomString } from "../utils/generateRandomString";
+import { Email } from "../../server/api/utils/Email";
+import { generateCode } from "../utils/generateCode";
 import { Label } from "../components/ui/label";
 
 const FormSchema = z.object({
-  email: z.string().email("Por favor, insira um email válido."),
+  email: z.string().email("The email must be a valid email."),
 });
 
 type FormType = z.infer<typeof FormSchema>;
@@ -43,7 +43,7 @@ export function LoginUser() {
     },
   });
 
-  const { mutate, isLoading } = api.user.login.useMutation({
+  const { mutate: login, isLoading: loging } = api.user.login.useMutation({
     onSuccess: (response) => {
       Cookies.set("access_token", response.token);
       form.reset();
@@ -59,19 +59,30 @@ export function LoginUser() {
     },
   });
 
+  const { mutate: sendCode, isLoading: sendingCode } =
+    api.user.sendConfirmationCode.useMutation({
+      onSuccess: (response) => {
+        if (response.success === true) {
+          setCodeSended(true);
+          toast(response.message, {
+            description: response.description ?? "",
+            position: "bottom-center",
+          });
+        }
+      },
+      onError: (err) => {
+        toast(err.message, {
+          description: "Check the informations and try again.",
+          position: "bottom-center",
+        });
+      },
+    });
+
   const handleSubmit = (data: FormType) => {
     if (!codeSended) {
-      const codeToSend = generateRandomString();
+      const codeToSend = generateCode();
       setCode(codeToSend);
-      Email.send({
-        code: codeToSend,
-        userEmail: data.email,
-      }).catch((err) =>
-        toast(err.message, {
-          position: "bottom-center",
-        }),
-      );
-      return setCodeSended(true);
+      return sendCode({ code: codeToSend, email: data.email, type: "login" });
     }
 
     if (codeSended && codeInput === "") {
@@ -89,7 +100,7 @@ export function LoginUser() {
     }
 
     if (codeInput === code) {
-      return mutate(data);
+      return login(data);
     }
 
     toast("Something went wrong!", {
@@ -119,7 +130,7 @@ export function LoginUser() {
         />
         {codeSended && (
           <div className="space-y-2">
-            <Label htmlFor="code">Code sended to your email</Label>
+            <Label htmlFor="code">Code</Label>
             <Input
               id="code"
               value={codeInput}
@@ -128,9 +139,12 @@ export function LoginUser() {
           </div>
         )}
         <div className="flex gap-2">
-          <Button type="submit" className={`${isLoading && "w-[67px]"}`}>
-            {isLoading ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          <Button
+            type="submit"
+            className={`${(loging || sendingCode) && "w-[54px]"}`}
+          >
+            {loging || sendingCode ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
               "Login"
             )}

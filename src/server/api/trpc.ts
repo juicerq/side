@@ -9,14 +9,10 @@
 import { TRPCError, initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError, z } from "zod";
-import jwt from "jsonwebtoken";
 
 import { db } from "@/server/db";
-import { env } from "@/env";
-import { users } from "../db/schema";
-import { eq } from "drizzle-orm";
-import { verifyToken } from "./utils/trpcUtils";
 import { getUser } from "./utils/getUser";
+import { verifyToken } from "./utils/trpcUtils";
 /**
  * 1. CONTEXT
  *
@@ -30,6 +26,10 @@ import { getUser } from "./utils/getUser";
  * @see https://trpc.io/docs/server/context
  */
 
+const frontError = z.object({
+  data: z.any(),
+});
+
 export const createTRPCContext = async (opts: { headers: Headers }) => {
   const allCookies = opts.headers.get("Cookie");
 
@@ -41,7 +41,7 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
 
   const userUuid = verifyToken(token);
 
-  const res = await getUser(userUuid);
+  const res = await getUser({ userUuid });
 
   return {
     db,
@@ -60,12 +60,19 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
   errorFormatter({ shape, error }) {
+    const message =
+      error.cause instanceof ZodError
+        ? error.cause.errors.map((e) => `${e.path[0]} ${e.message}`).join(", ")
+        : error.message;
+
+    const parsedCause = frontError.safeParse(error.cause);
+
     return {
       ...shape,
+      message,
       data: {
         ...shape.data,
-        zodError:
-          error.cause instanceof ZodError ? error.cause.flatten() : null,
+        stack: parsedCause.success ? parsedCause.data.data : null,
       },
     };
   },

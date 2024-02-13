@@ -1,10 +1,11 @@
 /* eslint-disable */
 
 type SendEmail = { code: string; userEmail: string };
+import { env } from "@/env";
+import { TRPCError } from "@trpc/server";
+import axios from "axios";
 import { toast } from "sonner";
 import { z } from "zod";
-import axios from "axios";
-import { env } from "@/env";
 
 const resSchema = z.object({
   data: z.object({
@@ -18,7 +19,7 @@ export const Email = {
       method: "POST",
       url: `https://api.elasticemail.com/v2/email/send`,
       params: {
-        apiKey: env.NEXT_PUBLIC_ELASTICMAIL_API_KEY,
+        apiKey: env.ELASTICMAIL_API_KEY,
         subject: "Code",
         from: "julio.cerqueiira@gmail.com",
         to: userEmail,
@@ -29,12 +30,16 @@ export const Email = {
     const parsedRes = resSchema.parse(res);
 
     if (parsedRes.data.success === false) {
-      return toast("Error when sendind email", { position: "bottom-center" });
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Error when sending email.",
+      });
     }
 
-    return toast("The code has been sent to your email!", {
-      position: "bottom-center",
-      description: "The email will probably be in your trash",
-    });
+    return {
+      success: true,
+      message: "The code has been sent to your email!",
+      description: "The email will probably in the trash",
+    };
   },
 };

@@ -6,6 +6,14 @@ import jwt from "jsonwebtoken";
 import { CreateUserInput, LoginUserInput } from "../schemas/input/User";
 import { takeUniqueOrThrow } from "./DrizzleUtils";
 import { env } from "@/env";
+import { getUser } from "./getUser";
+import { Email } from "./Email";
+
+type SendConfirmationCodeProps = {
+  email: string;
+  code: string;
+  type: string;
+};
 
 export const UserUtils = {
   async create({ firstName, lastName, email }: CreateUserInput) {
@@ -55,5 +63,25 @@ export const UserUtils = {
     });
 
     return token;
+  },
+
+  async sendConfirmationCode({ email, code, type }: SendConfirmationCodeProps) {
+    if (type === "login") {
+      const userExist = await getUser({ userEmail: email });
+
+      if (!!userExist) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "No user found for this email.",
+        });
+      }
+    }
+
+    const res = await Email.send({
+      code: code,
+      userEmail: email,
+    });
+
+    return res;
   },
 };
