@@ -17,7 +17,7 @@ import {
 import { Input } from "../components/ui/input";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Info, Loader2, MailCheck } from "lucide-react";
 import { useState } from "react";
 import { Email } from "../../server/api/utils/Email";
 import { generateCode } from "../utils/generateCode";
@@ -39,7 +39,7 @@ const FormSchema = z.object({
 type FormType = z.infer<typeof FormSchema>;
 
 export default function CreateAccountForm() {
-  const [codeSended, setCodeSended] = useState<boolean>(false);
+  const [condeSent, setcondeSent] = useState<boolean>(false);
   const [code, setCode] = useState<string>("");
   const [codeInput, setCodeInput] = useState<string>("");
   const router = useRouter();
@@ -76,15 +76,31 @@ export default function CreateAccountForm() {
     api.user.sendConfirmationCode.useMutation({
       onSuccess: (response) => {
         if (response.success === true) {
-          setCodeSended(true);
+          setcondeSent(true);
           toast(response.message, {
+            style: {
+              borderLeft: "2px solid #00A86B",
+              color: "white",
+              display: "flex",
+              gap: "1rem",
+              padding: "1rem 1rem",
+            },
             description: response.description ?? "",
+            icon: <MailCheck className="h-7 w-7 text-[#FFFF]" />,
             position: "bottom-center",
           });
         }
       },
       onError: (err) => {
         toast(err.message, {
+          style: {
+            borderLeft: "2px solid #B71C1C",
+            color: "white",
+            display: "flex",
+            gap: "1rem",
+            padding: "1rem 1rem",
+          },
+          icon: <Info className="h-7 w-7 text-[#FFFF]" />,
           description: "Please, try again.",
           position: "bottom-center",
         });
@@ -92,20 +108,24 @@ export default function CreateAccountForm() {
     });
 
   const handleSubmit = (data: FormType) => {
-    if (!codeSended) {
+    if (!condeSent) {
       const codeToSend = generateCode();
       setCode(codeToSend);
-      return sendCode({ code: codeToSend, email: data.email, type: "register" });
+      return sendCode({
+        code: codeToSend,
+        email: data.email,
+        type: "register",
+      });
     }
 
-    if (codeSended && codeInput === "") {
+    if (condeSent && codeInput === "") {
       return toast("Please, enter the code.", {
         position: "bottom-center",
         description: "The code cannot be empty.",
       });
     }
 
-    if (codeSended && codeInput !== code) {
+    if (condeSent && codeInput !== code) {
       return toast("The code is not correct.", {
         position: "bottom-center",
         description: "Please, check the code and try again.",
@@ -169,7 +189,7 @@ export default function CreateAccountForm() {
             </FormItem>
           )}
         />
-        {codeSended && (
+        {condeSent && (
           <div className="space-y-2">
             <Label htmlFor="code">Code</Label>
             <Input
@@ -188,7 +208,7 @@ export default function CreateAccountForm() {
             {creatingAccount || sendingCode ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              <p>{codeSended ? "Send Code" : "Create Account"}</p>
+              <p>{condeSent ? "Send Code" : "Create Account"}</p>
             )}
           </Button>
           <Button type="button" variant={"ghost"}>

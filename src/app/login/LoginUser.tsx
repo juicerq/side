@@ -18,7 +18,7 @@ import {
 import { Input } from "../components/ui/input";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Info, Loader2, MailCheck } from "lucide-react";
 import { useState } from "react";
 import { Email } from "../../server/api/utils/Email";
 import { generateCode } from "../utils/generateCode";
@@ -31,7 +31,7 @@ const FormSchema = z.object({
 type FormType = z.infer<typeof FormSchema>;
 
 export function LoginUser() {
-  const [codeSended, setCodeSended] = useState<boolean>(false);
+  const [condeSent, setcondeSent] = useState<boolean>(false);
   const [code, setCode] = useState<string>("");
   const [codeInput, setCodeInput] = useState<string>("");
   const router = useRouter();
@@ -63,8 +63,16 @@ export function LoginUser() {
     api.user.sendConfirmationCode.useMutation({
       onSuccess: (response) => {
         if (response.success === true) {
-          setCodeSended(true);
+          setcondeSent(true);
           toast(response.message, {
+            style: {
+              borderLeft: "1px solid #00A86B",
+              color: "white",
+              display: "flex",
+              gap: "1rem",
+              padding: "1rem 1rem",
+            },
+            icon: <MailCheck className="h-7 w-7 text-[#FFFF]" />,
             description: response.description ?? "",
             position: "bottom-center",
           });
@@ -72,6 +80,14 @@ export function LoginUser() {
       },
       onError: (err) => {
         toast(err.message, {
+          style: {
+            borderLeft: "2px solid #B71C1C",
+            color: "white",
+            display: "flex",
+            gap: "1rem",
+            padding: "1rem 1rem",
+          },
+          icon: <Info className="h-7 w-7 text-[#FFFF]" />,
           description: "Check the informations and try again.",
           position: "bottom-center",
         });
@@ -79,20 +95,20 @@ export function LoginUser() {
     });
 
   const handleSubmit = (data: FormType) => {
-    if (!codeSended) {
+    if (!condeSent) {
       const codeToSend = generateCode();
       setCode(codeToSend);
       return sendCode({ code: codeToSend, email: data.email, type: "login" });
     }
 
-    if (codeSended && codeInput === "") {
+    if (condeSent && codeInput === "") {
       return toast("Please, enter the code.", {
         position: "bottom-center",
         description: "The code cannot be empty.",
       });
     }
 
-    if (codeSended && codeInput !== code) {
+    if (condeSent && codeInput !== code) {
       return toast("The code is not correct.", {
         position: "bottom-center",
         description: "Please, check the code and try again.",
@@ -128,7 +144,7 @@ export function LoginUser() {
             </FormItem>
           )}
         />
-        {codeSended && (
+        {condeSent && (
           <div className="space-y-2">
             <Label htmlFor="code">Code</Label>
             <Input
@@ -139,14 +155,11 @@ export function LoginUser() {
           </div>
         )}
         <div className="flex gap-2">
-          <Button
-            type="submit"
-            className={`${(loging || sendingCode) && "w-[54px]"}`}
-          >
+          <Button type="submit" className="min-w-16">
             {loging || sendingCode ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              "Login"
+              <p>{condeSent ? "Login" : "Send code"}</p>
             )}
           </Button>
           <Button type="button" variant={"ghost"}>

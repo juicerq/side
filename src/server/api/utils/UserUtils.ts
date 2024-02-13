@@ -66,13 +66,22 @@ export const UserUtils = {
   },
 
   async sendConfirmationCode({ email, code, type }: SendConfirmationCodeProps) {
-    if (type === "login") {
-      const userExist = await getUser({ userEmail: email });
+    const userExist = await getUser({ userEmail: email });
 
+    if (type === "login") {
       if (!!userExist) {
         throw new TRPCError({
-          code: "CONFLICT",
+          code: "BAD_REQUEST",
           message: "No user found for this email.",
+        });
+      }
+    }
+
+    if (type === "register") {
+      if (userExist) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "User with this email already exist.",
         });
       }
     }
