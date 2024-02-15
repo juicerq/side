@@ -47,7 +47,7 @@ export function LoginUser() {
     onSuccess: (response) => {
       Cookies.set("access_token", response.token);
       setTimeout(() => {
-        router.push("/");
+        router.push("/schedule");
       }, 500);
     },
     onError: (err: { message: string }) => {
