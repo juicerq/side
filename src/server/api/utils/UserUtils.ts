@@ -51,7 +51,7 @@ export const UserUtils = {
       .where(eq(users.email, email))
       .then(takeUniqueOrThrow);
 
-    if (!!!user) {
+    if (!user) {
       throw new TRPCError({
         code: "BAD_REQUEST",
         message: "User with the email provived does not exist.",
@@ -69,7 +69,7 @@ export const UserUtils = {
     const userExist = await getUser({ userEmail: email });
 
     if (type === "login") {
-      if (!!userExist) {
+      if (!userExist) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "No user found for this email.",

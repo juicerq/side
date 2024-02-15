@@ -46,7 +46,6 @@ export function LoginUser() {
   const { mutate: login, isLoading: loging } = api.user.login.useMutation({
     onSuccess: (response) => {
       Cookies.set("access_token", response.token);
-      form.reset();
       setTimeout(() => {
         router.push("/");
       }, 500);
