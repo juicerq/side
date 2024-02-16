@@ -50,7 +50,7 @@ export function LoginUser() {
         router.push("/schedule");
       }, 500);
     },
-    onError: (err: { message: string }) => {
+    onError: (err) => {
       toast(err.message, {
         description: "Please, try again.",
         position: "bottom-center",

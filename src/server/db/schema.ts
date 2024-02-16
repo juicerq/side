@@ -1,6 +1,3 @@
-// Example model schema from the Drizzle docs
-// https://orm.drizzle.team/docs/sql-schema-declaration
-
 import { sql } from "drizzle-orm";
 import {
   boolean,
@@ -11,12 +8,31 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
-/**
- * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
- * database instance for multiple projects.
- *
- * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
- */
+const monthEnum = [
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  "10",
+  "11",
+  "12",
+] as const;
+
+const dayOfWeekEnum = [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+  "sunday",
+] as const;
+
 export const createTable = pgTableCreator((name) => `juit_${name}`);
 
 export const users = createTable(
@@ -46,6 +62,19 @@ export const schedules = createTable(
       .references(() => users.uuid, {
         onDelete: "cascade",
       }),
+    month: varchar("month", {
+      enum: monthEnum,
+      length: 2,
+    }).notNull(),
+    dayOfWeek: varchar("day", {
+      enum: dayOfWeekEnum,
+      length: 10,
+    }).notNull(),
+    scheduleTimeUuid: uuid("uuid")
+      .notNull()
+      .references(() => scheduleHours.uuid, {
+        onDelete: "cascade",
+      }),
     createdAt: timestamp("createdAt")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -56,10 +85,9 @@ export const schedules = createTable(
   }),
 );
 
-export const scheduleTimes = createTable("scheduleTimes", {
+export const scheduleHours = createTable("scheduleHours", {
   uuid: uuid("uuid").defaultRandom().primaryKey(),
-  day: varchar("day", { length: 100 }).notNull(),
-  hour: varchar("hour", { length: 100 }).notNull(),
+  hourOfDay: varchar("hour", { length: 100 }).notNull(),
   createdAt: timestamp("createdAt")
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
