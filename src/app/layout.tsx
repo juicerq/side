@@ -6,6 +6,7 @@ import { TRPCReactProvider } from "@/trpc/react";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { Toaster } from "./components/ui/sonner";
 import { Analytics } from "@vercel/analytics/react";
+import Navbar from "./components/Navbar";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -29,6 +30,7 @@ export default function RootLayout({
         <>
           <TRPCReactProvider>
             <ThemeProvider attribute="class" enableSystem defaultTheme="dark">
+              <Navbar />
               <Toaster />
               {children}
             </ThemeProvider>
