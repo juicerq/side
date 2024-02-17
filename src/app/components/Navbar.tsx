@@ -2,7 +2,7 @@
 
 import Cookies from "js-cookie";
 import { Avatar, AvatarFallback } from "./ui/avatar";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { api } from "@/trpc/react";
 import Link from "next/link";
 
@@ -18,12 +18,18 @@ const links = [
 ];
 
 export default function Navbar() {
+  const path = usePathname();
+  const shouldRender = path !== "/login" && path !== "/register";
   const router = useRouter();
 
-  const { data } = api.user.info.useQuery(undefined, {
-    refetchOnWindowFocus: false,
-    cacheTime: 1000,
-  });
+  const { data } = shouldRender
+    ? api.user.info.useQuery(undefined, {
+        refetchOnWindowFocus: false,
+        cacheTime: 1000,
+      })
+    : { data: null };
+
+  if (!shouldRender) return null;
   return (
     <div className="fixed left-0 top-0 flex h-16 w-screen items-center justify-center bg-transparent px-12">
       <div className="flex-1">

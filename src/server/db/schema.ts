@@ -8,7 +8,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
-const monthEnum = [
+export const monthEnum = [
   "1",
   "2",
   "3",
@@ -23,7 +23,7 @@ const monthEnum = [
   "12",
 ] as const;
 
-const dayOfWeekEnum = [
+export const dayOfWeekEnum = [
   "monday",
   "tuesday",
   "wednesday",
