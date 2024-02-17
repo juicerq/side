@@ -67,7 +67,7 @@ export default function AdminPage() {
     toast("You are not authorized to view this page", {
       position: "bottom-center",
     });
-    router.push("/");
+    window.history.back();
   }
 
   if (user?.isAdmin)
