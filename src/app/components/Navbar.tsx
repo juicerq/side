@@ -19,7 +19,8 @@ const links = [
 
 export default function Navbar() {
   const path = usePathname();
-  const shouldRender = path !== "/login" && path !== "/register";
+  const shouldRender =
+    path !== "/login" && path !== "/register" && path !== "/";
   const router = useRouter();
 
   const { data } = shouldRender
