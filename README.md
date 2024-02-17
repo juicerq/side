@@ -1,4 +1,4 @@
-# Side, an appointment project
+# Side
 
 ## Project Idea:
   Users can choose a day and hour to make an appointment and It will send a email to all Admin Users.
