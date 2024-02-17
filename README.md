@@ -8,6 +8,8 @@
   I started this project because I wanted to fully create and deploy a full-stack web where all comes from me. This way I can refine my basics, learn new things and develop my process of thought.
 
 ## About
-  Tecnologies: NextJS, Typescript, TailwindCSS and tRPC. I used JWT for all the user logic and Zod for validations.
-  Deploy: I'm using NextJS with Serverless Functions using tRPC. I deployed the project using Vercel and Supabase for the database.
-  ORM: I chose Drizzle with PostgreSQL because I was curious of using something that isn't Prisma and because it is a lot more close to pure SQL than Prisma.
+  - Tecnologies: NextJS, Typescript, TailwindCSS and tRPC. I used JWT for all the user logic and Zod for validations.
+
+  - Deploy: I'm using NextJS with Serverless Functions using tRPC. I deployed the project using Vercel and Supabase for the database.
+
+  - ORM: I chose Drizzle with PostgreSQL because I was curious of using something that isn't Prisma and because it is a lot more close to pure SQL than Prisma.
