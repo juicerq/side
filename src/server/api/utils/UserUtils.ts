@@ -3,7 +3,7 @@ import { users } from "@/server/db/schema";
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import jwt from "jsonwebtoken";
-import { CreateUserInput, LoginUserInput } from "../schemas/input/User";
+import { CreateUserInput, LoginUserInput } from "../routers/user";
 import { takeUniqueOrThrow } from "./DrizzleUtils";
 import { env } from "@/env";
 import { getUser } from "./getUser";

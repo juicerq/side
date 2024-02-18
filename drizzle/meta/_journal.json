@@ -29,6 +29,13 @@
       "when": 1707351389512,
       "tag": "0003_bored_stick",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1708268267384,
+      "tag": "0004_magical_dark_phoenix",
+      "breakpoints": true
     }
   ]
 }

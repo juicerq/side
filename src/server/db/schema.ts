@@ -87,7 +87,7 @@ export const schedules = createTable(
 
 export const scheduleHours = createTable("scheduleHours", {
   uuid: uuid("uuid").defaultRandom().primaryKey(),
-  hourOfDay: varchar("hour", { length: 100 }).notNull(),
+  hourOfDay: varchar("hourOfDay", { length: 100 }).notNull(),
   createdAt: timestamp("createdAt")
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
