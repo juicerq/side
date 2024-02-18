@@ -30,7 +30,7 @@ export const scheduleRouter = createTRPCRouter({
   newTime: adminProcedure
     .input(NewTimeFormSchema)
     .mutation(async ({ input }) => {
-      SchedulesUtils.newTime({
+      await SchedulesUtils.newTime({
         hour: input.hour,
         minute: input.minute,
       });

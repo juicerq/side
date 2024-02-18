@@ -70,8 +70,11 @@ export default function TimesContent() {
     <>
       <div className="space-y-4">
         {times?.map((time) => (
-          <div className="my-4 flex w-64 justify-between rounded-lg bg-primary-foreground p-3 text-primary">
-            <div key={time.uuid} className="flex items-center gap-2">
+          <div
+            key={time.uuid}
+            className="my-4 flex w-64 justify-between rounded-lg bg-primary-foreground p-3 text-primary"
+          >
+            <div className="flex items-center gap-2">
               <Clock className="h-5 w-5" />
               {time.hourOfDay}
             </div>
