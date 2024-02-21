@@ -36,6 +36,48 @@
       "when": 1708268267384,
       "tag": "0004_magical_dark_phoenix",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1708470145453,
+      "tag": "0005_tranquil_pete_wisdom",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1708475730772,
+      "tag": "0006_huge_pretty_boy",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1708475892203,
+      "tag": "0007_tan_tyger_tiger",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1708476496591,
+      "tag": "0008_fancy_sabretooth",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1708476550361,
+      "tag": "0009_jittery_invisible_woman",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1708476807481,
+      "tag": "0010_grey_patch",
+      "breakpoints": true
     }
   ]
 }
