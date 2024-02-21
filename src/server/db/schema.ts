@@ -92,6 +92,12 @@ export const schedules = createTable(
         onDelete: "cascade",
         onUpdate: "cascade",
       }),
+    scheduleHourUuid: uuid("uuid")
+      .notNull()
+      .references(() => scheduleHours.uuid, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
     createdAt: timestamp("createdAt")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -106,6 +112,10 @@ export const schedulesRelations = relations(schedules, ({ one }) => ({
     fields: [schedules.uuid],
     references: [scheduleDays.uuid],
   }),
+  scheduleHourUuid: one(scheduleHours, {
+    fields: [schedules.uuid],
+    references: [scheduleHours.uuid],
+  }),
 }));
 
 export const scheduleHours = createTable("scheduleHours", {
@@ -117,7 +127,7 @@ export const scheduleHours = createTable("scheduleHours", {
   updatedAt: timestamp("updatedAt"),
 });
 export const scheduleHoursRelations = relations(scheduleHours, ({ many }) => ({
-  scheduleDays: many(scheduleDays),
+  schedules: many(schedules),
 }));
 
 export const scheduleDays = createTable("scheduleDays", {
@@ -132,5 +142,5 @@ export const scheduleDays = createTable("scheduleDays", {
   updatedAt: timestamp("updatedAt"),
 });
 export const scheduleDaysRelations = relations(scheduleHours, ({ many }) => ({
-  scheduleHours: many(scheduleHours),
+  schedules: many(schedules),
 }));
