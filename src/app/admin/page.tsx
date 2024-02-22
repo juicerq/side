@@ -1,57 +1,22 @@
 "use client";
 
-import { CalendarRange, Clock, Loader2, Plus, Trash2 } from "lucide-react";
-import {
-  Table,
-  TableCaption,
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-} from "../components/ui/table";
+import { Loader2 } from "lucide-react";
 
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "../components/ui/drawer";
-
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../components/ui/tooltip";
 import { api } from "@/trpc/react";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useEffect, useState } from "react";
-import { Button } from "../components/ui/button";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../components/ui/card";
-import { Input } from "../components/ui/input";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "../components/ui/tabs";
-import NewTime from "./components/TimesContent";
+import DaysContent from "./components/DaysContent";
 import SchedulesContent from "./components/SchedulesContent";
 import TimesContent from "./components/TimesContent";
-import DaysContent from "./components/DaysContent";
+import { useRouter } from "next/navigation";
 
 export default function AdminPage() {
+  const router = useRouter();
   const { data: user, isLoading } = api.user.info.useQuery(undefined, {
     cacheTime: 500,
   });
@@ -68,7 +33,7 @@ export default function AdminPage() {
     toast("You are not authorized to view this page", {
       position: "bottom-center",
     });
-    window.history.back();
+    router.push("/schedule");
   }
 
   if (user?.isAdmin)
