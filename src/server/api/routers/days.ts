@@ -10,8 +10,10 @@ export const scheduleDaysRouter = createTRPCRouter({
   create: adminProcedure
     .input(dbSchemas.CreateScheduleDaysSchema.pick({ dayOfWeek: true }))
     .mutation(async ({ input }) => {
-      await SchedulesUtils.day.create({
+      const newDay = await SchedulesUtils.day.create({
         dayOfWeek: input.dayOfWeek,
       });
+
+      return newDay;
     }),
 });

@@ -14,7 +14,7 @@ import {
 
 import { dbSchemas } from "@/server/db/SchemasAndTypes";
 import { api } from "@/trpc/react";
-import { RouterInputs } from "@/trpc/shared";
+import { type RouterInputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
