@@ -1,6 +1,6 @@
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
-import { CalendarRange, Clock, Loader2, Plus } from "lucide-react";
+import { Clock, Loader2, Plus } from "lucide-react";
 import {
   Drawer,
   DrawerClose,
@@ -12,6 +12,12 @@ import {
   DrawerTrigger,
 } from "../../components/ui/drawer";
 
+import { dbSchemas } from "@/server/db/SchemasAndTypes";
+import { api } from "@/trpc/react";
+import { RouterInputs } from "@/trpc/shared";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import {
   Form,
   FormControl,
@@ -20,13 +26,6 @@ import {
   FormLabel,
   FormMessage,
 } from "../../components/ui/form";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { api } from "@/trpc/react";
-import { toast } from "sonner";
-import { RouterInputs } from "@/trpc/shared";
-import { dbSchemas } from "@/server/db/SchemasAndTypes";
 
 type CreateHour = RouterInputs["schedule"]["time"]["create"];
 

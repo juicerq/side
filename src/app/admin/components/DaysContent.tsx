@@ -1,6 +1,5 @@
 import { Button } from "@/app/components/ui/button";
-import { Input } from "@/app/components/ui/input";
-import { CalendarRange, Clock, Loader2, Plus } from "lucide-react";
+import { CalendarRange, Loader2, Plus } from "lucide-react";
 import {
   Drawer,
   DrawerClose,
