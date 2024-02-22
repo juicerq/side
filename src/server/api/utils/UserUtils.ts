@@ -3,20 +3,14 @@ import { users } from "@/server/db/schema";
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import jwt from "jsonwebtoken";
-import { CreateUserInput, LoginUserInput } from "../routers/user";
 import { takeUniqueOrThrow } from "./DrizzleUtils";
 import { env } from "@/env";
 import { getUser } from "./getUser";
 import { Email } from "./Email";
-
-type SendConfirmationCodeProps = {
-  email: string;
-  code: string;
-  type: string;
-};
+import { SendConfirmationCode, User } from "@/server/db/SchemasAndTypes";
 
 export const UserUtils = {
-  async create({ firstName, lastName, email }: CreateUserInput) {
+  async create({ firstName, lastName, email }: User) {
     const alreadyExists = await db
       .select()
       .from(users)
@@ -44,7 +38,7 @@ export const UserUtils = {
     return { email };
   },
 
-  async login({ email }: LoginUserInput) {
+  async login({ email }: { email: User["email"] }) {
     const user = await db
       .select({ uuid: users.uuid })
       .from(users)
@@ -65,9 +59,10 @@ export const UserUtils = {
     return token;
   },
 
-  async sendConfirmationCode({ email, code, type }: SendConfirmationCodeProps) {
+  async sendConfirmationCode({ email, code, type }: SendConfirmationCode) {
     const userExist = await getUser({ userEmail: email });
 
+    // If login and user does not exist, throw error
     if (type === "login") {
       if (!userExist) {
         throw new TRPCError({
@@ -77,6 +72,7 @@ export const UserUtils = {
       }
     }
 
+    // If register and user already exist, throw error
     if (type === "register") {
       if (userExist) {
         throw new TRPCError({

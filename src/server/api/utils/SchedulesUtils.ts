@@ -1,39 +1,66 @@
 import { db } from "@/server/db";
-import { NewTimeInput } from "../routers/schedule";
-import { scheduleHours } from "@/server/db/schema";
+import { scheduleDays, scheduleHours } from "@/server/db/schema";
 import { takeUniqueOrThrow } from "./DrizzleUtils";
 import { TRPCError } from "@trpc/server";
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
+import { ScheduleDay, type ScheduleHour } from "@/server/db/SchemasAndTypes";
 
 export const SchedulesUtils = {
-  async newTime({ hour, minute }: NewTimeInput) {
-    const parsedHour = Number(hour.toString().length === 1 ? `0${hour}` : hour);
-
-    const alreadyExists = await db
-      .select()
-      .from(scheduleHours)
-      .where(eq(scheduleHours.hourOfDay, `${hour}:${minute ?? "00"}`))
-      .then(takeUniqueOrThrow);
-
-    if (alreadyExists)
-      return new TRPCError({
-        code: "CONFLICT",
-        message: "Time already exists.",
-      });
-
-    const newTime = await db.insert(scheduleHours).values({
-      hourOfDay: `${hour}:${minute ?? "00"}`,
-    });
-
-    return {
-      success: true,
-      newTime,
-    };
-  },
-
-  times: {
+  time: {
     async getAll() {
       return await db.select().from(scheduleHours);
+    },
+
+    async create({ hourOfDay }: ScheduleHour) {
+      const alreadyExists = await db
+        .select()
+        .from(scheduleHours)
+        .where(eq(scheduleHours.hourOfDay, hourOfDay))
+        .then(takeUniqueOrThrow);
+
+      if (alreadyExists)
+        return new TRPCError({
+          code: "CONFLICT",
+          message: "Time already exists.",
+        });
+
+      const newHour = await db.insert(scheduleHours).values({
+        hourOfDay: hourOfDay,
+      });
+
+      return {
+        success: true,
+        newHour,
+      };
+    },
+  },
+
+  day: {
+    async getAll() {
+      return await db.select().from(scheduleDays);
+    },
+
+    async create({ dayOfWeek }: ScheduleDay) {
+      const alreadyExists = await db
+        .select()
+        .from(scheduleDays)
+        .where(eq(scheduleDays.dayOfWeek, dayOfWeek))
+        .then(takeUniqueOrThrow);
+
+      if (alreadyExists)
+        return new TRPCError({
+          code: "CONFLICT",
+          message: "Day already exists.",
+        });
+
+      const newDay = await db.insert(scheduleDays).values({
+        dayOfWeek: dayOfWeek,
+      });
+
+      return {
+        success: true,
+        newDay,
+      };
     },
   },
 };

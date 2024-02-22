@@ -49,6 +49,7 @@ import {
 import NewTime from "./components/TimesContent";
 import SchedulesContent from "./components/SchedulesContent";
 import TimesContent from "./components/TimesContent";
+import DaysContent from "./components/DaysContent";
 
 export default function AdminPage() {
   const { data: user, isLoading } = api.user.info.useQuery(undefined, {
@@ -80,20 +81,27 @@ export default function AdminPage() {
           <TabsList className="w-fit">
             <TabsTrigger value="schedules">Schedules</TabsTrigger>
             <TabsTrigger value="times">Times</TabsTrigger>
+            <TabsTrigger value="days">Days</TabsTrigger>
           </TabsList>
           <div className="h-96">
             <TabsContent
               value="schedules"
-              className="mx-auto mt-4 flex w-[700px] flex-col items-center justify-center gap-6"
+              className="mx-auto flex w-[700px] flex-col items-center justify-center gap-6"
             >
               <SchedulesContent />
             </TabsContent>
 
             <TabsContent
               value="times"
-              className="mx-auto mt-4 flex w-[700px] flex-col items-center justify-center gap-2"
+              className="mx-auto flex w-[700px] flex-col items-center justify-center gap-2"
             >
               <TimesContent />
+            </TabsContent>
+            <TabsContent
+              value="days"
+              className="mx-auto flex w-[700px] flex-col items-center justify-center gap-2"
+            >
+              <DaysContent />
             </TabsContent>
           </div>
         </Tabs>

@@ -2,16 +2,16 @@ import { dbSchemas } from "@/server/db/SchemasAndTypes";
 import { adminProcedure, createTRPCRouter } from "../trpc";
 import { SchedulesUtils } from "../utils/SchedulesUtils";
 
-export const scheduleTimesRouter = createTRPCRouter({
+export const scheduleDaysRouter = createTRPCRouter({
   getAll: adminProcedure.query(async () => {
-    return await SchedulesUtils.time.getAll();
+    return await SchedulesUtils.day.getAll();
   }),
 
   create: adminProcedure
-    .input(dbSchemas.CreateScheduleHourSchema)
+    .input(dbSchemas.CreateScheduleDaysSchema.pick({ dayOfWeek: true }))
     .mutation(async ({ input }) => {
-      await SchedulesUtils.time.create({
-        hourOfDay: input.hourOfDay,
+      await SchedulesUtils.day.create({
+        dayOfWeek: input.dayOfWeek,
       });
     }),
 });

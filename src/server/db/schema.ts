@@ -2,7 +2,6 @@ import { relations, sql } from "drizzle-orm";
 import {
   boolean,
   pgTableCreator,
-  time,
   timestamp,
   uniqueIndex,
   uuid,
@@ -24,7 +23,7 @@ export const monthEnum = [
   "12",
 ] as const;
 
-export const dayOfWeekEnum = [
+export const daysOfWeekEnum = [
   "monday",
   "tuesday",
   "wednesday",
@@ -133,7 +132,7 @@ export const scheduleHoursRelations = relations(scheduleHours, ({ many }) => ({
 export const scheduleDays = createTable("scheduleDays", {
   uuid: uuid("uuid").defaultRandom().primaryKey(),
   dayOfWeek: varchar("dayOfWeek", {
-    enum: dayOfWeekEnum,
+    enum: daysOfWeekEnum,
     length: 10,
   }).notNull(),
   createdAt: timestamp("createdAt")
