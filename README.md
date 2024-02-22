@@ -11,6 +11,6 @@
 ## About
   - Tecnologies: NextJS, Typescript, TailwindCSS and tRPC. I used JWT for all the user logic and Zod for validations.
 
-  - Deploy: I'm using NextJS with Serverless Functions using tRPC. I deployed the project using Vercel and Supabase for the database.
+  - Deploy: deployed the project using Vercel and Supabase.
 
-  - ORM: I chose Drizzle with PostgreSQL because I was curious of using something that isn't Prisma and because it is a lot more close to pure SQL than Prisma.
+  - ORM: I chose Drizzle with PostgreSQL because I was curious of using something that isn't Prisma and because it is closer to pure SQL than Prisma.
