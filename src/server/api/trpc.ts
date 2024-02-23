@@ -31,20 +31,8 @@ const frontError = z.object({
 });
 
 export const createTRPCContext = async (opts: { headers: Headers }) => {
-  let backUpToken: string | undefined = "";
-  const allCookies = opts.headers.get("Cookie");
-
-  const accessTokenCookie = allCookies
-    ?.split(";")
-    .find((cookie) => cookie.trim().startsWith("access_token="));
-
-  const token = accessTokenCookie?.split("=")[1];
-
-  if (!token) {
-    backUpToken = opts.headers.get("authorization")?.split(" ")[1];
-  }
-
-  const userUuid = verifyToken(token ? token : backUpToken);
+  const token = opts.headers.get("authorization")?.split(" ")[1];
+  const userUuid = verifyToken(token);
 
   const res = await getUser({ userUuid });
 
@@ -107,12 +95,7 @@ export const createTRPCRouter = t.router;
 
 export const publicProcedure = t.procedure;
 export const adminProcedure = publicProcedure.use(async (opts) => {
-  console.log(opts);
-  if (!opts.ctx.user) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
-  }
-
-  if (!opts.ctx.user.isAdmin) {
+  if (!opts.ctx.user?.isAdmin) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
