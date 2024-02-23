@@ -27,9 +27,9 @@ import {
   FormMessage,
 } from "../../components/ui/form";
 
-type CreateHour = RouterInputs["schedule"]["time"]["create"];
+type CreateHour = RouterInputs["schedule"]["hour"]["create"];
 
-export default function TimesContent() {
+export default function hoursContent() {
   const form = useForm<CreateHour>({
     resolver: zodResolver(
       dbSchemas.CreateScheduleHourSchema.pick({
@@ -40,17 +40,17 @@ export default function TimesContent() {
 
   const {
     data: hours,
-    refetch: refetchTimes,
+    refetch: refetchhours,
     isLoading: fetchingHours,
-  } = api.schedule.time.getAll.useQuery(undefined, {
+  } = api.schedule.hour.getAll.useQuery(undefined, {
     refetchOnWindowFocus: false,
   });
 
-  const { mutate: createTime, isLoading: creatingTime } =
-    api.schedule.time.create.useMutation({
+  const { mutate: createHour, isLoading: creatingHour } =
+    api.schedule.hour.create.useMutation({
       onSuccess: () => {
-        refetchTimes();
-        toast("Time created successfully", {
+        refetchhours();
+        toast("Hour created successfully", {
           position: "bottom-center",
         });
       },
@@ -63,7 +63,7 @@ export default function TimesContent() {
     });
 
   const handleSubmit = ({ hour }: CreateHour) => {
-    createTime({ hour });
+    createHour({ hour });
   };
 
   return (
@@ -72,14 +72,14 @@ export default function TimesContent() {
         {fetchingHours ? (
           <Loader2 className="mx-auto size-6 animate-spin" />
         ) : !!hours?.length ? (
-          hours?.map((time) => (
+          hours?.map((hour) => (
             <div
-              key={time.uuid}
+              key={hour.uuid}
               className="my-4 flex w-64 justify-center rounded-lg bg-primary-foreground p-3 text-primary"
             >
               <div className="flex items-center gap-2">
                 <Clock className="h-5 w-5" />
-                {time.hour}
+                {hour.hour}
               </div>
             </div>
           ))
@@ -87,7 +87,7 @@ export default function TimesContent() {
           <div className="my-4 flex w-64 justify-center rounded-lg bg-primary-foreground p-3 text-primary">
             <div className="flex items-center gap-2">
               <Hourglass className="h-5 w-5" />
-              No times found
+              No hours found
             </div>
           </div>
         )}
@@ -96,14 +96,14 @@ export default function TimesContent() {
         <DrawerTrigger>
           <div className="mt-2 flex w-64 justify-center rounded-lg border p-2 text-emerald-600">
             <Plus className="mr-2" />
-            Create new time
+            Create new hour
           </div>
         </DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>
-            <DrawerTitle className="mx-auto">New Time</DrawerTitle>
+            <DrawerTitle className="mx-auto">New hour</DrawerTitle>
             <DrawerDescription className="mx-auto">
-              Create a new time
+              Create a new hour
             </DrawerDescription>
           </DrawerHeader>
           <DrawerFooter className="space-y-8">
@@ -128,7 +128,7 @@ export default function TimesContent() {
                   />
                   <div className="mx-auto flex gap-2">
                     <Button type="submit" className="mx-auto w-fit">
-                      {creatingTime ? (
+                      {creatingHour ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
                       ) : (
                         "Create"
