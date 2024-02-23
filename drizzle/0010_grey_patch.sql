@@ -1,1 +1,1 @@
-ALTER TABLE "juit_scheduleHours" ALTER COLUMN "hourOfDay" SET DATA TYPE varchar(50);
+ALTER TABLE "juit_scheduleHours" ALTER COLUMN "hour" SET DATA TYPE varchar(50);

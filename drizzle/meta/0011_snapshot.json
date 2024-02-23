@@ -1,6 +1,6 @@
 {
-  "id": "6080389b-30f1-4bf8-9d4f-f75514836a74",
-  "prevId": "6645d46f-d6d8-4f04-ba71-48927865cce4",
+  "id": "0814ecff-3612-4b01-8fbd-7d8b788eab12",
+  "prevId": "6080389b-30f1-4bf8-9d4f-f75514836a74",
   "version": "5",
   "dialect": "pg",
   "tables": {
@@ -169,6 +169,19 @@
           "name": "juit_schedules_uuid_juit_scheduleDays_uuid_fk",
           "tableFrom": "juit_schedules",
           "tableTo": "juit_scheduleDays",
+          "columnsFrom": [
+            "uuid"
+          ],
+          "columnsTo": [
+            "uuid"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "juit_schedules_uuid_juit_scheduleHours_uuid_fk": {
+          "name": "juit_schedules_uuid_juit_scheduleHours_uuid_fk",
+          "tableFrom": "juit_schedules",
+          "tableTo": "juit_scheduleHours",
           "columnsFrom": [
             "uuid"
           ],

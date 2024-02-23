@@ -1,6 +1,6 @@
 import "@/styles/globals.css";
 
-import { Inter } from "next/font/google";
+import { Roboto } from "next/font/google";
 
 import { TRPCReactProvider } from "@/trpc/react";
 import { ThemeProvider } from "./components/ThemeProvider";
@@ -8,9 +8,11 @@ import { Toaster } from "./components/ui/sonner";
 import { Analytics } from "@vercel/analytics/react";
 import Navbar from "./components/Navbar";
 
-const inter = Inter({
+const roboto = Roboto({
+  weight: ["400", "500", "700"],
   subsets: ["latin"],
   variable: "--font-sans",
+  display: "swap",
 });
 
 export const metadata = {
@@ -26,7 +28,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`font-sans ${inter.variable}`}>
+      <body className={`font-sans ${roboto.variable}`}>
         <>
           <TRPCReactProvider>
             <ThemeProvider attribute="class" enableSystem defaultTheme="dark">

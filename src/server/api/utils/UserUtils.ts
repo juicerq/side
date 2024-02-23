@@ -7,7 +7,7 @@ import { takeUniqueOrThrow } from "./DrizzleUtils";
 import { env } from "@/env";
 import { getUser } from "./getUser";
 import { Email } from "./Email";
-import { SendConfirmationCode, User } from "@/server/db/SchemasAndTypes";
+import { SendConfirmationCode, User } from "@/server/db/ZSchemasAndTypes";
 
 export const UserUtils = {
   async create({ firstName, lastName, email }: User) {
@@ -26,7 +26,7 @@ export const UserUtils = {
 
     const newUser = await db
       .insert(users)
-      .values({ firstName, lastName, email });
+      .values({ firstName, lastName, email }).returning().then(takeUniqueOrThrow);
 
     if (!newUser) {
       throw new TRPCError({
@@ -35,7 +35,7 @@ export const UserUtils = {
       });
     }
 
-    return { email };
+    return newUser;
   },
 
   async login({ email }: { email: User["email"] }) {

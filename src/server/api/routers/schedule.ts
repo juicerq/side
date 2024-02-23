@@ -1,7 +1,7 @@
-import { dbSchemas } from "@/server/db/SchemasAndTypes";
+import { dbSchemas } from "@/server/db/ZSchemasAndTypes";
 import { createTRPCRouter, publicProcedure } from "../trpc";
-import { scheduleDaysRouter } from "./days";
-import { scheduleTimesRouter } from "./times";
+import { scheduleDaysRouter } from "./day";
+import { scheduleHourRouter } from "./hour";
 
 export const scheduleRouter = createTRPCRouter({
   create: publicProcedure
@@ -10,7 +10,7 @@ export const scheduleRouter = createTRPCRouter({
       console.log("input:", input);
     }),
 
-  time: scheduleTimesRouter,
+  hour: scheduleHourRouter,
 
   day: scheduleDaysRouter,
 });

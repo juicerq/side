@@ -1,6 +1,6 @@
 {
-  "id": "6080389b-30f1-4bf8-9d4f-f75514836a74",
-  "prevId": "6645d46f-d6d8-4f04-ba71-48927865cce4",
+  "id": "e085847d-4fca-4a22-8109-ea0fe8377e61",
+  "prevId": "181553f2-9f58-417d-9118-50c04c263ab6",
   "version": "5",
   "dialect": "pg",
   "tables": {
@@ -10,6 +10,19 @@
       "columns": {
         "uuid": {
           "name": "uuid",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "userUuid": {
+          "name": "userUuid",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "scheduleUuid": {
+          "name": "scheduleUuid",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
@@ -29,12 +42,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "juit_reservations_uuid_juit_users_uuid_fk": {
-          "name": "juit_reservations_uuid_juit_users_uuid_fk",
+        "juit_reservations_userUuid_juit_users_uuid_fk": {
+          "name": "juit_reservations_userUuid_juit_users_uuid_fk",
           "tableFrom": "juit_reservations",
           "tableTo": "juit_users",
           "columnsFrom": [
-            "uuid"
+            "userUuid"
           ],
           "columnsTo": [
             "uuid"
@@ -42,12 +55,12 @@
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
-        "juit_reservations_uuid_juit_schedules_uuid_fk": {
-          "name": "juit_reservations_uuid_juit_schedules_uuid_fk",
+        "juit_reservations_scheduleUuid_juit_schedules_uuid_fk": {
+          "name": "juit_reservations_scheduleUuid_juit_schedules_uuid_fk",
           "tableFrom": "juit_reservations",
           "tableTo": "juit_schedules",
           "columnsFrom": [
-            "uuid"
+            "scheduleUuid"
           ],
           "columnsTo": [
             "uuid"
@@ -138,6 +151,19 @@
         "uuid": {
           "name": "uuid",
           "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "scheduleDayUuid": {
+          "name": "scheduleDayUuid",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "scheduleHourUuid": {
+          "name": "scheduleHourUuid",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
@@ -165,12 +191,25 @@
         }
       },
       "foreignKeys": {
-        "juit_schedules_uuid_juit_scheduleDays_uuid_fk": {
-          "name": "juit_schedules_uuid_juit_scheduleDays_uuid_fk",
+        "juit_schedules_scheduleDayUuid_juit_scheduleDays_uuid_fk": {
+          "name": "juit_schedules_scheduleDayUuid_juit_scheduleDays_uuid_fk",
           "tableFrom": "juit_schedules",
           "tableTo": "juit_scheduleDays",
           "columnsFrom": [
+            "scheduleDayUuid"
+          ],
+          "columnsTo": [
             "uuid"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "juit_schedules_scheduleHourUuid_juit_scheduleHours_uuid_fk": {
+          "name": "juit_schedules_scheduleHourUuid_juit_scheduleHours_uuid_fk",
+          "tableFrom": "juit_schedules",
+          "tableTo": "juit_scheduleHours",
+          "columnsFrom": [
+            "scheduleHourUuid"
           ],
           "columnsTo": [
             "uuid"

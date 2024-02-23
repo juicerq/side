@@ -58,8 +58,8 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "dayOfWeek": {
-          "name": "dayOfWeek",
+        "weekDay": {
+          "name": "weekDay",
           "type": "varchar(10)",
           "primaryKey": false,
           "notNull": true
@@ -94,8 +94,8 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "hourOfDay": {
-          "name": "hourOfDay",
+        "hour": {
+          "name": "hour",
           "type": "varchar(100)",
           "primaryKey": false,
           "notNull": true

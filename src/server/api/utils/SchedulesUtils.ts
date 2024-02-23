@@ -3,35 +3,36 @@ import { scheduleDays, scheduleHours } from "@/server/db/schema";
 import { takeUniqueOrThrow } from "./DrizzleUtils";
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
-import { ScheduleDay, type ScheduleHour } from "@/server/db/SchemasAndTypes";
+import { ScheduleDay, type ScheduleHour } from "@/server/db/ZSchemasAndTypes";
 
 export const SchedulesUtils = {
-  time: {
+  hour: {
     async getAll() {
       return await db.select().from(scheduleHours);
     },
 
-    async create({ hourOfDay }: ScheduleHour) {
+    async create({ hour }: ScheduleHour) {
       const alreadyExists = await db
         .select()
         .from(scheduleHours)
-        .where(eq(scheduleHours.hourOfDay, hourOfDay))
+        .where(eq(scheduleHours.hour, hour))
         .then(takeUniqueOrThrow);
 
       if (alreadyExists)
-        return new TRPCError({
+        throw new TRPCError({
           code: "CONFLICT",
           message: "Time already exists.",
         });
 
-      const newHour = await db.insert(scheduleHours).values({
-        hourOfDay: hourOfDay,
-      });
+      const newHour = await db
+        .insert(scheduleHours)
+        .values({
+          hour: hour,
+        })
+        .returning()
+        .then(takeUniqueOrThrow);
 
-      return {
-        success: true,
-        newHour,
-      };
+      return newHour;
     },
   },
 
@@ -40,27 +41,35 @@ export const SchedulesUtils = {
       return await db.select().from(scheduleDays);
     },
 
-    async create({ dayOfWeek }: ScheduleDay) {
+    async create({ weekDay }: ScheduleDay) {
       const alreadyExists = await db
         .select()
         .from(scheduleDays)
-        .where(eq(scheduleDays.dayOfWeek, dayOfWeek))
+        .where(eq(scheduleDays.weekDay, weekDay))
         .then(takeUniqueOrThrow);
 
       if (alreadyExists)
-        return new TRPCError({
+        throw new TRPCError({
           code: "CONFLICT",
           message: "Day already exists.",
         });
 
-      const newDay = await db.insert(scheduleDays).values({
-        dayOfWeek: dayOfWeek,
-      });
+      const newDay = await db
+        .insert(scheduleDays)
+        .values({
+          weekDay: weekDay,
+        })
+        .returning()
+        .then(takeUniqueOrThrow);
 
-      return {
-        success: true,
-        newDay,
-      };
+      return newDay;
+    },
+
+    async delete({ weekDay }: ScheduleDay) {
+      const deletedDay = await db
+        .delete(scheduleDays)
+        .where(eq(scheduleDays.weekDay, weekDay))
+        .returning();
     },
   },
 };

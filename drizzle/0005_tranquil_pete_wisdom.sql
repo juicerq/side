@@ -4,12 +4,12 @@ CREATE TABLE IF NOT EXISTS "juit_reservations" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "juit_scheduleDays" (
 	"uuid" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"dayOfWeek" varchar(10) NOT NULL,
+	"weekDay" varchar(10) NOT NULL,
 	"createdAt" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	"updatedAt" timestamp
 );
 --> statement-breakpoint
-ALTER TABLE "juit_scheduleHours" RENAME COLUMN "hour" TO "hourOfDay";--> statement-breakpoint
+ALTER TABLE "juit_scheduleHours" RENAME COLUMN "hour" TO "hour";--> statement-breakpoint
 ALTER TABLE "juit_schedules" DROP CONSTRAINT "juit_schedules_uuid_juit_users_uuid_fk";
 --> statement-breakpoint
 ALTER TABLE "juit_schedules" DROP CONSTRAINT "juit_schedules_uuid_juit_scheduleHours_uuid_fk";

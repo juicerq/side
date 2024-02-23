@@ -39,7 +39,6 @@ export const Email = {
     return {
       success: true,
       message: "The code has been sent to your email!",
-      description: "The email will probably in the trash",
     };
   },
 };

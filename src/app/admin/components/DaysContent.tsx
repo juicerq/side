@@ -11,7 +11,7 @@ import {
   DrawerTrigger,
 } from "../../components/ui/drawer";
 
-import { dbSchemas } from "@/server/db/SchemasAndTypes";
+import { dbSchemas } from "@/server/db/ZSchemasAndTypes";
 import { api } from "@/trpc/react";
 import { type RouterInputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -39,16 +39,17 @@ type CreateDayInput = RouterInputs["schedule"]["day"]["create"];
 export default function DaysContent() {
   const form = useForm<CreateDayInput>({
     resolver: zodResolver(
-      dbSchemas.CreateScheduleDaysSchema.pick({ dayOfWeek: true }),
+      dbSchemas.CreateScheduleDaysSchema.pick({ weekDay: true }),
     ),
   });
 
-  const { data: days, refetch: refetchDays } = api.schedule.day.getAll.useQuery(
-    undefined,
-    {
-      refetchOnWindowFocus: false,
-    },
-  );
+  const {
+    data: days,
+    isLoading: fetchingDays,
+    refetch: refetchDays,
+  } = api.schedule.day.getAll.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+  });
 
   const { mutate: createDay, isLoading: creatingDay } =
     api.schedule.day.create.useMutation({
@@ -67,24 +68,35 @@ export default function DaysContent() {
       },
     });
 
-  const handleSubmit = ({ dayOfWeek }: CreateDayInput) => {
-    createDay({ dayOfWeek });
+  const handleSubmit = ({ weekDay }: CreateDayInput) => {
+    createDay({ weekDay });
   };
 
   return (
     <>
       <div className="space-y-4">
-        {days?.map((day) => (
-          <div
-            key={day.uuid}
-            className="my-4 flex w-64 justify-center rounded-lg bg-primary-foreground p-3 text-primary"
-          >
+        {fetchingDays ? (
+          <Loader2 className="mx-auto size-6 animate-spin" />
+        ) : !!days?.length ? (
+          days?.map((day) => (
+            <div
+              key={day.uuid}
+              className="my-4 flex w-64 justify-center rounded-lg bg-primary-foreground p-3 text-primary"
+            >
+              <div className="flex items-center gap-2">
+                <CalendarRange className="h-5 w-5" />
+                {day.weekDay.charAt(0).toUpperCase() + day.weekDay.slice(1)}
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="my-4 flex w-64 justify-center rounded-lg bg-primary-foreground p-3 text-primary">
             <div className="flex items-center gap-2">
               <CalendarRange className="h-5 w-5" />
-              {day.dayOfWeek.charAt(0).toUpperCase() + day.dayOfWeek.slice(1)}
+              No days found
             </div>
           </div>
-        ))}
+        )}
       </div>
       <Drawer>
         <DrawerTrigger>
@@ -109,7 +121,7 @@ export default function DaysContent() {
                 >
                   <FormField
                     control={form.control}
-                    name="dayOfWeek"
+                    name="weekDay"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Day</FormLabel>

@@ -1,6 +1,6 @@
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
-import { Clock, Loader2, Plus } from "lucide-react";
+import { Clock, Hourglass, Loader2, Plus } from "lucide-react";
 import {
   Drawer,
   DrawerClose,
@@ -12,7 +12,7 @@ import {
   DrawerTrigger,
 } from "../../components/ui/drawer";
 
-import { dbSchemas } from "@/server/db/SchemasAndTypes";
+import { dbSchemas } from "@/server/db/ZSchemasAndTypes";
 import { api } from "@/trpc/react";
 import { type RouterInputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -33,15 +33,18 @@ export default function TimesContent() {
   const form = useForm<CreateHour>({
     resolver: zodResolver(
       dbSchemas.CreateScheduleHourSchema.pick({
-        hourOfDay: true,
+        hour: true,
       }),
     ),
   });
 
-  const { data: times, refetch: refetchTimes } =
-    api.schedule.time.getAll.useQuery(undefined, {
-      refetchOnWindowFocus: false,
-    });
+  const {
+    data: hours,
+    refetch: refetchTimes,
+    isLoading: fetchingHours,
+  } = api.schedule.time.getAll.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+  });
 
   const { mutate: createTime, isLoading: creatingTime } =
     api.schedule.time.create.useMutation({
@@ -59,24 +62,35 @@ export default function TimesContent() {
       },
     });
 
-  const handleSubmit = ({ hourOfDay }: CreateHour) => {
-    createTime({ hourOfDay });
+  const handleSubmit = ({ hour }: CreateHour) => {
+    createTime({ hour });
   };
 
   return (
     <>
       <div className="space-y-4">
-        {times?.map((time) => (
-          <div
-            key={time.uuid}
-            className="my-4 flex w-64 justify-center rounded-lg bg-primary-foreground p-3 text-primary"
-          >
+        {fetchingHours ? (
+          <Loader2 className="mx-auto size-6 animate-spin" />
+        ) : !!hours?.length ? (
+          hours?.map((time) => (
+            <div
+              key={time.uuid}
+              className="my-4 flex w-64 justify-center rounded-lg bg-primary-foreground p-3 text-primary"
+            >
+              <div className="flex items-center gap-2">
+                <Clock className="h-5 w-5" />
+                {time.hour}
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="my-4 flex w-64 justify-center rounded-lg bg-primary-foreground p-3 text-primary">
             <div className="flex items-center gap-2">
-              <Clock className="h-5 w-5" />
-              {time.hourOfDay}
+              <Hourglass className="h-5 w-5" />
+              No times found
             </div>
           </div>
-        ))}
+        )}
       </div>
       <Drawer>
         <DrawerTrigger>
@@ -101,7 +115,7 @@ export default function TimesContent() {
                 >
                   <FormField
                     control={form.control}
-                    name="hourOfDay"
+                    name="hour"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Hour</FormLabel>

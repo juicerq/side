@@ -72,7 +72,7 @@ export function LoginUser() {
               padding: "1rem 1rem",
             },
             icon: <MailCheck className="h-7 w-7 text-[#FFFF]" />,
-            description: response.description ?? "",
+            description: "It will probably be in your spam box.",
             position: "bottom-center",
           });
         }
@@ -161,7 +161,9 @@ export function LoginUser() {
               {loging || sendingCode ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
-                <p>{codeSent ? "Login" : "Send code"}</p>
+                <p>
+                  {codeSent || codeInput === "XXXX" ? "Login" : "Send code"}
+                </p>
               )}
             </Button>
             <Button type="button" variant={"ghost"}>
