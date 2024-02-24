@@ -2,14 +2,55 @@ import { db } from "@/server/db";
 import { scheduleDays, scheduleHours, schedules } from "@/server/db/schema";
 import { takeUniqueOrThrow } from "./DrizzleUtils";
 import { TRPCError } from "@trpc/server";
-import { eq } from "drizzle-orm";
-import { ScheduleDay, type ScheduleHour } from "@/server/db/ZSchemasAndTypes";
+import { and, eq } from "drizzle-orm";
+import {
+  ScheduleDay,
+  type ScheduleHour,
+  type Schedule,
+} from "@/server/db/ZSchemasAndTypes";
 
 export const SchedulesUtils = {
   async getAll() {
     const allSchedules = await db.select().from(schedules);
 
     return allSchedules;
+  },
+
+  async create({ scheduleHourUuid, scheduleDayUuid }: Schedule) {
+    const alreadyExist = await db
+      .select()
+      .from(schedules)
+      .where(
+        and(
+          eq(schedules.scheduleDayUuid, scheduleDayUuid),
+          eq(schedules.scheduleHourUuid, scheduleHourUuid),
+        ),
+      )
+      .then(takeUniqueOrThrow);
+
+    if (alreadyExist)
+      throw new TRPCError({
+        code: "CONFLICT",
+        message: "Schedule already exists.",
+      });
+
+    const newSchedule = await db
+      .insert(schedules)
+      .values({
+        scheduleDayUuid,
+        scheduleHourUuid,
+      })
+      .returning()
+      .then(takeUniqueOrThrow);
+
+    if (!newSchedule) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Error when creating schedule.",
+      });
+    }
+
+    return newSchedule;
   },
 
   hour: {
