@@ -29,7 +29,7 @@ import {
 
 type CreateHour = RouterInputs["schedule"]["hour"]["create"];
 
-export default function hoursContent() {
+export default function HoursContent() {
   const form = useForm<CreateHour>({
     resolver: zodResolver(
       inputSchemas.scheduleHour.pick({
@@ -67,7 +67,8 @@ export default function hoursContent() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col items-center gap-4">
+      <h1>Hours</h1>
       <div className="flex flex-col space-y-4">
         {fetchingHours ? (
           <Loader2 className="mx-auto size-6 animate-spin" />
@@ -75,7 +76,7 @@ export default function hoursContent() {
           hours?.map((hour) => (
             <div
               key={hour.uuid}
-              className="flex w-64 justify-center rounded-lg bg-primary-foreground p-2 text-primary"
+              className="flex w-64 justify-center rounded-md bg-primary-foreground p-2 text-primary"
             >
               <div className="flex items-center gap-2">
                 <Clock className="h-5 w-5" />
@@ -84,7 +85,7 @@ export default function hoursContent() {
             </div>
           ))
         ) : (
-          <div className="my-4 flex w-64 justify-center rounded-lg bg-primary-foreground p-3 text-primary">
+          <div className="my-4 flex w-64 justify-center rounded-lg p-3 text-primary">
             <div className="flex items-center gap-2">
               <Hourglass className="h-5 w-5" />
               No hours found

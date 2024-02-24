@@ -1,5 +1,5 @@
 import { Button } from "@/app/components/ui/button";
-import { CalendarRange, Loader2, Plus } from "lucide-react";
+import { CalendarRange, Loader2, Plus, Trash } from "lucide-react";
 import {
   Drawer,
   DrawerClose,
@@ -66,12 +66,27 @@ export default function DaysContent() {
       },
     });
 
+  const { mutate: deleteWeekDay } = api.schedule.day.delete.useMutation({
+    onSuccess: () => {
+      refetchDays();
+      toast("Day deleted successfully", {
+        position: "bottom-center",
+      });
+    },
+    onError: (err) => {
+      toast(err.message, {
+        description: "Please, try again.",
+        position: "bottom-center",
+      });
+    },
+  });
+
   const handleSubmit = ({ weekDay }: CreateDayInput) => {
     createDay({ weekDay });
   };
-
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col items-center gap-4">
+      <h1>Days</h1>
       <div className="space-y-4">
         {fetchingDays ? (
           <Loader2 className="mx-auto size-6 animate-spin" />
@@ -79,16 +94,23 @@ export default function DaysContent() {
           days?.map((day) => (
             <div
               key={day.uuid}
-              className="flex w-64 justify-center rounded-lg bg-primary-foreground p-2 text-primary"
+              className="flex w-64 items-center justify-between rounded-md bg-primary-foreground p-2 px-4 text-primary"
             >
-              <div className="flex items-center gap-2">
-                <CalendarRange className="h-5 w-5" />
+              <div className="flex gap-2">
+                <CalendarRange className="size-5" />
                 {day.weekDay.charAt(0).toUpperCase() + day.weekDay.slice(1)}
+              </div>
+
+              <div
+                onClick={() => deleteWeekDay({ uuid: day.uuid })}
+                className="cursor-pointer"
+              >
+                <Trash className="size-5 text-red-500 hover:text-red-600" />
               </div>
             </div>
           ))
         ) : (
-          <div className="my-4 flex w-64 justify-center rounded-lg bg-primary-foreground p-3 text-primary">
+          <div className="my-4 flex w-64 justify-center rounded-md bg-primary-foreground p-3 text-primary">
             <div className="flex items-center gap-2">
               <CalendarRange className="h-5 w-5" />
               No days found

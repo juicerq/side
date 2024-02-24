@@ -11,9 +11,10 @@ import {
   TabsTrigger,
 } from "../components/ui/tabs";
 import DaysContent from "./components/DaysContent";
-import SchedulesContent from "./components/SchedulesContent";
-import TimesContent from "./components/TimesContent";
+import ReservationsContent from "./components/ReservationsContent";
+import HoursContent from "./components/HoursContent";
 import { useRouter } from "next/navigation";
+import SchedulesContent from "./components/SchedulesContent";
 
 export default function AdminPage() {
   const router = useRouter();
@@ -40,27 +41,28 @@ export default function AdminPage() {
     return (
       <div className="flex min-h-screen w-screen items-center justify-center">
         <Tabs
-          defaultValue="schedules"
+          defaultValue="reservations"
           className="flex w-full flex-col items-center justify-center"
         >
           <TabsList className="w-fit">
-            <TabsTrigger value="schedules">Schedules</TabsTrigger>
+            <TabsTrigger value="reservations">Reservations</TabsTrigger>
             <TabsTrigger value="customization">Customization</TabsTrigger>
           </TabsList>
           <div className="h-96">
             <TabsContent
-              value="schedules"
+              value="reservations"
               className="mx-auto flex w-[700px] flex-col items-center justify-center gap-6"
             >
-              <SchedulesContent />
+              <ReservationsContent />
             </TabsContent>
 
             <TabsContent
               value="customization"
-              className="mx-auto flex w-[700px] justify-center gap-24"
+              className=" flex w-full justify-between gap-12"
             >
-              <TimesContent />
+              <HoursContent />
               <DaysContent />
+              <SchedulesContent />
             </TabsContent>
           </div>
         </Tabs>

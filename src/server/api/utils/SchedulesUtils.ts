@@ -1,11 +1,17 @@
 import { db } from "@/server/db";
-import { scheduleDays, scheduleHours } from "@/server/db/schema";
+import { scheduleDays, scheduleHours, schedules } from "@/server/db/schema";
 import { takeUniqueOrThrow } from "./DrizzleUtils";
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import { ScheduleDay, type ScheduleHour } from "@/server/db/ZSchemasAndTypes";
 
 export const SchedulesUtils = {
+  async getAll() {
+    const allSchedules = await db.select().from(schedules);
+
+    return allSchedules;
+  },
+
   hour: {
     async getAll() {
       return await db.select().from(scheduleHours);
