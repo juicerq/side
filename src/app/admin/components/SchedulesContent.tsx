@@ -33,6 +33,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@components/ui/select";
+import { Skeleton } from "@/app/components/ui/skeleton";
 
 type CreateScheduleInput = RouterInputs["schedule"]["create"];
 
@@ -98,7 +99,9 @@ export default function SchedulesContent() {
       <h1>Your Schedules</h1>
       <div className="space-y-4">
         {fetchingSchedules ? (
-          <Loader2 className="mx-auto size-6 animate-spin" />
+          Array.from({ length: 6 }, (_, i) => (
+            <Skeleton key={i} className="h-10 w-64 rounded-md" />
+          ))
         ) : !!schedules?.allSchedules?.length ? (
           schedules.allSchedules?.map((schedule, i) => (
             <div

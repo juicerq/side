@@ -26,6 +26,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../../components/ui/form";
+import { Skeleton } from "@/app/components/ui/skeleton";
 
 type CreateHour = RouterInputs["schedule"]["hour"]["create"];
 
@@ -85,7 +86,9 @@ export default function HoursContent() {
       <h1>Hours</h1>
       <div className="flex flex-col space-y-4">
         {fetchingHours ? (
-          <Loader2 className="mx-auto size-6 animate-spin" />
+          Array.from({ length: 6 }, (_, i) => (
+            <Skeleton key={i} className="h-10 w-64 rounded-md" />
+          ))
         ) : !!hours?.length ? (
           hours?.map((hour) => (
             <div

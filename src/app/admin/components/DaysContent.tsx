@@ -33,6 +33,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@components/ui/select";
+import { Skeleton } from "@/app/components/ui/skeleton";
 
 type CreateDayInput = RouterInputs["schedule"]["day"]["create"];
 
@@ -89,7 +90,9 @@ export default function DaysContent() {
       <h1>Days</h1>
       <div className="space-y-4">
         {fetchingDays ? (
-          <Loader2 className="mx-auto size-6 animate-spin" />
+          Array.from({ length: 6 }, (_, i) => (
+            <Skeleton key={i} className="h-10 w-64 rounded-md" />
+          ))
         ) : !!days?.length ? (
           days?.map((day) => (
             <div
