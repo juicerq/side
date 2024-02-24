@@ -16,6 +16,23 @@ export const SchedulesUtils = {
     return allSchedules;
   },
 
+  async delete({ uuid }: { uuid: string }) {
+    const deletedSchedule = await db
+      .delete(schedules)
+      .where(eq(schedules.uuid, uuid))
+      .returning()
+      .then(takeUniqueOrThrow);
+
+    if (!deletedSchedule) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Error when deleting schedule.",
+      });
+    }
+
+    return deletedSchedule;
+  },
+
   async create({ scheduleHourUuid, scheduleDayUuid }: Schedule) {
     const alreadyExist = await db
       .select()
@@ -82,7 +99,7 @@ export const SchedulesUtils = {
       return newHour;
     },
 
-    async delete({ uuid }: { uuid: ScheduleHour["uuid"] }) {
+    async delete({ uuid }: { uuid: string }) {
       if (!uuid)
         throw new TRPCError({ code: "BAD_REQUEST", message: "Missing uuid." });
 

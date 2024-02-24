@@ -6,6 +6,7 @@ import { SchedulesUtils } from "../utils/SchedulesUtils";
 import { db } from "@/server/db";
 import { scheduleDays, scheduleHours, schedules } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
+import { TRPCError } from "@trpc/server";
 
 export const scheduleRouter = createTRPCRouter({
   create: adminProcedure
@@ -14,6 +15,20 @@ export const scheduleRouter = createTRPCRouter({
       return await SchedulesUtils.create({
         scheduleHourUuid: input.scheduleHourUuid,
         scheduleDayUuid: input.scheduleDayUuid,
+      });
+    }),
+
+  delete: adminProcedure
+    .input(inputSchemas.schedule.pick({ uuid: true }))
+    .mutation(async ({ input }) => {
+      if (!input.uuid)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Uuid is required.",
+        });
+
+      return await SchedulesUtils.delete({
+        uuid: input.uuid,
       });
     }),
 

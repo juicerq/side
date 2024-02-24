@@ -1,5 +1,5 @@
 import { Button } from "@/app/components/ui/button";
-import { CalendarRange, Loader2, Plus } from "lucide-react";
+import { CalendarRange, Loader2, Plus, Trash } from "lucide-react";
 import {
   Drawer,
   DrawerClose,
@@ -54,6 +54,21 @@ export default function SchedulesContent() {
     refetchOnWindowFocus: false,
   });
 
+  const { mutate: deleteSchedule } = api.schedule.delete.useMutation({
+    onSuccess: () => {
+      refetchSchedules();
+      toast("schedule deleted successfully", {
+        position: "bottom-center",
+      });
+    },
+    onError: (err) => {
+      toast(err.message, {
+        description: "Please, try again.",
+        position: "bottom-center",
+      });
+    },
+  });
+
   const { mutate: createSchedule, isLoading: creatingSchedule } =
     api.schedule.create.useMutation({
       onSuccess: () => {
@@ -88,17 +103,25 @@ export default function SchedulesContent() {
           schedules.allSchedules?.map((schedule, i) => (
             <div
               key={i}
-              className="flex w-64 justify-center rounded-lg bg-primary-foreground p-2 text-primary"
+              className="flex w-64 items-center justify-between rounded-md bg-primary-foreground p-2 px-4 text-primary"
             >
               <div className="flex items-center gap-2">
                 <CalendarRange className="h-5 w-5" />
                 {schedule.scheduleDays?.weekDay} -{" "}
                 {schedule.scheduleHours?.hour}
               </div>
+              <div
+                onClick={() =>
+                  deleteSchedule({ uuid: schedule.schedules.uuid })
+                }
+                className="cursor-pointer"
+              >
+                <Trash className="size-5 text-red-500 hover:text-red-600" />
+              </div>
             </div>
           ))
         ) : (
-          <div className="my-4 flex w-64 justify-center rounded-lg p-3 text-primary">
+          <div className="my-4 flex w-64 justify-center rounded-md p-3 text-primary">
             <div className="flex items-center gap-2">
               <CalendarRange className="h-5 w-5" />
               No schedules found
@@ -142,7 +165,7 @@ export default function SchedulesContent() {
                             defaultValue={field.value}
                           >
                             <SelectTrigger className="w-[180px]">
-                              <SelectValue placeholder="Day schedule" />
+                              <SelectValue placeholder="Choose Day" />
                             </SelectTrigger>
                             <SelectContent>
                               {schedules?.daysOptions?.map((day, i) => (
@@ -169,7 +192,7 @@ export default function SchedulesContent() {
                             defaultValue={field.value}
                           >
                             <SelectTrigger className="w-[180px]">
-                              <SelectValue placeholder="Hour schedule" />
+                              <SelectValue placeholder="Choose hour" />
                             </SelectTrigger>
                             <SelectContent>
                               {schedules?.hoursOptions?.map((hour, i) => (
