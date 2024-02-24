@@ -34,12 +34,12 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
   const token = opts.headers.get("authorization")?.split(" ")[1];
   const userUuid = verifyToken(token);
 
-  const res = await getUser({ userUuid });
+  const user = await getUser({ userUuid });
 
   return {
     db,
     ...opts,
-    user: res?.user,
+    user: user,
   };
 };
 

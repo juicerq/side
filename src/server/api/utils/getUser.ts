@@ -21,21 +21,19 @@ export async function getUser(userIdentifier: {
     });
   }
 
-  let user;
-
   if (userUuid) {
-    user = await db
+    const user = await db
       .select()
       .from(users)
       .where(eq(users.uuid, userUuid))
       .then(takeUniqueOrThrow);
+    return user;
   } else if (userEmail) {
-    user = await db
+    const user = await db
       .select()
       .from(users)
       .where(eq(users.email, userEmail))
       .then(takeUniqueOrThrow);
+    return user;
   }
-
-  return { user };
 }
