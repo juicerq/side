@@ -1,6 +1,6 @@
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
-import { Clock, Hourglass, Loader2, Plus } from "lucide-react";
+import { Clock, Hourglass, Loader2, Plus, Trash } from "lucide-react";
 import {
   Drawer,
   DrawerClose,
@@ -62,6 +62,20 @@ export default function HoursContent() {
       },
     });
 
+  const { mutate: deleteHour } = api.schedule.hour.delete.useMutation({
+    onSuccess: () => {
+      refetchhours();
+      toast("Hour deleted successfully", {
+        position: "bottom-center",
+      });
+    },
+    onError: (err) => {
+      toast(err.message, {
+        description: "Please, try again.",
+        position: "bottom-center",
+      });
+    },
+  });
   const handleSubmit = ({ hour }: CreateHour) => {
     createHour({ hour });
   };
@@ -76,11 +90,17 @@ export default function HoursContent() {
           hours?.map((hour) => (
             <div
               key={hour.uuid}
-              className="flex w-64 justify-center rounded-md bg-primary-foreground p-2 text-primary"
+              className="flex w-64 items-center justify-between rounded-md bg-primary-foreground p-2 text-primary"
             >
               <div className="flex items-center gap-2">
                 <Clock className="h-5 w-5" />
                 {hour.hour}
+              </div>
+              <div
+                onClick={() => deleteHour({ uuid: hour.uuid })}
+                className="cursor-pointer"
+              >
+                <Trash className="size-5 text-red-500 hover:text-red-600" />
               </div>
             </div>
           ))
