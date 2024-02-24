@@ -1,4 +1,4 @@
-import { dbSchemas } from "@/server/db/ZSchemasAndTypes";
+import { inputSchemas, outputSchemas } from "@/server/db/ZSchemasAndTypes";
 import { adminProcedure, createTRPCRouter } from "../trpc";
 import { SchedulesUtils } from "../utils/SchedulesUtils";
 
@@ -8,13 +8,20 @@ export const scheduleHourRouter = createTRPCRouter({
   }),
 
   create: adminProcedure
-    .input(dbSchemas.CreateScheduleHourSchema)
-    .output(dbSchemas.CreateScheduleHourSchema)
+    .input(inputSchemas.scheduleHour)
+    .output(outputSchemas.scheduleHour)
     .mutation(async ({ input }) => {
-      const hour = await SchedulesUtils.hour.create({
+      return await SchedulesUtils.hour.create({
         hour: input.hour,
       });
+    }),
 
-      return hour;
+  delete: adminProcedure
+    .input(inputSchemas.scheduleHour.pick({ uuid: true }).strict())
+    .output(outputSchemas.scheduleHour)
+    .mutation(async ({ input }) => {
+      return await SchedulesUtils.hour.delete({
+        uuid: input.uuid,
+      });
     }),
 });

@@ -2,15 +2,13 @@ import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 
 import { UserUtils } from "../utils/UserUtils";
 import { z } from "zod";
-import { dbSchemas } from "@/server/db/ZSchemasAndTypes";
+import { inputSchemas } from "@/server/db/ZSchemasAndTypes";
 import { TRPCError } from "@trpc/server";
 
 export const userRouter = createTRPCRouter({
   create: publicProcedure
-    .input(dbSchemas.CreateUserSchema)
-    .output(
-      z.object({ newUser: dbSchemas.CreateUserSchema, token: z.string() }),
-    )
+    .input(inputSchemas.user)
+    .output(z.object({ newUser: inputSchemas.user, token: z.string() }))
     .mutation(async ({ input }) => {
       const newUser = await UserUtils.create({
         firstName: input.firstName,
@@ -26,7 +24,7 @@ export const userRouter = createTRPCRouter({
     }),
 
   login: publicProcedure
-    .input(dbSchemas.CreateUserSchema.pick({ email: true }))
+    .input(inputSchemas.user.pick({ email: true }))
     .output(
       z.object({
         token: z.string(),

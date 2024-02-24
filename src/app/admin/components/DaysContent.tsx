@@ -11,7 +11,7 @@ import {
   DrawerTrigger,
 } from "../../components/ui/drawer";
 
-import { dbSchemas } from "@/server/db/ZSchemasAndTypes";
+import { inputSchemas } from "@/server/db/ZSchemasAndTypes";
 import { api } from "@/trpc/react";
 import { type RouterInputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -38,9 +38,7 @@ type CreateDayInput = RouterInputs["schedule"]["day"]["create"];
 
 export default function DaysContent() {
   const form = useForm<CreateDayInput>({
-    resolver: zodResolver(
-      dbSchemas.CreateScheduleDaysSchema.pick({ weekDay: true }),
-    ),
+    resolver: zodResolver(inputSchemas.scheduleDay.pick({ weekDay: true })),
   });
 
   const {

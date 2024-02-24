@@ -12,7 +12,7 @@ import {
   DrawerTrigger,
 } from "../../components/ui/drawer";
 
-import { dbSchemas } from "@/server/db/ZSchemasAndTypes";
+import { inputSchemas } from "@/server/db/ZSchemasAndTypes";
 import { api } from "@/trpc/react";
 import { type RouterInputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,7 +32,7 @@ type CreateHour = RouterInputs["schedule"]["hour"]["create"];
 export default function hoursContent() {
   const form = useForm<CreateHour>({
     resolver: zodResolver(
-      dbSchemas.CreateScheduleHourSchema.pick({
+      inputSchemas.scheduleHour.pick({
         hour: true,
       }),
     ),

@@ -34,6 +34,25 @@ export const SchedulesUtils = {
 
       return newHour;
     },
+
+    async delete({ uuid }: { uuid: ScheduleHour["uuid"] }) {
+      if (!uuid)
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Missing uuid." });
+
+      const deletedHour = await db
+        .delete(scheduleHours)
+        .where(eq(scheduleHours.uuid, uuid))
+        .returning()
+        .then(takeUniqueOrThrow);
+
+      if (!deletedHour)
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Error when deleting hour.",
+        });
+
+      return deletedHour;
+    },
   },
 
   day: {
@@ -65,11 +84,23 @@ export const SchedulesUtils = {
       return newDay;
     },
 
-    async delete({ weekDay }: ScheduleDay) {
+    async delete({ uuid }: { uuid: ScheduleDay["uuid"] }) {
+      if (!uuid)
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Missing uuid." });
+
       const deletedDay = await db
         .delete(scheduleDays)
-        .where(eq(scheduleDays.weekDay, weekDay))
-        .returning();
+        .where(eq(scheduleDays.uuid, uuid))
+        .returning()
+        .then(takeUniqueOrThrow);
+
+      if (!deletedDay)
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Error when deleting day.",
+        });
+
+      return deletedDay;
     },
   },
 };
