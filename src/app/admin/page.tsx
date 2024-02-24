@@ -45,8 +45,7 @@ export default function AdminPage() {
         >
           <TabsList className="w-fit">
             <TabsTrigger value="schedules">Schedules</TabsTrigger>
-            <TabsTrigger value="times">Times</TabsTrigger>
-            <TabsTrigger value="days">Days</TabsTrigger>
+            <TabsTrigger value="customization">Customization</TabsTrigger>
           </TabsList>
           <div className="h-96">
             <TabsContent
@@ -57,15 +56,10 @@ export default function AdminPage() {
             </TabsContent>
 
             <TabsContent
-              value="times"
-              className="mx-auto flex w-[700px] flex-col items-center justify-center gap-2"
+              value="customization"
+              className="mx-auto flex w-[700px] justify-center gap-24"
             >
               <TimesContent />
-            </TabsContent>
-            <TabsContent
-              value="days"
-              className="mx-auto flex w-[700px] flex-col items-center justify-center gap-2"
-            >
               <DaysContent />
             </TabsContent>
           </div>

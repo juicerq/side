@@ -85,7 +85,7 @@ export default function CreateAccountForm() {
               gap: "1rem",
               padding: "1rem 1rem",
             },
-            description: response.description ?? "",
+            description: "It will probably be in your spam box.",
             icon: <MailCheck className="h-7 w-7 text-[#FFFF]" />,
             position: "bottom-center",
           });
@@ -118,7 +118,6 @@ export default function CreateAccountForm() {
         type: "register",
       });
     }
-
 
     if (codeSent && codeInput === "") {
       return toast("Please, enter the code.", {

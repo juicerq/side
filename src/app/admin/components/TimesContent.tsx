@@ -67,15 +67,15 @@ export default function hoursContent() {
   };
 
   return (
-    <>
-      <div className="space-y-4">
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col space-y-4">
         {fetchingHours ? (
           <Loader2 className="mx-auto size-6 animate-spin" />
         ) : !!hours?.length ? (
           hours?.map((hour) => (
             <div
               key={hour.uuid}
-              className="my-4 flex w-64 justify-center rounded-lg bg-primary-foreground p-3 text-primary"
+              className="flex w-64 justify-center rounded-lg bg-primary-foreground p-2 text-primary"
             >
               <div className="flex items-center gap-2">
                 <Clock className="h-5 w-5" />
@@ -94,10 +94,13 @@ export default function hoursContent() {
       </div>
       <Drawer>
         <DrawerTrigger>
-          <div className="mt-2 flex w-64 justify-center rounded-lg border p-2 text-emerald-600">
+          <Button
+            variant="outline"
+            className=" mt-2 w-64 justify-center text-emerald-600"
+          >
             <Plus className="mr-2" />
             Create new hour
-          </div>
+          </Button>
         </DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>
@@ -144,6 +147,6 @@ export default function hoursContent() {
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
-    </>
+    </div>
   );
 }

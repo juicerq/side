@@ -73,7 +73,7 @@ export default function DaysContent() {
   };
 
   return (
-    <>
+    <div className="flex flex-col gap-4">
       <div className="space-y-4">
         {fetchingDays ? (
           <Loader2 className="mx-auto size-6 animate-spin" />
@@ -81,7 +81,7 @@ export default function DaysContent() {
           days?.map((day) => (
             <div
               key={day.uuid}
-              className="my-4 flex w-64 justify-center rounded-lg bg-primary-foreground p-3 text-primary"
+              className="flex w-64 justify-center rounded-lg bg-primary-foreground p-2 text-primary"
             >
               <div className="flex items-center gap-2">
                 <CalendarRange className="h-5 w-5" />
@@ -100,10 +100,13 @@ export default function DaysContent() {
       </div>
       <Drawer>
         <DrawerTrigger>
-          <div className="mt-2 flex w-64 justify-center rounded-lg border p-2 text-emerald-600">
+          <Button
+            variant="outline"
+            className=" mt-2 w-64 justify-center text-emerald-600"
+          >
             <Plus className="mr-2" />
             Create new day
-          </div>
+          </Button>
         </DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>
@@ -168,6 +171,6 @@ export default function DaysContent() {
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
-    </>
+    </div>
   );
 }
