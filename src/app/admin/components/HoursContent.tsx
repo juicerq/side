@@ -49,9 +49,10 @@ export default function HoursContent() {
 
   const { mutate: createHour, isLoading: creatingHour } =
     api.schedule.hour.create.useMutation({
-      onSuccess: () => {
+      onSuccess: (response) => {
         refetchhours();
         toast("Hour created successfully", {
+          description: `Unfortunatly, you know can work at ${response.hour ?? "BUG!"}`,
           position: "bottom-center",
         });
       },

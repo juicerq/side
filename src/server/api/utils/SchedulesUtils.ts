@@ -117,7 +117,7 @@ export const SchedulesUtils = {
       if (alreadyExists)
         throw new TRPCError({
           code: "CONFLICT",
-          message: "Time already exists.",
+          message: "Hour already exists.",
         });
 
       const newHour = await db
