@@ -1,11 +1,10 @@
 "use client";
 
-import Cookies from "js-cookie";
-import { Avatar, AvatarFallback } from "./ui/avatar";
-import { usePathname, useRouter } from "next/navigation";
 import { api } from "@/trpc/react";
+import Cookies from "js-cookie";
 import Link from "next/link";
-import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
+import { Avatar, AvatarFallback } from "./ui/avatar";
 
 const links = [
   {
@@ -35,15 +34,7 @@ export default function Navbar() {
     return (
       <div className="fixed left-0 top-0 flex h-16 w-screen items-center justify-between bg-transparent px-12">
         <div className="flex flex-1 items-center gap-8">
-          <div>
-            <img
-              src={"/../../public/logo.webp"}
-              alt="logo"
-              width={20}
-              height={20}
-            />
-          </div>
-          <ul className="flex items-center justify-center gap-6">
+          <ul className="flex items-center justify-center gap-6 pl-36">
             {links.map((link) => (
               <li key={link.name}>
                 <Link href={link.href} className="text-sm hover:opacity-80">

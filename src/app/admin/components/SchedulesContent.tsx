@@ -197,7 +197,7 @@ export default function SchedulesContent() {
                   <FormField
                     control={form.control}
                     name="hourUuids"
-                    render={({ field }) => (
+                    render={() => (
                       <FormItem>
                         <FormLabel>Schedule Hour</FormLabel>
                         <FormControl>
