@@ -11,7 +11,7 @@ import Navbar from "./components/Navbar";
 const roboto = Roboto({
   weight: ["400", "500", "700"],
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-roboto",
   display: "swap",
 });
 
@@ -28,7 +28,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`font-sans ${roboto.variable}`}>
+      <body className={`font-roboto ${roboto.variable}`}>
         <>
           <TRPCReactProvider>
             <ThemeProvider attribute="class" enableSystem defaultTheme="dark">
