@@ -34,6 +34,7 @@ import {
   SelectValue,
 } from "@components/ui/select";
 import { Skeleton } from "@/app/components/ui/skeleton";
+import { ToggleGroup, ToggleGroupItem } from "@components/ui/toggle-group";
 
 type CreateScheduleInput = RouterInputs["schedule"]["create"];
 
@@ -41,14 +42,17 @@ export default function SchedulesContent() {
   const form = useForm<CreateScheduleInput>({
     resolver: zodResolver(
       inputSchemas.schedule.pick({
-        scheduleDayUuid: true,
-        scheduleHourUuid: true,
+        hourUuid: true,
+        dayUuid: true,
       }),
     ),
+    defaultValues: {
+      hourUuids: [],
+    },
   });
 
   const {
-    data: schedules,
+    data,
     isLoading: fetchingSchedules,
     refetch: refetchSchedules,
   } = api.schedule.getAll.useQuery(undefined, {
@@ -75,7 +79,7 @@ export default function SchedulesContent() {
       onSuccess: () => {
         form.reset();
         refetchSchedules();
-        toast("schedule created successfully", {
+        toast("Schedule created successfully", {
           position: "bottom-center",
         });
       },
@@ -87,11 +91,20 @@ export default function SchedulesContent() {
       },
     });
 
-  const handleSubmit = ({
-    scheduleDayUuid,
-    scheduleHourUuid,
-  }: CreateScheduleInput) => {
-    createSchedule({ scheduleDayUuid, scheduleHourUuid });
+  const handleSubmit = ({ hourUuids, dayUuid }: CreateScheduleInput) => {
+    console.log(hourUuids);
+    createSchedule({ hourUuids: form.getValues("hourUuids"), dayUuid });
+  };
+
+  const handleAddHour = (value: string) => {
+    if (form.getValues("hourUuids").includes(value)) {
+      form.setValue(
+        "hourUuids",
+        form.getValues("hourUuids").filter((hour) => hour !== value),
+      );
+      return;
+    }
+    form.setValue("hourUuids", [...form.getValues("hourUuids"), value]);
   };
 
   return (
@@ -102,21 +115,19 @@ export default function SchedulesContent() {
           Array.from({ length: 6 }, (_, i) => (
             <Skeleton key={i} className="h-10 w-64 rounded-md" />
           ))
-        ) : !!schedules?.allSchedules?.length ? (
-          schedules.allSchedules?.map((schedule, i) => (
+        ) : !!data?.allSchedules?.length ? (
+          data.allSchedules?.map((schedule, i) => (
             <div
               key={i}
               className="flex w-64 items-center justify-between rounded-md bg-primary-foreground p-2 px-4 text-primary"
             >
               <div className="flex items-center gap-2">
                 <CalendarRange className="h-5 w-5" />
-                {schedule.scheduleDays?.weekDay} -{" "}
-                {schedule.scheduleHours?.hour}
+                {schedule.day.weekDay} -{" "}
+                {schedule.hours.map((hour) => hour.hourUuid.hour).join(", ")}
               </div>
               <div
-                onClick={() =>
-                  deleteSchedule({ uuid: schedule.schedules.uuid })
-                }
+                onClick={() => deleteSchedule({ uuid: schedule.uuid })}
                 className="cursor-pointer"
               >
                 <Trash className="size-5 text-red-500 hover:text-red-600" />
@@ -142,15 +153,15 @@ export default function SchedulesContent() {
             Create new schedule
           </Button>
         </DrawerTrigger>
-        <DrawerContent>
+        <DrawerContent className="flex flex-col items-center justify-between">
           <DrawerHeader>
             <DrawerTitle className="mx-auto">New schedule</DrawerTitle>
             <DrawerDescription className="mx-auto">
               Create a new schedule
             </DrawerDescription>
           </DrawerHeader>
-          <DrawerFooter className="space-y-8">
-            <div className="items-between mx-auto flex items-center justify-center gap-6">
+          <DrawerFooter>
+            <div className="items-between mx-auto flex items-center justify-center gap-3">
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(handleSubmit)}
@@ -158,7 +169,7 @@ export default function SchedulesContent() {
                 >
                   <FormField
                     control={form.control}
-                    name="scheduleDayUuid"
+                    name="dayUuid"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Schedule Day</FormLabel>
@@ -171,7 +182,7 @@ export default function SchedulesContent() {
                               <SelectValue placeholder="Choose Day" />
                             </SelectTrigger>
                             <SelectContent>
-                              {schedules?.daysOptions?.map((day, i) => (
+                              {data?.daysOptions?.map((day, i) => (
                                 <SelectItem key={i} value={day.uuid}>
                                   {day.weekDay}
                                 </SelectItem>
@@ -185,26 +196,23 @@ export default function SchedulesContent() {
                   />
                   <FormField
                     control={form.control}
-                    name="scheduleHourUuid"
+                    name="hourUuids"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Schedule Hour</FormLabel>
                         <FormControl>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <SelectTrigger className="w-[180px]">
-                              <SelectValue placeholder="Choose hour" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {schedules?.hoursOptions?.map((hour, i) => (
-                                <SelectItem key={i} value={hour.uuid}>
-                                  {hour.hour}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                          <ToggleGroup type="multiple">
+                            {data?.hoursOptions?.map((hour, i) => (
+                              <ToggleGroupItem
+                                value={hour.uuid}
+                                aria-label="Toggle bold"
+                                key={i}
+                                onClick={() => handleAddHour(hour.uuid)}
+                              >
+                                {hour.hour}
+                              </ToggleGroupItem>
+                            ))}
+                          </ToggleGroup>
                         </FormControl>
                         <FormMessage />
                       </FormItem>

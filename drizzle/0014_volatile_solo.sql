@@ -1,0 +1,1 @@
+ALTER TABLE "juit_schedules" ALTER COLUMN "scheduleHourUuid" SET DATA TYPE uuid[];

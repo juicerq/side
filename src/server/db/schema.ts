@@ -2,6 +2,7 @@ import { relations, sql } from "drizzle-orm";
 import {
   boolean,
   pgTableCreator,
+  primaryKey,
   timestamp,
   uniqueIndex,
   uuid,
@@ -39,14 +40,14 @@ export const users = createTable(
   "users",
   {
     uuid: uuid("uuid").defaultRandom().primaryKey(),
-    firstName: varchar("firstName", { length: 256 }).notNull(),
-    lastName: varchar("lastName", { length: 256 }).notNull(),
+    firstName: varchar("first_name", { length: 256 }).notNull(),
+    lastName: varchar("last_name", { length: 256 }).notNull(),
     email: varchar("email", { length: 100 }).notNull().unique(),
-    isAdmin: boolean("isAdmin").default(false).notNull(),
-    createdAt: timestamp("createdAt")
+    isAdmin: boolean("is_admin").default(false).notNull(),
+    createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: timestamp("updatedAt"),
+    updatedAt: timestamp("updated_at"),
   },
   (users) => ({
     userIndex: uniqueIndex("user_idx").on(users.email),
@@ -55,10 +56,13 @@ export const users = createTable(
 
 export const reservations = createTable("reservations", {
   uuid: uuid("uuid").defaultRandom().primaryKey(),
-  userUuid: uuid("userUuid")
+  userUuid: uuid("user_uuid")
     .notNull()
-    .references(() => users.uuid, { onDelete: "cascade", onUpdate: "cascade" }),
-  scheduleUuid: uuid("scheduleUuid")
+    .references(() => users.uuid, {
+      onDelete: "set null",
+      onUpdate: "cascade",
+    }),
+  scheduleUuid: uuid("schedule_uuid")
     .notNull()
     .references(() => schedules.uuid, {
       onDelete: "cascade",
@@ -70,6 +74,99 @@ export const reservations = createTable("reservations", {
     length: 10,
   }),
 });
+
+export const schedules = createTable(
+  "schedules",
+  {
+    uuid: uuid("uuid").defaultRandom().primaryKey(),
+    dayUuid: uuid("day_uuid")
+      .notNull()
+      .references(() => scheduleDays.uuid, {
+        onDelete: "set null",
+        onUpdate: "cascade",
+      }),
+    createdAt: timestamp("created_at")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at"),
+  },
+  (schedules) => ({
+    scheduleIndex: uniqueIndex("schedule_idx").on(schedules.uuid),
+  }),
+);
+
+export const schedulesRelations = relations(schedules, ({ one, many }) => ({
+  day: one(scheduleDays, {
+    fields: [schedules.dayUuid],
+    references: [scheduleDays.uuid],
+  }),
+  hours: many(hoursOnSchedules),
+}));
+
+export const hoursOnSchedules = createTable(
+  "hoursOnSchedules",
+  {
+    // uuid: uuid("uuid").defaultRandom().primaryKey(),
+    scheduleUuid: uuid("schedule_uuid")
+      .notNull()
+      .references(() => schedules.uuid, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    hourUuid: uuid("hour_uuid").notNull(),
+    createdAt: timestamp("created_at")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at"),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.scheduleUuid, t.hourUuid] }),
+  }),
+);
+
+export const hoursOnSchedulesRelations = relations(
+  hoursOnSchedules,
+  ({ one }) => ({
+    scheduleUuid: one(schedules, {
+      fields: [hoursOnSchedules.scheduleUuid],
+      references: [schedules.uuid],
+    }),
+    hourUuid: one(scheduleHours, {
+      fields: [hoursOnSchedules.hourUuid],
+      references: [scheduleHours.uuid],
+    }),
+  }),
+);
+
+export const scheduleHours = createTable("scheduleHours", {
+  uuid: uuid("uuid").defaultRandom().primaryKey(),
+  hour: varchar("hour", { length: 50 }).notNull(),
+  createdAt: timestamp("created_at")
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updatedAt"),
+});
+
+export const scheduleHoursRelations = relations(scheduleHours, ({ many }) => ({
+  schedules: many(hoursOnSchedules),
+}));
+
+export const scheduleDays = createTable("scheduleDays", {
+  uuid: uuid("uuid").defaultRandom().primaryKey(),
+  weekDay: varchar("week_day", {
+    enum: daysOfWeekEnum,
+    length: 10,
+  }).notNull(),
+  createdAt: timestamp("created_at")
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at"),
+});
+
+export const scheduleDaysRelations = relations(scheduleDays, ({ many }) => ({
+  schedules: many(schedules),
+}));
+
 export const reservartionsRelations = relations(reservations, ({ one }) => ({
   userUuid: one(users, {
     fields: [reservations.userUuid],
@@ -79,67 +176,4 @@ export const reservartionsRelations = relations(reservations, ({ one }) => ({
     fields: [reservations.scheduleUuid],
     references: [schedules.uuid],
   }),
-}));
-
-export const schedules = createTable(
-  "schedules",
-  {
-    uuid: uuid("uuid").defaultRandom().primaryKey(),
-    scheduleDayUuid: uuid("scheduleDayUuid")
-      .notNull()
-      .references(() => scheduleDays.uuid, {
-        onDelete: "cascade",
-        onUpdate: "cascade",
-      }),
-    scheduleHourUuid: uuid("scheduleHourUuid")
-      .notNull()
-      .references(() => scheduleHours.uuid, {
-        onDelete: "cascade",
-        onUpdate: "cascade",
-      }),
-    createdAt: timestamp("createdAt")
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updatedAt"),
-  },
-  (schedules) => ({
-    scheduleIndex: uniqueIndex("schedule_idx").on(schedules.uuid),
-  }),
-);
-export const schedulesRelations = relations(schedules, ({ one }) => ({
-  scheduleDayUuid: one(scheduleDays, {
-    fields: [schedules.uuid],
-    references: [scheduleDays.uuid],
-  }),
-  scheduleHourUuid: one(scheduleHours, {
-    fields: [schedules.uuid],
-    references: [scheduleHours.uuid],
-  }),
-}));
-
-export const scheduleHours = createTable("scheduleHours", {
-  uuid: uuid("uuid").defaultRandom().primaryKey(),
-  hour: varchar("hour", { length: 50 }).notNull(),
-  createdAt: timestamp("createdAt")
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  updatedAt: timestamp("updatedAt"),
-});
-export const scheduleHoursRelations = relations(scheduleHours, ({ many }) => ({
-  schedules: many(schedules),
-}));
-
-export const scheduleDays = createTable("scheduleDays", {
-  uuid: uuid("uuid").defaultRandom().primaryKey(),
-  weekDay: varchar("weekDay", {
-    enum: daysOfWeekEnum,
-    length: 10,
-  }).notNull(),
-  createdAt: timestamp("createdAt")
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  updatedAt: timestamp("updatedAt"),
-});
-export const scheduleDaysRelations = relations(scheduleHours, ({ many }) => ({
-  schedules: many(schedules),
 }));

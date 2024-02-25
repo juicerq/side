@@ -26,7 +26,9 @@ export const UserUtils = {
 
     const newUser = await db
       .insert(users)
-      .values({ firstName, lastName, email }).returning().then(takeUniqueOrThrow);
+      .values({ firstName, lastName, email })
+      .returning()
+      .then(takeUniqueOrThrow);
 
     if (!newUser) {
       throw new TRPCError({

@@ -7,14 +7,15 @@ import { db } from "@/server/db";
 import { scheduleDays, scheduleHours, schedules } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 
 export const scheduleRouter = createTRPCRouter({
   create: adminProcedure
-    .input(inputSchemas.schedule)
+    .input(z.object({ dayUuid: z.string(), hourUuids: z.array(z.string()) }))
     .mutation(async ({ input }) => {
       return await SchedulesUtils.create({
-        scheduleHourUuid: input.scheduleHourUuid,
-        scheduleDayUuid: input.scheduleDayUuid,
+        dayUuid: input.dayUuid,
+        hourUuids: input.hourUuids,
       });
     }),
 
@@ -34,17 +35,21 @@ export const scheduleRouter = createTRPCRouter({
 
   getAll: adminProcedure.query(async () => {
     const res = await db.transaction(async (tx) => {
-      const allSchedules = await tx
-        .select()
-        .from(schedules)
-        .leftJoin(
-          scheduleHours,
-          eq(schedules.scheduleHourUuid, scheduleHours.uuid),
-        )
-        .leftJoin(
-          scheduleDays,
-          eq(schedules.scheduleDayUuid, scheduleDays.uuid),
-        )
+      const allSchedules = await tx.query.schedules
+        .findMany({
+          with: {
+            day: true,
+            hours: {
+              with: {
+                hourUuid: {
+                  columns: {
+                    hour: true,
+                  },
+                },
+              },
+            },
+          },
+        })
         .execute();
 
       const hoursOptions = await SchedulesUtils.hour.getAll();

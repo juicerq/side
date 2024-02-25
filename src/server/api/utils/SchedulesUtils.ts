@@ -1,5 +1,10 @@
 import { db } from "@/server/db";
-import { scheduleDays, scheduleHours, schedules } from "@/server/db/schema";
+import {
+  hoursOnSchedules,
+  scheduleDays,
+  scheduleHours,
+  schedules,
+} from "@/server/db/schema";
 import { takeUniqueOrThrow } from "./DrizzleUtils";
 import { TRPCError } from "@trpc/server";
 import { and, eq } from "drizzle-orm";
@@ -30,44 +35,71 @@ export const SchedulesUtils = {
       });
     }
 
-    return deletedSchedule;
+    const deletedHoursOnSchedules = await db
+      .delete(hoursOnSchedules)
+      .where(eq(hoursOnSchedules.scheduleUuid, uuid))
+      .returning();
+
+    return {
+      deletedSchedule,
+      deletedHoursOnSchedules,
+    };
   },
 
-  async create({ scheduleHourUuid, scheduleDayUuid }: Schedule) {
+  async create({
+    hourUuids,
+    dayUuid,
+  }: {
+    dayUuid: Schedule["dayUuid"];
+    hourUuids: string[];
+  }) {
     const alreadyExist = await db
       .select()
       .from(schedules)
-      .where(
-        and(
-          eq(schedules.scheduleDayUuid, scheduleDayUuid),
-          eq(schedules.scheduleHourUuid, scheduleHourUuid),
-        ),
-      )
+      .where(and(eq(schedules.dayUuid, dayUuid)))
       .then(takeUniqueOrThrow);
 
     if (alreadyExist)
       throw new TRPCError({
         code: "CONFLICT",
-        message: "Schedule already exists.",
+        message: "Schedule with this day already exists.",
       });
 
     const newSchedule = await db
       .insert(schedules)
       .values({
-        scheduleDayUuid,
-        scheduleHourUuid,
+        dayUuid,
       })
       .returning()
       .then(takeUniqueOrThrow);
 
+    if (hourUuids.length) {
+      await Promise.all(
+        hourUuids.map(async (hourUuid) => {
+          await db.insert(hoursOnSchedules).values({
+            scheduleUuid: newSchedule.uuid,
+            hourUuid,
+          });
+        }),
+      );
+    }
+
     if (!newSchedule) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Error when creating schedule.",
+        message: "Internal error when creating schedule.",
       });
     }
 
-    return newSchedule;
+    const completeSchedule = await db.query.schedules.findFirst({
+      where: eq(schedules.uuid, newSchedule.uuid),
+      with: {
+        day: true,
+        hours: true,
+      },
+    });
+
+    return completeSchedule;
   },
 
   hour: {
