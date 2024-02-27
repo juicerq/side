@@ -59,9 +59,9 @@ export default function Navbar() {
                   Cookies.remove("access_token");
                   router.push("/login");
                 }}
-                className="w-fit cursor-pointer text-xs text-red-700 hover:underline hover:underline-offset-1 "
+                className="w-fit cursor-pointer text-xs text-red-500 hover:underline hover:underline-offset-1"
               >
-                Sair
+                Logout
               </p>
             </div>
           </div>

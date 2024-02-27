@@ -27,6 +27,7 @@ import {
   FormMessage,
 } from "../../components/ui/form";
 import { Skeleton } from "@/app/components/ui/skeleton";
+import { Card } from "@/app/components/ui/card";
 
 type CreateHour = RouterInputs["schedule"]["hour"]["create"];
 
@@ -83,9 +84,9 @@ export default function HoursContent() {
   };
 
   return (
-    <div className="flex flex-col items-center gap-4">
-      <h1>Hours</h1>
+    <Card className="flex p-4 flex-col items-center gap-4">
       <div className="flex flex-col space-y-4">
+      <h1 className="text-center">Hours</h1>
         {fetchingHours ? (
           Array.from({ length: 6 }, (_, i) => (
             <Skeleton key={i} className="h-10 w-64 rounded-md" />
@@ -120,11 +121,11 @@ export default function HoursContent() {
       <Drawer>
         <DrawerTrigger>
           <Button
-            variant="outline"
-            className=" mt-2 w-64 justify-center text-emerald-600"
+            variant="secondary"
+            className="mt-2 w-64 justify-center "
           >
-            <Plus className="mr-2" />
-            Create new hour
+            <Plus className="mr-2 size-5" />
+            New Hour
           </Button>
         </DrawerTrigger>
         <DrawerContent>
@@ -172,6 +173,6 @@ export default function HoursContent() {
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
-    </div>
+    </Card>
   );
 }

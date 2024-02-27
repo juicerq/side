@@ -35,6 +35,7 @@ import {
 } from "@components/ui/select";
 import { Skeleton } from "@/app/components/ui/skeleton";
 import { ToggleGroup, ToggleGroupItem } from "@components/ui/toggle-group";
+import { Card } from "@/app/components/ui/card";
 
 type CreateScheduleInput = RouterInputs["schedule"]["create"];
 
@@ -55,7 +56,7 @@ export default function SchedulesContent() {
     data,
     isLoading: fetchingSchedules,
     refetch: refetchSchedules,
-  } = api.schedule.getAll.useQuery(undefined, {
+  } = api.schedule.getAllWithOptions.useQuery(undefined, {
     refetchOnWindowFocus: false,
   });
 
@@ -108,9 +109,9 @@ export default function SchedulesContent() {
   };
 
   return (
-    <div className="flex flex-col items-center gap-4">
-      <h1>Your Schedules</h1>
+    <Card className="flex p-4 flex-col items-center justify-between gap-4">
       <div className="space-y-4">
+      <h1 className="text-center">Your Schedules</h1>
         {fetchingSchedules ? (
           Array.from({ length: 6 }, (_, i) => (
             <Skeleton key={i} className="h-10 w-64 rounded-md" />
@@ -146,11 +147,11 @@ export default function SchedulesContent() {
       <Drawer>
         <DrawerTrigger>
           <Button
-            variant="outline"
-            className=" mt-2 w-64 justify-center text-emerald-600"
+            variant="secondary"
+            className="mt-2 w-64 justify-center"
           >
-            <Plus className="mr-2" />
-            Create new schedule
+            <Plus className="size-5 mr-2" />
+             New Schedule
           </Button>
         </DrawerTrigger>
         <DrawerContent className="flex flex-col items-center justify-between">
@@ -236,6 +237,6 @@ export default function SchedulesContent() {
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
-    </div>
+    </Card>
   );
 }

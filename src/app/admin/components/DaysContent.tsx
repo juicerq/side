@@ -34,6 +34,7 @@ import {
   SelectValue,
 } from "@components/ui/select";
 import { Skeleton } from "@/app/components/ui/skeleton";
+import { Card } from "@/app/components/ui/card";
 
 type CreateDayInput = RouterInputs["schedule"]["day"]["create"];
 
@@ -86,9 +87,9 @@ export default function DaysContent() {
     createDay({ weekDay });
   };
   return (
-    <div className="flex flex-col items-center gap-4">
-      <h1>Days</h1>
+    <Card className="flex p-4 flex-col justify-between items-center gap-4">
       <div className="space-y-4">
+      <h1 className="text-center">Days</h1>
         {fetchingDays ? (
           Array.from({ length: 6 }, (_, i) => (
             <Skeleton key={i} className="h-10 w-64 rounded-md" />
@@ -124,11 +125,11 @@ export default function DaysContent() {
       <Drawer>
         <DrawerTrigger>
           <Button
-            variant="outline"
-            className=" mt-2 w-64 justify-center text-emerald-600"
+            variant="secondary"
+            className=" mt-2 w-64 justify-center"
           >
             <Plus className="mr-2" />
-            Create new day
+            New Day
           </Button>
         </DrawerTrigger>
         <DrawerContent>
@@ -194,6 +195,6 @@ export default function DaysContent() {
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
-    </div>
+    </Card>
   );
 }
