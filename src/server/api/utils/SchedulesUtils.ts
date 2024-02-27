@@ -16,7 +16,22 @@ import {
 
 export const SchedulesUtils = {
   async getAll() {
-    const allSchedules = await db.select().from(schedules);
+    const allSchedules = await db.query.schedules.findMany(
+      {
+        with: {
+          day: true,
+          hours: {
+            with: {
+              hourUuid: {
+                columns: {
+                  hour: true,
+                },
+              },
+            },
+          },
+        },
+      }
+    );
 
     return allSchedules;
   },
@@ -37,7 +52,7 @@ export const SchedulesUtils = {
 
     const deletedHoursOnSchedules = await db
       .delete(hoursOnSchedules)
-      .where(eq(hoursOnSchedules.scheduleUuid, uuid))
+      .where(eq(hoursOnSchedules.scheduleUuid, deletedSchedule.uuid))
       .returning();
 
     return {
@@ -133,7 +148,7 @@ export const SchedulesUtils = {
 
     async delete({ uuid }: { uuid: string }) {
       if (!uuid)
-        throw new TRPCError({ code: "BAD_REQUEST", message: "Missing uuid." });
+        throw new TRPCError({ code: "BAD_REQUEST", message: "A UUID is required to delete a hour." });
 
       const deletedHour = await db
         .delete(scheduleHours)

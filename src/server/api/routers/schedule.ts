@@ -33,7 +33,11 @@ export const scheduleRouter = createTRPCRouter({
       });
     }),
 
-  getAll: adminProcedure.query(async () => {
+  getAll: adminProcedure.query(async ({ ctx }) => {
+    return SchedulesUtils.getAll();
+  }),
+
+  getAllWithOptions: adminProcedure.query(async () => {
     const res = await db.transaction(async (tx) => {
       const allSchedules = await tx.query.schedules
         .findMany({
