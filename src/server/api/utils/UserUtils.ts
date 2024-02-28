@@ -11,29 +11,18 @@ import { SendConfirmationCode, User } from "@/server/db/ZSchemasAndTypes";
 
 export const UserUtils = {
   async create({ firstName, lastName, email }: User) {
-    const alreadyExists = await db
-      .select()
-      .from(users)
-      .where(eq(users.email, email))
-      .then(takeUniqueOrThrow);
-
-    if (!!alreadyExists) {
-      throw new TRPCError({
-        code: "CONFLICT",
-        message: "User already exists.",
-      });
-    }
 
     const newUser = await db
       .insert(users)
       .values({ firstName, lastName, email })
       .returning()
+      .onConflictDoNothing()
       .then(takeUniqueOrThrow);
 
     if (!newUser) {
       throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Error when creating user.",
+        code: "CONFLICT",
+        message: "User already exists or something went wrong.",
       });
     }
 

@@ -1,18 +1,18 @@
 import { db } from "@/server/db";
 import {
+  ScheduleDay,
+  type Schedule,
+  type ScheduleHour,
+} from "@/server/db/ZSchemasAndTypes";
+import {
   hoursOnSchedules,
   scheduleDays,
   scheduleHours,
   schedules,
 } from "@/server/db/schema";
-import { takeUniqueOrThrow } from "./DrizzleUtils";
 import { TRPCError } from "@trpc/server";
-import { and, eq } from "drizzle-orm";
-import {
-  ScheduleDay,
-  type ScheduleHour,
-  type Schedule,
-} from "@/server/db/ZSchemasAndTypes";
+import { eq } from "drizzle-orm";
+import { takeUniqueOrThrow } from "./DrizzleUtils";
 
 export const SchedulesUtils = {
   async getAll() {
@@ -68,17 +68,11 @@ export const SchedulesUtils = {
     dayUuid: Schedule["dayUuid"];
     hourUuids: string[];
   }) {
-    const alreadyExist = await db
-      .select()
-      .from(schedules)
-      .where(and(eq(schedules.dayUuid, dayUuid)))
-      .then(takeUniqueOrThrow);
 
-    if (alreadyExist)
-      throw new TRPCError({
-        code: "CONFLICT",
-        message: "Schedule with this day already exists.",
-      });
+    if (!hourUuids.length) throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "Hour Uuids are required to create a schedule.",
+    })
 
     const newSchedule = await db
       .insert(schedules)
@@ -86,35 +80,31 @@ export const SchedulesUtils = {
         dayUuid,
       })
       .returning()
+      .onConflictDoNothing()
       .then(takeUniqueOrThrow);
 
-    if (hourUuids.length) {
+      const hoursUuids: {
+        hourUuid: string,
+        scheduleUuid: string
+        createdAt: Date,
+        updatedAt: Date | null
+      }[] = []
+
       await Promise.all(
         hourUuids.map(async (hourUuid) => {
-          await db.insert(hoursOnSchedules).values({
+          const hourRelation = await db.insert(hoursOnSchedules).values({
             scheduleUuid: newSchedule.uuid,
             hourUuid,
-          });
+          }).onConflictDoNothing().returning().then(takeUniqueOrThrow);
+          hoursUuids.push(hourRelation)
         }),
       );
+
+    return {
+      newSchedule,
+      hoursUuids,
     }
 
-    if (!newSchedule) {
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Internal error when creating schedule.",
-      });
-    }
-
-    const completeSchedule = await db.query.schedules.findFirst({
-      where: eq(schedules.uuid, newSchedule.uuid),
-      with: {
-        day: true,
-        hours: true,
-      },
-    });
-
-    return completeSchedule;
   },
 
   hour: {
@@ -123,25 +113,21 @@ export const SchedulesUtils = {
     },
 
     async create({ hour }: ScheduleHour) {
-      const alreadyExists = await db
-        .select()
-        .from(scheduleHours)
-        .where(eq(scheduleHours.hour, hour))
-        .then(takeUniqueOrThrow);
-
-      if (alreadyExists)
-        throw new TRPCError({
-          code: "CONFLICT",
-          message: "Hour already exists.",
-        });
-
+      
       const newHour = await db
-        .insert(scheduleHours)
-        .values({
-          hour: hour,
-        })
-        .returning()
-        .then(takeUniqueOrThrow);
+      .insert(scheduleHours)
+      .values({
+        hour: hour,
+      })
+      .returning()
+      .onConflictDoNothing()
+      .then(takeUniqueOrThrow);
+      
+      if (!newHour)
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Hour already exists or something went wrong.",
+        });
 
       return newHour;
     },
@@ -172,25 +158,22 @@ export const SchedulesUtils = {
     },
 
     async create({ weekDay }: ScheduleDay) {
-      const alreadyExists = await db
-        .select()
-        .from(scheduleDays)
-        .where(eq(scheduleDays.weekDay, weekDay))
-        .then(takeUniqueOrThrow);
 
-      if (alreadyExists)
-        throw new TRPCError({
-          code: "CONFLICT",
-          message: "Day already exists.",
-        });
-
+      
       const newDay = await db
-        .insert(scheduleDays)
-        .values({
-          weekDay: weekDay,
-        })
-        .returning()
-        .then(takeUniqueOrThrow);
+      .insert(scheduleDays)
+      .values({
+        weekDay: weekDay,
+      })
+      .returning()
+      .onConflictDoNothing()
+      .then(takeUniqueOrThrow);
+      
+      if (!newDay)
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Day already exists or something went wrong.",
+        });
 
       return newDay;
     },
