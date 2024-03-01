@@ -37,7 +37,6 @@ export default function Navbar() {
             ))}
           </ul>
         </div>
-        {user && (
           <div className="flex items-center justify-end gap-2">
             <Avatar>
               <AvatarFallback className="bg-primary-foreground uppercase">
@@ -58,7 +57,6 @@ export default function Navbar() {
               </p>
             </div>
           </div>
-        )}
       </div>
     );
 }
