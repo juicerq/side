@@ -4,6 +4,7 @@ import { api } from "@/trpc/react";
 import { ReactNode, useEffect } from "react";
 import { useStore } from "../lib/utils/useStore";
 import { usePathname, useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 interface UserProviderProps {
   children: ReactNode;
@@ -24,9 +25,13 @@ export default function UserProvider({children}: UserProviderProps) {
     if (userData) setUser(userData)
   }, [userData])
 
+  console.log(!!userData)
+
   return (
     <>
-      {children}
+      {!!userData || safePathname ? children : <div className="flex min-h-screen flex-col items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin" />
+      </div>}
     </>
   )
 } 

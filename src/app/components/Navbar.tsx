@@ -23,7 +23,7 @@ export default function Navbar() {
   const { user } = useStore()
   const shouldRender = path !== "/login" && path !== "/register" && path !== "/";
 
-  if (shouldRender)
+  if (shouldRender && user)
     return (
       <div className="fixed left-0 top-0 flex h-16 w-screen items-center justify-between bg-transparent px-12">
         <div className="flex flex-1 items-center gap-8">
