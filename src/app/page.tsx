@@ -8,9 +8,9 @@ export default function Home() {
   const { data: isLogged } = api.user.verify.useQuery();
   const router = useRouter();
 
-  if (isLogged === false) router.push("/login");
+  if (!isLogged) router.push("/login");
 
-  if (isLogged === true) router.push("/schedule");
+  if (isLogged) router.push("/schedule");
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center">
