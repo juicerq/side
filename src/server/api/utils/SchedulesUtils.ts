@@ -107,6 +107,7 @@ export const SchedulesUtils = {
 
   },
 
+  // All Hours Utils
   hour: {
     async getAll() {
       return await db.select().from(scheduleHours);
@@ -152,6 +153,7 @@ export const SchedulesUtils = {
     },
   },
 
+  // All Day Utils
   day: {
     async getAll() {
       return await db.select().from(scheduleDays);

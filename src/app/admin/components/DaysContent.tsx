@@ -114,7 +114,7 @@ export default function DaysContent() {
             </div>
           ))
         ) : (
-          <div className="my-4 flex w-64 justify-center rounded-md bg-primary-foreground p-3 text-primary">
+          <div className="my-4 flex w-64 justify-center rounded-md bg-primary-foreground border px-3 py-1 text-primary">
             <div className="flex items-center gap-2">
               <CalendarRange className="h-5 w-5" />
               No days found

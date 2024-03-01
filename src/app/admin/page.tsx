@@ -1,6 +1,6 @@
 "use client";
 
-
+import { unstable_noStore } from "next/cache";
 import {
   Tabs,
   TabsContent,
@@ -14,6 +14,7 @@ import ReservationsContent from "./components/ReservationsContent";
 import SchedulesContent from "./components/SchedulesContent";
 
 export default function AdminPage() {
+  unstable_noStore()
    useCheckPermission("admin")
 
     return (

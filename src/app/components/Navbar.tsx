@@ -25,7 +25,7 @@ export default function Navbar() {
 
   if (shouldRender && user)
     return (
-      <div className="fixed left-0 top-0 flex h-16 w-screen items-center justify-between bg-transparent px-12">
+      <div className="fixed left-0 top-0 flex h-16 border-b w-screen items-center justify-between bg-transparent px-12">
         <div className="flex flex-1 items-center gap-8">
           <ul className="flex items-center justify-center gap-6 pl-36">
             {links.map((link) => (

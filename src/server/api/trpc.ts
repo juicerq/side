@@ -95,7 +95,7 @@ export const createTRPCRouter = t.router;
 
 export const publicProcedure = t.procedure;
 export const adminProcedure = publicProcedure.use(async (opts) => {
-  if (!opts.ctx.user?.isAdmin) {
+  if (opts.ctx.user?.role !== "admin") {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 

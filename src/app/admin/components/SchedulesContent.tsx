@@ -175,6 +175,7 @@ export default function SchedulesContent() {
                       <FormItem>
                         <FormLabel>Schedule Day</FormLabel>
                         <FormControl>
+                          {data?.daysOptions?.length ?
                           <Select
                             onValueChange={field.onChange}
                             defaultValue={field.value}
@@ -189,7 +190,14 @@ export default function SchedulesContent() {
                                 </SelectItem>
                               ))}
                             </SelectContent>
-                          </Select>
+                          </Select> : (
+                            <div className="my-4 flex w-64 justify-center rounded-md bg-primary-foreground border px-3 py-1 text-primary">
+                                <div className="flex items-center gap-2">
+                                  <CalendarRange className="h-5 w-5" />
+                                  No hours found
+                                </div>
+                              </div>
+                          )}
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -203,7 +211,7 @@ export default function SchedulesContent() {
                         <FormLabel>Schedule Hour</FormLabel>
                         <FormControl>
                           <ToggleGroup type="multiple">
-                            {data?.hoursOptions?.map((hour, i) => (
+                            {data?.hoursOptions?.length ? data?.hoursOptions?.map((hour, i) => (
                               <ToggleGroupItem
                                 value={hour.uuid}
                                 aria-label="Toggle bold"
@@ -212,19 +220,26 @@ export default function SchedulesContent() {
                               >
                                 {hour.hour}
                               </ToggleGroupItem>
-                            ))}
+                            )) : (
+                              <div className="my-4 flex w-64 justify-center rounded-md bg-primary-foreground border px-3 py-1 text-primary">
+                                <div className="flex items-center gap-2">
+                                  <CalendarRange className="h-5 w-5" />
+                                  No hours found
+                                </div>
+                              </div>
+                            )}
                           </ToggleGroup>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <div className="mx-auto flex gap-2">
-                    <Button type="submit" className="mx-auto w-fit">
+                  <div className="flex justify-center gap-2">
+                    <Button type="submit" className="w-fit">
                       {creatingSchedule ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
                       ) : (
-                        "Create"
+                        "Create Schedule"
                       )}
                     </Button>
                     <DrawerClose>
