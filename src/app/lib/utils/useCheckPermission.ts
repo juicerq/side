@@ -16,6 +16,4 @@ export default function useCheckPermission(permission: string) {
     });
     router.push("/schedule");
   }
-
-  return isLoading;
 }

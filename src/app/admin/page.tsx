@@ -14,9 +14,8 @@ import ReservationsContent from "./components/ReservationsContent";
 import SchedulesContent from "./components/SchedulesContent";
 
 export default function AdminPage() {
-   const loading = useCheckPermission("admin")
+   useCheckPermission("admin")
 
-  if (!loading) 
     return (
       <div className="flex min-h-screen w-screen items-center justify-center">
         <Tabs
