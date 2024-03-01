@@ -39,7 +39,7 @@ const CreateAccountSchema = z.object({
 type FormType = z.infer<typeof CreateAccountSchema>;
 
 export default function CreateAccountForm() {
-  const [codeSent, setcodeSent] = useState<boolean>(false);
+  const [codeSent, setCodeSent] = useState<boolean>(false);
   const [code, setCode] = useState<string>("");
   const [codeInput, setCodeInput] = useState<string>("");
   const router = useRouter();
@@ -76,7 +76,7 @@ export default function CreateAccountForm() {
     api.user.sendConfirmationCode.useMutation({
       onSuccess: (response) => {
         if (response.success === true) {
-          setcodeSent(true);
+          setCodeSent(true);
           toast(response.message, {
             style: {
               borderLeft: "2px solid #00A86B",

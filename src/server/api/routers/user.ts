@@ -57,23 +57,11 @@ export const userRouter = createTRPCRouter({
 
   info: publicProcedure
     .output(
-      z.object({
-        email: z.string(),
-        firstName: z.string(),
-        lastName: z.string(),
-        isAdmin: z.boolean(),
-      }),
+      inputSchemas.user.strict(),
     )
     .query(({ ctx }) => {
-      if (!ctx.user)
-        throw new TRPCError({ code: "NOT_FOUND", message: "User not found." });
-
-      return {
-        email: ctx.user.email,
-        firstName: ctx.user.firstName,
-        lastName: ctx.user.lastName,
-        isAdmin: ctx.user.isAdmin,
-      };
+      if (!ctx.user) throw new TRPCError({ code: "NOT_FOUND", message: "User not found." });
+      return ctx.user;
     }),
 
   verify: publicProcedure.query(({ ctx }) => {

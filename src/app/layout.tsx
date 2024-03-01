@@ -1,3 +1,4 @@
+
 import "@/styles/globals.css";
 
 import { Roboto } from "next/font/google";
@@ -7,6 +8,8 @@ import { ThemeProvider } from "./components/ThemeProvider";
 import { Toaster } from "./components/ui/sonner";
 import { Analytics } from "@vercel/analytics/react";
 import Navbar from "./components/Navbar";
+import UserProvider from "./components/UserProvider";
+
 
 const roboto = Roboto({
   weight: ["400", "500", "700"],
@@ -26,6 +29,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+
+
   return (
     <html lang="en">
       <body className={`font-roboto ${roboto.variable}`}>
@@ -34,7 +39,9 @@ export default function RootLayout({
             <ThemeProvider attribute="class" enableSystem defaultTheme="dark">
               <Navbar />
               <Toaster />
+              <UserProvider>
               {children}
+              </UserProvider>
             </ThemeProvider>
           </TRPCReactProvider>
           <Analytics />

@@ -1,10 +1,10 @@
 "use client";
 
-import { api } from "@/trpc/react";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Avatar, AvatarFallback } from "./ui/avatar";
+import { useStore } from "../lib/utils/useStore";
 
 const links = [
   {
@@ -18,17 +18,10 @@ const links = [
 ];
 
 export default function Navbar() {
-  const path = usePathname();
-  const shouldRender =
-    path !== "/login" && path !== "/register" && path !== "/";
   const router = useRouter();
-
-  const { data: user } = shouldRender
-    ? api.user.info.useQuery(undefined, {
-        refetchOnWindowFocus: false,
-        cacheTime: 1000,
-      })
-    : { data: null };
+  const path = usePathname();
+  const { user } = useStore()
+  const shouldRender = path !== "/login" && path !== "/register" && path !== "/";
 
   if (shouldRender)
     return (

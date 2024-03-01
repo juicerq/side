@@ -1,43 +1,22 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
 
-import { api } from "@/trpc/react";
-import { toast } from "sonner";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "../components/ui/tabs";
+import useCheckPermission from "../lib/utils/useCheckPermission";
 import DaysContent from "./components/DaysContent";
-import ReservationsContent from "./components/ReservationsContent";
 import HoursContent from "./components/HoursContent";
-import { useRouter } from "next/navigation";
+import ReservationsContent from "./components/ReservationsContent";
 import SchedulesContent from "./components/SchedulesContent";
 
 export default function AdminPage() {
-  const router = useRouter();
-  const { data: user, isLoading } = api.user.info.useQuery(undefined, {
-    cacheTime: 500,
-  });
+   const loading = useCheckPermission("admin")
 
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center">
-        <Loader2 className="h-12 w-12 animate-spin" />
-      </div>
-    );
-  }
-
-  if (!user?.isAdmin) {
-    toast("You are not authorized to view this page", {
-      position: "bottom-center",
-    });
-    router.push("/schedule");
-  }
-
-  if (user?.isAdmin)
+  if (!loading) 
     return (
       <div className="flex min-h-screen w-screen items-center justify-center">
         <Tabs

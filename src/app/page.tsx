@@ -5,7 +5,7 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
-  const { data: isLogged, isLoading } = api.user.verify.useQuery();
+  const { data: isLogged } = api.user.verify.useQuery();
   const router = useRouter();
 
   if (isLogged === false) router.push("/login");
@@ -14,7 +14,7 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center">
-      {isLoading && <Loader2 className="h-12 w-12 animate-spin" />}
+      <Loader2 className="h-12 w-12 animate-spin" />
     </div>
   );
 }

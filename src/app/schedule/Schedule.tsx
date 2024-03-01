@@ -9,7 +9,6 @@ import { generateMonths } from "../utils/generateMonths";
 
 export default function Schedule() {
   const month = generateMonths();
-
   return (
     <Card>
       <CardHeader>

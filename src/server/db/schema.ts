@@ -43,7 +43,7 @@ export const users = createTable(
     firstName: varchar("first_name", { length: 256 }).notNull(),
     lastName: varchar("last_name", { length: 256 }).notNull(),
     email: varchar("email", { length: 100 }).notNull().unique(),
-    isAdmin: boolean("is_admin").default(false).notNull(),
+    role:  varchar("role", { enum: ["basic", "admin"], length: 256 }).notNull().default("basic"),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
