@@ -12,9 +12,6 @@ import DaysContent from "./components/DaysContent";
 import HoursContent from "./components/HoursContent";
 import ReservationsContent from "./components/ReservationsContent";
 import SchedulesContent from "./components/SchedulesContent";
-import { Button } from "../components/ui/button";
-import { RefreshCcw } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 export default function AdminPage() {
   unstable_noStore();

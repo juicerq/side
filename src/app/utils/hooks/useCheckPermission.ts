@@ -5,9 +5,9 @@ import { useStore } from "./useStore";
 export default function useCheckPermission(permission: string) {
   const router = useRouter();
 
-  const { user } = useStore()
+  const { user } = useStore();
 
-  if (user?.role !== permission) {
+  if (user && user?.role !== permission) {
     toast("You are not authorized to view this page", {
       position: "bottom-center",
     });
