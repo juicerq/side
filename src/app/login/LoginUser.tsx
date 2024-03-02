@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Cookies from "js-cookie";
@@ -10,7 +11,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
+import Toast from "../components/Toast";
+import { Checkbox } from "../components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -22,7 +24,6 @@ import {
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { generateCode } from "../utils/generateCode";
-import { Checkbox } from "../components/ui/checkbox";
 
 const FormSchema = z.object({
   email: z.string().email("The email must be a valid email."),
@@ -51,10 +52,11 @@ export function LoginUser() {
       }, 500);
     },
     onError: (err) => {
-      toast(err.message, {
-        description: "Please, try again.",
-        position: "bottom-center",
-      });
+      <Toast
+        message={err.message}
+        icon={<Info className="h-7 w-7 text-[#FFFF]" />}
+        description="Please, try again."
+      />;
     },
   });
 
@@ -63,33 +65,20 @@ export function LoginUser() {
       onSuccess: (response) => {
         if (response.success === true) {
           setcodeSent(true);
-          toast(response.message, {
-            style: {
-              borderLeft: "1px solid #00A86B",
-              color: "white",
-              display: "flex",
-              gap: "1rem",
-              padding: "1rem 1rem",
-            },
-            icon: <MailCheck className="h-7 w-7 text-[#FFFF]" />,
-            description: "It will probably be in your spam box.",
-            position: "bottom-center",
-          });
+          <Toast
+            message={response.message}
+            icon={<MailCheck className="h-7 w-7 text-[#FFFF]" />}
+            description="It will probably be in your spam box."
+            success
+          />;
         }
       },
       onError: (err) => {
-        toast(err.message, {
-          style: {
-            borderLeft: "2px solid #B71C1C",
-            color: "white",
-            display: "flex",
-            gap: "1rem",
-            padding: "1rem 1rem",
-          },
-          icon: <Info className="h-7 w-7 text-[#FFFF]" />,
-          description: "Check the informations and try again.",
-          position: "bottom-center",
-        });
+        <Toast
+          message={err.message}
+          icon={<Info className="h-7 w-7 text-[#FFFF]" />}
+          description="Please, try again."
+        />;
       },
     });
 

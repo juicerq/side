@@ -43,7 +43,9 @@ export const users = createTable(
     firstName: varchar("first_name", { length: 256 }).notNull(),
     lastName: varchar("last_name", { length: 256 }).notNull(),
     email: varchar("email", { length: 100 }).notNull().unique(),
-    role:  varchar("role", { enum: ["basic", "admin"], length: 256 }).notNull().default("basic"),
+    role: varchar("role", { enum: ["basic", "admin"], length: 256 })
+      .notNull()
+      .default("basic"),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -51,7 +53,7 @@ export const users = createTable(
   },
   (users) => ({
     userIndex: uniqueIndex("user_idx").on(users.email),
-  }),
+  })
 );
 
 export const reservations = createTable("reservations", {
@@ -79,12 +81,10 @@ export const schedules = createTable(
   "schedules",
   {
     uuid: uuid("uuid").defaultRandom().primaryKey(),
-    dayUuid: uuid("day_uuid")
-      .notNull()
-      .references(() => scheduleDays.uuid, {
-        onDelete: "set null",
-        onUpdate: "cascade",
-      }),
+    dayUuid: uuid("day_uuid").notNull().references(() => scheduleDays.uuid, {
+      onDelete: "set null",
+      onUpdate: "cascade",
+    }),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -92,7 +92,7 @@ export const schedules = createTable(
   },
   (schedules) => ({
     scheduleIndex: uniqueIndex("schedule_idx").on(schedules.uuid),
-  }),
+  })
 );
 
 export const schedulesRelations = relations(schedules, ({ one, many }) => ({
@@ -106,14 +106,18 @@ export const schedulesRelations = relations(schedules, ({ one, many }) => ({
 export const hoursOnSchedules = createTable(
   "hoursOnSchedules",
   {
-    // uuid: uuid("uuid").defaultRandom().primaryKey(),
     scheduleUuid: uuid("schedule_uuid")
       .notNull()
       .references(() => schedules.uuid, {
         onDelete: "cascade",
         onUpdate: "cascade",
       }),
-    hourUuid: uuid("hour_uuid").notNull(),
+    hourUuid: uuid("hour_uuid")
+      .notNull()
+      .references(() => scheduleHours.uuid, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -121,7 +125,7 @@ export const hoursOnSchedules = createTable(
   },
   (t) => ({
     pk: primaryKey({ columns: [t.scheduleUuid, t.hourUuid] }),
-  }),
+  })
 );
 
 export const hoursOnSchedulesRelations = relations(
@@ -135,7 +139,7 @@ export const hoursOnSchedulesRelations = relations(
       fields: [hoursOnSchedules.hourUuid],
       references: [scheduleHours.uuid],
     }),
-  }),
+  })
 );
 
 export const scheduleHours = createTable("scheduleHours", {

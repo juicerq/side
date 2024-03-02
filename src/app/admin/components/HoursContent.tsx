@@ -1,6 +1,14 @@
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
-import { Clock, Hourglass, Loader2, Plus, Trash } from "lucide-react";
+import {
+  Check,
+  Clock,
+  Hourglass,
+  Info,
+  Loader2,
+  Plus,
+  Trash,
+} from "lucide-react";
 import {
   Drawer,
   DrawerClose,
@@ -12,12 +20,14 @@ import {
   DrawerTrigger,
 } from "../../components/ui/drawer";
 
+import Toast from "@/app/components/Toast";
+import { Card } from "@/app/components/ui/card";
+import { Skeleton } from "@/app/components/ui/skeleton";
 import { inputSchemas } from "@/server/db/ZSchemasAndTypes";
 import { api } from "@/trpc/react";
 import { type RouterInputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import {
   Form,
   FormControl,
@@ -26,8 +36,6 @@ import {
   FormLabel,
   FormMessage,
 } from "../../components/ui/form";
-import { Skeleton } from "@/app/components/ui/skeleton";
-import { Card } from "@/app/components/ui/card";
 
 type CreateHour = RouterInputs["schedule"]["hour"]["create"];
 
@@ -36,7 +44,7 @@ export default function HoursContent() {
     resolver: zodResolver(
       inputSchemas.scheduleHour.pick({
         hour: true,
-      }),
+      })
     ),
   });
 
@@ -52,31 +60,41 @@ export default function HoursContent() {
     api.schedule.hour.create.useMutation({
       onSuccess: (response) => {
         refetchhours();
-        toast("Hour created successfully", {
-          description: `Unfortunatly, you know can work at ${response.hour ?? "BUG!"}`,
-          position: "bottom-center",
-        });
+        <Toast
+          message="Hour created successfully"
+          icon={<Check className="h-7 w-7 text-[#FFFF]" />}
+          description={`Unfortunately, you now can work at ${response.hour ?? "BUG!"}`}
+          success
+          position="bottom-center"
+        />;
       },
       onError: (err) => {
-        toast(err.message, {
-          description: "Please, try again.",
-          position: "bottom-center",
-        });
+        <Toast
+          message={err.message}
+          icon={<Info className="h-7 w-7 text-[#FFFF]" />}
+          description="Please, try again."
+          position="bottom-center"
+        />;
       },
     });
 
   const { mutate: deleteHour } = api.schedule.hour.delete.useMutation({
     onSuccess: () => {
       refetchhours();
-      toast("Hour deleted successfully", {
-        position: "bottom-center",
-      });
+      <Toast
+        message="Hour deleted successfully"
+        icon={<Trash className="h-7 w-7 text-[#FFFF]" />}
+        success
+        position="bottom-center"
+      />;
     },
     onError: (err) => {
-      toast(err.message, {
-        description: "Please, try again.",
-        position: "bottom-center",
-      });
+      <Toast
+        message={err.message}
+        icon={<Info className="h-7 w-7 text-[#FFFF]" />}
+        description="Please, try again."
+        position="bottom-center"
+      />;
     },
   });
   const handleSubmit = ({ hour }: CreateHour) => {
@@ -86,7 +104,7 @@ export default function HoursContent() {
   return (
     <Card className="flex p-4 flex-col items-center gap-4">
       <div className="flex flex-col space-y-4">
-      <h1 className="text-center">Hours</h1>
+        <h1 className="text-center">Hours</h1>
         {fetchingHours ? (
           Array.from({ length: 6 }, (_, i) => (
             <Skeleton key={i} className="h-10 w-64 rounded-md" />
@@ -120,10 +138,7 @@ export default function HoursContent() {
       </div>
       <Drawer>
         <DrawerTrigger>
-          <Button
-            variant="secondary"
-            className="mt-2 w-64 justify-center "
-          >
+          <Button variant="secondary" className="mt-2 w-64 justify-center ">
             <Plus className="mr-2 size-5" />
             New Hour
           </Button>

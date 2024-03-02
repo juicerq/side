@@ -1,6 +1,19 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { api } from "@/trpc/react";
+import { generateCode } from "@/utils/generateCode";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Cookies from "js-cookie";
 import { Info, Loader2, MailCheck } from "lucide-react";
@@ -10,19 +23,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Label } from "@/components/ui/label";
-import { generateCode } from "@/utils/generateCode";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
+import Toast from "../components/Toast";
 
 const CreateAccountSchema = z.object({
   firstName: z
@@ -56,19 +57,23 @@ export default function CreateAccountForm() {
   const { mutate: createAccount, isLoading: creatingAccount } =
     api.user.create.useMutation({
       onSuccess: (response) => {
-        toast("Account successfully created. You are now logged in.", {
-          position: "bottom-center",
-        });
+        <Toast
+          message="Account successfully created. You are now logged in."
+          icon={<MailCheck className="h-7 w-7 text-[#FFFF]" />}
+          description="You will be redirected to the schedule page in a few seconds."
+        />;
+
         Cookies.set("access_token", response.token);
         setTimeout(() => {
-          router.push("/");
+          router.push("/schedule");
         }, 1000);
       },
       onError: (error) => {
-        toast(error.message, {
-          position: "bottom-center",
-          description: "Please, try again.",
-        });
+        <Toast
+          message={error.message}
+          icon={<Info className="h-7 w-7 text-[#FFFF]" />}
+          description="Please, try again."
+        />;
       },
     });
 
@@ -77,33 +82,22 @@ export default function CreateAccountForm() {
       onSuccess: (response) => {
         if (response.success === true) {
           setCodeSent(true);
-          toast(response.message, {
-            style: {
-              borderLeft: "2px solid #00A86B",
-              color: "white",
-              display: "flex",
-              gap: "1rem",
-              padding: "1rem 1rem",
-            },
-            description: "It will probably be in your spam box.",
-            icon: <MailCheck className="h-7 w-7 text-[#FFFF]" />,
-            position: "bottom-center",
-          });
+          <Toast
+            message={response.message}
+            icon={<MailCheck className="h-7 w-7 text-[#FFFF]" />}
+            description="It will probably be in your spam box."
+            success
+            position="bottom-center"
+          />;
         }
       },
       onError: (err) => {
-        toast(err.message, {
-          style: {
-            borderLeft: "2px solid #B71C1C",
-            color: "white",
-            display: "flex",
-            gap: "1rem",
-            padding: "1rem 1rem",
-          },
-          icon: <Info className="h-7 w-7 text-[#FFFF]" />,
-          description: "Please, try again.",
-          position: "bottom-center",
-        });
+        <Toast
+          message={err.message}
+          icon={<Info className="h-7 w-7 text-[#FFFF]" />}
+          description="Please, try again."
+          position="bottom-center"
+        />;
       },
     });
 

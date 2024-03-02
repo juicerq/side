@@ -1,5 +1,5 @@
 import { Button } from "@/app/components/ui/button";
-import { CalendarRange, Loader2, Plus, Trash } from "lucide-react";
+import { CalendarRange, Check, Info, Loader2, Plus, Trash } from "lucide-react";
 import {
   Drawer,
   DrawerClose,
@@ -16,7 +16,6 @@ import { api } from "@/trpc/react";
 import { type RouterInputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import {
   Form,
   FormControl,
@@ -26,6 +25,9 @@ import {
   FormMessage,
 } from "../../components/ui/form";
 
+import Toast from "@/app/components/Toast";
+import { Card } from "@/app/components/ui/card";
+import { Skeleton } from "@/app/components/ui/skeleton";
 import {
   Select,
   SelectContent,
@@ -33,8 +35,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Skeleton } from "@/app/components/ui/skeleton";
-import { Card } from "@/app/components/ui/card";
 
 type CreateDayInput = RouterInputs["schedule"]["day"]["create"];
 
@@ -56,30 +56,39 @@ export default function DaysContent() {
       onSuccess: () => {
         form.reset();
         refetchDays();
-        toast("Day created successfully", {
-          position: "bottom-center",
-        });
+        <Toast
+          message="Day created successfully"
+          icon={<Check className="h-7 w-7 text-[#FFFF]" />}
+          description="You will be redirected to the schedule page in a few seconds."
+          success
+          position="bottom-center"
+        />;
       },
       onError: (err) => {
-        toast(err.message, {
-          description: "Please, try again.",
-          position: "bottom-center",
-        });
+        <Toast
+          message={err.message}
+          icon={<Info className="h-7 w-7 text-[#FFFF]" />}
+          description="Please, try again."
+          position="bottom-center"
+        />;
       },
     });
 
   const { mutate: deleteWeekDay } = api.schedule.day.delete.useMutation({
     onSuccess: () => {
       refetchDays();
-      toast("Day deleted successfully", {
-        position: "bottom-center",
-      });
+      <Toast
+        message="Day deleted successfully"
+        icon={<Trash className="h-7 w-7 text-[#FFFF]" />}
+        success
+      />;
     },
     onError: (err) => {
-      toast(err.message, {
-        description: "Please, try again.",
-        position: "bottom-center",
-      });
+      <Toast
+        message={err.message}
+        icon={<Info className="h-7 w-7 text-[#FFFF]" />}
+        description="Please, try again."
+      />;
     },
   });
 
@@ -89,7 +98,7 @@ export default function DaysContent() {
   return (
     <Card className="flex p-4 flex-col justify-between items-center gap-4">
       <div className="space-y-4">
-      <h1 className="text-center">Days</h1>
+        <h1 className="text-center">Days</h1>
         {fetchingDays ? (
           Array.from({ length: 6 }, (_, i) => (
             <Skeleton key={i} className="h-10 w-64 rounded-md" />
@@ -124,10 +133,7 @@ export default function DaysContent() {
       </div>
       <Drawer>
         <DrawerTrigger>
-          <Button
-            variant="secondary"
-            className="w-64 justify-center"
-          >
+          <Button variant="secondary" className="w-64 justify-center">
             <Plus className="mr-2 size-5" />
             New Day
           </Button>

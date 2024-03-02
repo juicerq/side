@@ -5,12 +5,17 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../components/ui/tabs";
 import { generateMonths } from "../utils/generateMonths";
 import { DaySquare } from "./components/DaySquare";
 
 export default function Schedule() {
-  const {firstMonth, secondMonth, thirdMonth} = generateMonths();
+  const { firstMonth, secondMonth, thirdMonth } = generateMonths();
 
   return (
     <Card>
@@ -36,13 +41,12 @@ export default function Schedule() {
         </div>
       </CardHeader>
       <CardContent className="flex w-[650px] flex-wrap gap-4">
-        <Tabs
-          defaultValue="firstMonth"
-          className="flex w-full flex-col gap-8"
-        >
+        <Tabs defaultValue="firstMonth" className="flex w-full flex-col gap-8">
           <TabsList className="w-fit">
             <TabsTrigger value="firstMonth">{firstMonth[0]?.month}</TabsTrigger>
-            <TabsTrigger value="secondMonth">{secondMonth[0]?.month}</TabsTrigger>
+            <TabsTrigger value="secondMonth">
+              {secondMonth[0]?.month}
+            </TabsTrigger>
             <TabsTrigger value="thirdMonth">{thirdMonth[0]?.month}</TabsTrigger>
           </TabsList>
           <div className="h-36">

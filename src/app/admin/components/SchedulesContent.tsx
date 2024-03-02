@@ -1,5 +1,5 @@
 import { Button } from "@/app/components/ui/button";
-import { CalendarRange, Loader2, Plus, Trash } from "lucide-react";
+import { CalendarRange, Check, Info, Loader2, Plus, Trash } from "lucide-react";
 import {
   Drawer,
   DrawerClose,
@@ -36,6 +36,7 @@ import {
 import { Skeleton } from "@/app/components/ui/skeleton";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Card } from "@/app/components/ui/card";
+import Toast from "@/app/components/Toast";
 
 type CreateScheduleInput = RouterInputs["schedule"]["create"];
 
@@ -45,7 +46,7 @@ export default function SchedulesContent() {
       inputSchemas.schedule.pick({
         hourUuid: true,
         dayUuid: true,
-      }),
+      })
     ),
     defaultValues: {
       hourUuids: [],
@@ -80,19 +81,22 @@ export default function SchedulesContent() {
       onSuccess: () => {
         form.reset();
         refetchSchedules();
-        toast("Schedule created successfully", {
-          position: "bottom-center",
-        });
+        <Toast
+          message="Schedule created successfully"
+          icon={<Check className="h-7 w-7 text-[#FFFF]" />}
+          success
+        />;
       },
       onError: (err) => {
-        toast(err.message, {
-          description: "Please, try again.",
-          position: "bottom-center",
-        });
+        <Toast
+          message={err.message}
+          icon={<Info className="h-7 w-7 text-[#FFFF]" />}
+          description="Please, try again."
+        />;
       },
     });
 
-  const handleSubmit = ({ hourUuids, dayUuid }: CreateScheduleInput) => {
+  const handleSubmit = ({ dayUuid }: CreateScheduleInput) => {
     createSchedule({ hourUuids: form.getValues("hourUuids"), dayUuid });
   };
 
@@ -101,19 +105,24 @@ export default function SchedulesContent() {
     if (form.getValues("hourUuids").includes(value)) {
       form.setValue(
         "hourUuids",
-        form.getValues("hourUuids").filter((hour) => hour !== value),
+        form.getValues("hourUuids").filter((hour) => hour !== value)
       );
-      return toast("Hour already exists", {
-        position: "bottom-right",
-      });
+      return (
+        <Toast
+          message="Hour already exists"
+          icon={<Info className="h-7 w-7 text-[#FFFF]" />}
+        />
+      );
     }
     form.setValue("hourUuids", [...form.getValues("hourUuids"), value]);
   };
 
+  console.log(data?.allSchedules);
+
   return (
     <Card className="flex p-4 flex-col items-center justify-between gap-4">
       <div className="space-y-4">
-      <h1 className="text-center">Your Schedules</h1>
+        <h1 className="text-center">Your Schedules</h1>
         {fetchingSchedules ? (
           Array.from({ length: 6 }, (_, i) => (
             <Skeleton key={i} className="h-10 w-64 rounded-md" />
@@ -148,12 +157,9 @@ export default function SchedulesContent() {
       </div>
       <Drawer>
         <DrawerTrigger>
-          <Button
-            variant="secondary"
-            className="mt-2 w-64 justify-center"
-          >
+          <Button variant="secondary" className="mt-2 w-64 justify-center">
             <Plus className="size-5 mr-2" />
-             New Schedule
+            New Schedule
           </Button>
         </DrawerTrigger>
         <DrawerContent className="flex flex-col items-center justify-between">
@@ -177,28 +183,29 @@ export default function SchedulesContent() {
                       <FormItem>
                         <FormLabel>Schedule Day</FormLabel>
                         <FormControl>
-                          {data?.daysOptions?.length ?
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <SelectTrigger className="w-[180px]">
-                              <SelectValue placeholder="Choose Day" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {data?.daysOptions?.map((day, i) => (
-                                <SelectItem key={i} value={day.uuid}>
-                                  {day.weekDay}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select> : (
+                          {data?.daysOptions?.length ? (
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
+                              <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Choose Day" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {data?.daysOptions?.map((day, i) => (
+                                  <SelectItem key={i} value={day.uuid}>
+                                    {day.weekDay}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          ) : (
                             <div className="my-4 flex w-64 justify-center rounded-md bg-primary-foreground border px-3 py-1 text-primary">
-                                <div className="flex items-center gap-2">
-                                  <CalendarRange className="h-5 w-5" />
-                                  No hours found
-                                </div>
+                              <div className="flex items-center gap-2">
+                                <CalendarRange className="h-5 w-5" />
+                                No hours found
                               </div>
+                            </div>
                           )}
                         </FormControl>
                         <FormMessage />
@@ -213,16 +220,18 @@ export default function SchedulesContent() {
                         <FormLabel>Schedule Hour</FormLabel>
                         <FormControl>
                           <ToggleGroup type="multiple">
-                            {data?.hoursOptions?.length ? data?.hoursOptions?.map((hour, i) => (
-                              <ToggleGroupItem
-                                value={hour.uuid}
-                                aria-label="Toggle bold"
-                                key={i}
-                                onClick={() => handleAddHour(hour.uuid)}
-                              >
-                                {hour.hour}
-                              </ToggleGroupItem>
-                            )) : (
+                            {data?.hoursOptions?.length ? (
+                              data?.hoursOptions?.map((hour, i) => (
+                                <ToggleGroupItem
+                                  value={hour.uuid}
+                                  aria-label="Toggle bold"
+                                  key={i}
+                                  onClick={() => handleAddHour(hour.uuid)}
+                                >
+                                  {hour.hour}
+                                </ToggleGroupItem>
+                              ))
+                            ) : (
                               <div className="my-4 flex w-64 justify-center rounded-md bg-primary-foreground border px-3 py-1 text-primary">
                                 <div className="flex items-center gap-2">
                                   <CalendarRange className="h-5 w-5" />

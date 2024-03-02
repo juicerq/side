@@ -1,13 +1,11 @@
-import { inputSchemas } from "@/server/db/ZSchemasAndTypes";
-import { adminProcedure, createTRPCRouter, publicProcedure } from "../trpc";
-import { scheduleDaysRouter } from "./day";
-import { scheduleHourRouter } from "./hour";
-import { SchedulesUtils } from "../utils/SchedulesUtils";
 import { db } from "@/server/db";
-import { scheduleDays, scheduleHours, schedules } from "@/server/db/schema";
-import { eq } from "drizzle-orm";
+import { inputSchemas } from "@/server/db/ZSchemasAndTypes";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import { adminProcedure, createTRPCRouter } from "../trpc";
+import { SchedulesUtils } from "../utils/SchedulesUtils";
+import { scheduleDaysRouter } from "./day";
+import { scheduleHourRouter } from "./hour";
 
 export const scheduleRouter = createTRPCRouter({
   create: adminProcedure
@@ -33,7 +31,7 @@ export const scheduleRouter = createTRPCRouter({
       });
     }),
 
-  getAll: adminProcedure.query(async ({ ctx }) => {
+  getAll: adminProcedure.query(() => {
     return SchedulesUtils.getAll();
   }),
 
