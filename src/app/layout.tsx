@@ -10,7 +10,6 @@ import Navbar from "./components/Navbar";
 import UserProvider from "./components/UserProvider";
 import dayjs from "dayjs";
 
-
 const roboto = Roboto({
   weight: ["400", "500", "700"],
   subsets: ["latin"],
@@ -29,7 +28,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-
   dayjs.locale("pt-br");
 
   return (
@@ -40,9 +38,7 @@ export default function RootLayout({
             <ThemeProvider attribute="class" enableSystem defaultTheme="dark">
               <Navbar />
               <Toaster />
-              <UserProvider>
-              {children}
-              </UserProvider>
+              <UserProvider>{children}</UserProvider>
             </ThemeProvider>
           </TRPCReactProvider>
           <Analytics />

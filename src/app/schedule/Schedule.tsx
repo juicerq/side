@@ -1,3 +1,6 @@
+"use client";
+
+import { api } from "@/trpc/react";
 import {
   Card,
   CardContent,
@@ -17,6 +20,8 @@ import { DaySquare } from "./components/DaySquare";
 export default function Schedule() {
   const { firstMonth, secondMonth, thirdMonth } = generateMonths();
 
+  const { data: schedules } = api.schedule.getAll.useQuery();
+
   return (
     <Card>
       <CardHeader>
@@ -31,11 +36,11 @@ export default function Schedule() {
           <div className="flex flex-col justify-between">
             <div className="flex items-center gap-1">
               <div className="h-2 w-2 rounded-md bg-emerald-500" />
-              <p className="text-xs text-muted-foreground">Disponível</p>
+              <p className="text-xs text-muted-foreground">Available</p>
             </div>
             <div className="flex items-center gap-1">
               <div className="h-2 w-2 rounded-md bg-red-500" />
-              <p className="text-xs text-muted-foreground">Preenchido</p>
+              <p className="text-xs text-muted-foreground">Unavailable</p>
             </div>
           </div>
         </div>
@@ -54,9 +59,13 @@ export default function Schedule() {
               value="firstMonth"
               className="flex flex-wrap mt-0 items-center gap-2"
             >
-              {firstMonth.map((day, i) => (
-                <DaySquare key={i} day={day.day} />
-              ))}
+              {firstMonth.map((day, i) => {
+                const schedule = schedules?.find(
+                  (s) => s.day.weekDay === day.weekDay
+                );
+
+                return <DaySquare key={i} day={day} />;
+              })}
             </TabsContent>
 
             <TabsContent
@@ -64,7 +73,7 @@ export default function Schedule() {
               className="flex flex-wrap mt-0 items-center gap-2"
             >
               {secondMonth.map((day, i) => (
-                <DaySquare key={i} day={day.day} />
+                <DaySquare key={i} day={day} />
               ))}
             </TabsContent>
             <TabsContent
@@ -72,7 +81,7 @@ export default function Schedule() {
               className="flex flex-wrap mt-0 items-center gap-2"
             >
               {thirdMonth.map((day, i) => (
-                <DaySquare key={i} day={day.day} />
+                <DaySquare key={i} day={day} />
               ))}
             </TabsContent>
           </div>
