@@ -10,7 +10,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Button } from "@components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -18,11 +18,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@components/ui/form";
-import { Label } from "@components/ui/label";
-import { generateCode } from "@utils/generateCode";
-import { Checkbox } from "@components/ui/checkbox";
-import { Input } from "@components/ui/input";
+} from "@/components/ui/form";
+import { Label } from "@/components/ui/label";
+import { generateCode } from "@/utils/generateCode";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 
 const CreateAccountSchema = z.object({
   firstName: z
