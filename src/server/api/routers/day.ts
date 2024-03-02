@@ -1,7 +1,6 @@
 import { inputSchemas, outputSchemas } from "@/server/db/ZSchemasAndTypes";
 import { adminProcedure, createTRPCRouter } from "../trpc";
 import { SchedulesUtils } from "../utils/SchedulesUtils";
-import { z } from "zod";
 
 export const scheduleDaysRouter = createTRPCRouter({
   getAll: adminProcedure.query(async () => {
@@ -10,7 +9,7 @@ export const scheduleDaysRouter = createTRPCRouter({
 
   create: adminProcedure
     .input(inputSchemas.scheduleDay.pick({ weekDay: true }))
-    .output(outputSchemas.scheduleDay)
+    .output(outputSchemas.scheduleDay.required())
     .mutation(async ({ input }) => {
       return await SchedulesUtils.day.create({
         weekDay: input.weekDay,
@@ -18,13 +17,8 @@ export const scheduleDaysRouter = createTRPCRouter({
     }),
 
   delete: adminProcedure
-    .input(inputSchemas.scheduleDay.pick({ uuid: true }).strict())
-    .output(
-      z.object({
-        deletedSchedule: outputSchemas.schedule,
-        deletedDay: outputSchemas.scheduleDay,
-      })
-    )
+    .input(inputSchemas.scheduleDay.pick({ uuid: true }).required())
+    .output(outputSchemas.scheduleDay.required())
     .mutation(async ({ input }) => {
       return await SchedulesUtils.day.delete({
         uuid: input.uuid,

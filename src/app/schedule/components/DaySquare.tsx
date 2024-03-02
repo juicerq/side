@@ -36,7 +36,7 @@ export function DaySquare({ day, schedules }: DaySquareProps) {
           <Dialog>
             <DialogTrigger asChild>
               <Button
-                className={`hover:bg-primary-foreground bg-transparent ${validDay ? "cursor-pointer text-emerald-600 hover:rounded-lg" : "pointer-events-none text-red-600"} flex h-10 w-10 items-center justify-center rounded-md border text-sm transition-all duration-300 active:scale-110 ${noSchedules && "pointer-events-none text-red-600"}`}
+                className={`hover:bg-primary-foreground bg-transparent ${validDay && "cursor-pointer text-emerald-600 hover:rounded-lg"} flex h-10 w-10 items-center justify-center rounded-md border text-sm transition-all duration-300 active:scale-110 disabled:pointer-events-none disabled:text-red-600`}
                 disabled={!validDay || noSchedules}
               >
                 {day.day}

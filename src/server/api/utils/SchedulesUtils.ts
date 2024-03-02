@@ -1,10 +1,19 @@
 import { db } from "@/server/db";
-import { type Schedule } from "@/server/db/ZSchemasAndTypes";
-import { hoursOnSchedules, schedules } from "@/server/db/schema";
+import {
+  type ScheduleDay,
+  type Schedule,
+  type ScheduleHour,
+} from "@/server/db/ZSchemasAndTypes";
+import {
+  hoursOnSchedules,
+  scheduleDays,
+  scheduleHours,
+  schedules,
+} from "@/server/db/schema";
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
-import { DaysUtils } from "./DayUtils";
 import { takeUniqueOrThrow } from "./DrizzleUtils";
+import { DaysUtils } from "./DayUtils";
 import { HoursUtils } from "./HourUtils";
 
 export const SchedulesUtils = {
@@ -28,6 +37,12 @@ export const SchedulesUtils = {
   },
 
   async delete({ uuid }: { uuid: string }) {
+    if (!uuid)
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Uuid is required to delete a schedule.",
+      });
+
     const deletedSchedule = await db
       .delete(schedules)
       .where(eq(schedules.uuid, uuid))
@@ -41,15 +56,7 @@ export const SchedulesUtils = {
       });
     }
 
-    const deletedHoursOnSchedules = await db
-      .delete(hoursOnSchedules)
-      .where(eq(hoursOnSchedules.scheduleUuid, deletedSchedule.uuid))
-      .returning();
-
-    return {
-      deletedSchedule,
-      deletedHoursOnSchedules,
-    };
+    return deletedSchedule;
   },
 
   async create({

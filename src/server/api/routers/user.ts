@@ -28,7 +28,7 @@ export const userRouter = createTRPCRouter({
     .output(
       z.object({
         token: z.string(),
-      }),
+      })
     )
     .mutation(async ({ input }) => {
       const token = await UserUtils.login({
@@ -46,7 +46,7 @@ export const userRouter = createTRPCRouter({
         email: z.string().email("Email must be an valid email."),
         code: z.string().min(4).max(4, "Code must be 4 characters exactly."),
         type: z.enum(["login", "register"]),
-      }),
+      })
     )
     .mutation(async ({ input }) => {
       const { email, code, type } = input;
@@ -56,11 +56,10 @@ export const userRouter = createTRPCRouter({
     }),
 
   info: publicProcedure
-    .output(
-      inputSchemas.user.strict(),
-    )
+    .output(inputSchemas.user.required())
     .query(({ ctx }) => {
-      if (!ctx.user) throw new TRPCError({ code: "NOT_FOUND", message: "User not found." });
+      if (!ctx.user)
+        throw new TRPCError({ code: "NOT_FOUND", message: "User not found." });
       return ctx.user;
     }),
 

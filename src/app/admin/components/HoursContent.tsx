@@ -1,14 +1,6 @@
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
-import {
-  Check,
-  Clock,
-  Hourglass,
-  Info,
-  Loader2,
-  Plus,
-  Trash,
-} from "lucide-react";
+import { Clock, Hourglass, Loader2, Plus, Trash } from "lucide-react";
 import {
   Drawer,
   DrawerClose,
@@ -20,7 +12,6 @@ import {
   DrawerTrigger,
 } from "../../components/ui/drawer";
 
-import Toast from "@/app/components/Toast";
 import { Card } from "@/app/components/ui/card";
 import { Skeleton } from "@/app/components/ui/skeleton";
 import { inputSchemas } from "@/server/db/ZSchemasAndTypes";
@@ -28,6 +19,7 @@ import { api } from "@/trpc/react";
 import { type RouterInputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import {
   Form,
   FormControl,
@@ -60,41 +52,31 @@ export default function HoursContent() {
     api.schedule.hour.create.useMutation({
       onSuccess: (response) => {
         refetchHours();
-        <Toast
-          message="Hour created successfully"
-          icon={<Check className="h-7 w-7 text-[#FFFF]" />}
-          description={`Unfortunately, you now can work at ${response.hour ?? "BUG!"}`}
-          success
-          position="bottom-center"
-        />;
+        toast("Hour created successfully", {
+          position: "bottom-center",
+          description: `New hour created (${response.hour ?? "BUG!"})`,
+        });
       },
       onError: (err) => {
-        <Toast
-          message={err.message}
-          icon={<Info className="h-7 w-7 text-[#FFFF]" />}
-          description="Please, try again."
-          position="bottom-center"
-        />;
+        toast(err.message, {
+          position: "bottom-center",
+          description: "Please, try again.",
+        });
       },
     });
 
   const { mutate: deleteHour } = api.schedule.hour.delete.useMutation({
     onSuccess: () => {
       refetchHours();
-      <Toast
-        message="Hour deleted successfully"
-        icon={<Trash className="h-7 w-7 text-[#FFFF]" />}
-        success
-        position="bottom-center"
-      />;
+      toast("Hour deleted successfully", {
+        position: "bottom-center",
+      });
     },
     onError: (err) => {
-      <Toast
-        message={err.message}
-        icon={<Info className="h-7 w-7 text-[#FFFF]" />}
-        description="Please, try again."
-        position="bottom-center"
-      />;
+      toast(err.message, {
+        position: "bottom-center",
+        description: "Please, try again.",
+      });
     },
   });
   const handleSubmit = ({ hour }: CreateHour) => {

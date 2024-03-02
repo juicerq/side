@@ -117,7 +117,6 @@ export const hoursOnSchedules = createTable(
     hourUuid: uuid("hour_uuid")
       .notNull()
       .references(() => scheduleHours.uuid, {
-        onDelete: "cascade",
         onUpdate: "cascade",
       }),
     createdAt: timestamp("created_at")

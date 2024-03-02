@@ -36,7 +36,6 @@ import {
 import { Skeleton } from "@/app/components/ui/skeleton";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Card } from "@/app/components/ui/card";
-import Toast from "@/app/components/Toast";
 
 type CreateScheduleInput = RouterInputs["schedule"]["create"];
 
@@ -64,7 +63,7 @@ export default function SchedulesContent() {
   const { mutate: deleteSchedule } = api.schedule.delete.useMutation({
     onSuccess: () => {
       refetchSchedules();
-      toast("schedule deleted successfully", {
+      toast("Schedule deleted successfully", {
         position: "bottom-center",
       });
     },
@@ -81,18 +80,15 @@ export default function SchedulesContent() {
       onSuccess: () => {
         form.reset();
         refetchSchedules();
-        <Toast
-          message="Schedule created successfully"
-          icon={<Check className="h-7 w-7 text-[#FFFF]" />}
-          success
-        />;
+        toast("Schedule created successfully", {
+          position: "bottom-center",
+        });
       },
       onError: (err) => {
-        <Toast
-          message={err.message}
-          icon={<Info className="h-7 w-7 text-[#FFFF]" />}
-          description="Please, try again."
-        />;
+        toast(err.message, {
+          position: "bottom-center",
+          description: "Please, try again.",
+        });
       },
     });
 
@@ -108,10 +104,9 @@ export default function SchedulesContent() {
         form.getValues("hourUuids").filter((hour) => hour !== value)
       );
       return (
-        <Toast
-          message="Hour already exists"
-          icon={<Info className="h-7 w-7 text-[#FFFF]" />}
-        />
+        toast("Hour already exists", {
+          position: "bottom-center",
+        })
       );
     }
     form.setValue("hourUuids", [...form.getValues("hourUuids"), value]);

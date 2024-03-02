@@ -10,8 +10,8 @@ export const scheduleHourRouter = createTRPCRouter({
   }),
 
   create: adminProcedure
-    .input(inputSchemas.scheduleHour)
-    .output(outputSchemas.scheduleHour)
+    .input(inputSchemas.scheduleHour.pick({ hour: true }))
+    .output(outputSchemas.scheduleHour.required())
     .mutation(async ({ input }) => {
       return await SchedulesUtils.hour.create({
         hour: input.hour,
@@ -19,20 +19,14 @@ export const scheduleHourRouter = createTRPCRouter({
     }),
 
   delete: adminProcedure
-    .input(inputSchemas.scheduleHour.pick({ uuid: true }))
+    .input(inputSchemas.scheduleHour.pick({ uuid: true }).required())
     .output(
       z.object({
-        deletedHour: outputSchemas.scheduleHour,
+        deletedHour: outputSchemas.scheduleHour.required(),
         schedulesAfected: z.array(z.string()),
       })
     )
     .mutation(async ({ input }) => {
-      if (!input.uuid) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Uuid is required.",
-        });
-      }
       return await SchedulesUtils.hour.delete({
         uuid: input.uuid,
       });

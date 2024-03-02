@@ -18,14 +18,8 @@ export const scheduleRouter = createTRPCRouter({
     }),
 
   delete: adminProcedure
-    .input(inputSchemas.schedule.pick({ uuid: true }))
+    .input(inputSchemas.schedule.pick({ uuid: true }).required())
     .mutation(async ({ input }) => {
-      if (!input.uuid)
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Uuid is required.",
-        });
-
       return await SchedulesUtils.delete({
         uuid: input.uuid,
       });

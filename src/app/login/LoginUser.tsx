@@ -11,7 +11,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import Toast from "../components/Toast";
 import { Checkbox } from "../components/ui/checkbox";
 import {
   Form,
@@ -52,11 +51,10 @@ export function LoginUser() {
       }, 500);
     },
     onError: (err) => {
-      <Toast
-        message={err.message}
-        icon={<Info className="h-7 w-7 text-[#FFFF]" />}
-        description="Please, try again."
-      />;
+      toast(err.message, {
+        position: "bottom-center",
+        description: "Please, try again.",
+      });
     },
   });
 
@@ -65,20 +63,17 @@ export function LoginUser() {
       onSuccess: (response) => {
         if (response.success === true) {
           setcodeSent(true);
-          <Toast
-            message={response.message}
-            icon={<MailCheck className="h-7 w-7 text-[#FFFF]" />}
-            description="It will probably be in your spam box."
-            success
-          />;
+          toast("Code sent successfully", {
+            position: "bottom-center",
+            description: "It will probably be in your spam box.",
+          });
         }
       },
       onError: (err) => {
-        <Toast
-          message={err.message}
-          icon={<Info className="h-7 w-7 text-[#FFFF]" />}
-          description="Please, try again."
-        />;
+        toast(err.message, {
+          position: "bottom-center",
+          description: "Please, try again.",
+        });
       },
     });
 

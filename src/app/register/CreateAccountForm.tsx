@@ -16,14 +16,13 @@ import { api } from "@/trpc/react";
 import { generateCode } from "@/utils/generateCode";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Cookies from "js-cookie";
-import { Info, Loader2, MailCheck } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import Toast from "../components/Toast";
 
 const CreateAccountSchema = z.object({
   firstName: z
@@ -57,23 +56,21 @@ export default function CreateAccountForm() {
   const { mutate: createAccount, isLoading: creatingAccount } =
     api.user.create.useMutation({
       onSuccess: (response) => {
-        <Toast
-          message="Account successfully created. You are now logged in."
-          icon={<MailCheck className="h-7 w-7 text-[#FFFF]" />}
-          description="You will be redirected to the schedule page in a few seconds."
-        />;
-
+        toast("Account successfully created", {
+          position: "bottom-center",
+          description:
+            "You will be redirected to the schedule page in a few seconds.",
+        });
         Cookies.set("access_token", response.token);
         setTimeout(() => {
           router.push("/schedule");
         }, 1000);
       },
       onError: (error) => {
-        <Toast
-          message={error.message}
-          icon={<Info className="h-7 w-7 text-[#FFFF]" />}
-          description="Please, try again."
-        />;
+        toast(error.message, {
+          position: "bottom-center",
+          description: "Please, try again.",
+        });
       },
     });
 
@@ -82,22 +79,17 @@ export default function CreateAccountForm() {
       onSuccess: (response) => {
         if (response.success === true) {
           setCodeSent(true);
-          <Toast
-            message={response.message}
-            icon={<MailCheck className="h-7 w-7 text-[#FFFF]" />}
-            description="It will probably be in your spam box."
-            success
-            position="bottom-center"
-          />;
+          toast("Code sent successfully", {
+            position: "bottom-center",
+            description: "It will probably be in your spam box.",
+          });
         }
       },
       onError: (err) => {
-        <Toast
-          message={err.message}
-          icon={<Info className="h-7 w-7 text-[#FFFF]" />}
-          description="Please, try again."
-          position="bottom-center"
-        />;
+        toast(err.message, {
+          position: "bottom-center",
+          description: "Please, try again.",
+        });
       },
     });
 

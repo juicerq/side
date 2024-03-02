@@ -33,19 +33,6 @@ export const DaysUtils = {
     if (!uuid)
       throw new TRPCError({ code: "BAD_REQUEST", message: "Missing uuid." });
 
-    const deletedSchedule = await db
-      .delete(schedules)
-      .where(eq(schedules.dayUuid, uuid))
-      .returning()
-      .then(takeUniqueOrThrow);
-
-    const res = await db.transaction(async (tx) => {
-      const deletedRelations = await tx
-        .delete(hoursOnSchedules)
-        .where(eq(hoursOnSchedules.scheduleUuid, deletedSchedule.uuid))
-        .returning()
-        .then(takeUniqueOrThrow);
-
       const deletedDay = await db
         .delete(scheduleDays)
         .where(eq(scheduleDays.uuid, uuid))
@@ -58,12 +45,6 @@ export const DaysUtils = {
           message: "Error when deleting day.",
         });
 
-      return {
-        deletedSchedule,
-        deletedDay,
-      };
-    });
-
-    return res;
+    return deletedDay;
   },
 };

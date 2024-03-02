@@ -52,12 +52,6 @@ export const HoursUtils = {
       where: eq(hoursOnSchedules.scheduleUuid, uuid),
     });
 
-    const deletedRelation = await db
-      .delete(hoursOnSchedules)
-      .where(eq(hoursOnSchedules.hourUuid, uuid))
-      .returning()
-      .then(takeUniqueOrThrow);
-
     return {
       deletedHour,
       schedulesAfected: schedulesAfected.map(

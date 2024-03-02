@@ -25,7 +25,6 @@ import {
   FormMessage,
 } from "../../components/ui/form";
 
-import Toast from "@/app/components/Toast";
 import { Card } from "@/app/components/ui/card";
 import { Skeleton } from "@/app/components/ui/skeleton";
 import {
@@ -36,6 +35,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type CreateDayInput = RouterInputs["schedule"]["day"]["create"];
 
@@ -56,24 +56,18 @@ export default function DaysContent() {
 
   const { mutate: createDay, isLoading: creatingDay } =
     api.schedule.day.create.useMutation({
-      onSuccess: () => {
+      onSuccess: (response) => {
         form.reset();
         refetchDays();
-        <Toast
-          message="Day created successfully"
-          icon={<Check className="h-7 w-7 text-[#FFFF]" />}
-          description="You will be redirected to the schedule page in a few seconds."
-          success
-          position="bottom-center"
-        />;
+        toast("Day created successfully", {
+          position: "bottom-center",
+          description: `New day created (${response.weekDay.charAt(0).toUpperCase() + response.weekDay.slice(1)})`,
+        });
       },
       onError: (err) => {
-        <Toast
-          message={err.message}
-          icon={<Info className="h-7 w-7 text-[#FFFF]" />}
-          description="Please, try again."
-          position="bottom-center"
-        />;
+        toast(err.message, {
+          position: "bottom-center",
+        });
       },
     });
 
@@ -81,18 +75,17 @@ export default function DaysContent() {
     onSuccess: () => {
       refetchDays();
       router.refresh();
-      <Toast
-        message="Day deleted successfully"
-        icon={<Trash className="h-7 w-7 text-[#FFFF]" />}
-        success
-      />;
+      toast("Day deleted successfully", {
+        position: "bottom-center",
+      });
     },
     onError: (err) => {
-      <Toast
-        message={err.message}
-        icon={<Info className="h-7 w-7 text-[#FFFF]" />}
-        description="Please, try again."
-      />;
+      toast(err.message, {
+        style: { borderLeft: "2px solid #B71C1C" },
+        icon: <Info className="h-5 w-5 text-[#FFFF]" />,
+        description: "Please, try again.",
+        position: "bottom-center",
+      });
     },
   });
 
