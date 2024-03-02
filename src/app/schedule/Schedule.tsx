@@ -22,6 +22,7 @@ export default function Schedule() {
 
   const { data: schedules } = api.schedule.getAll.useQuery();
 
+  if (!schedules) return;
   return (
     <Card>
       <CardHeader>
@@ -60,11 +61,13 @@ export default function Schedule() {
               className="flex flex-wrap mt-0 items-center gap-2"
             >
               {firstMonth.map((day, i) => {
-                const schedule = schedules?.find(
-                  (s) => s.day.weekDay === day.weekDay
+                const schedule = schedules.find(
+                  (s) => s.day.weekDay === day.weekDay.toLowerCase()
                 );
 
-                return <DaySquare key={i} day={day} />;
+                console.log(schedule);
+
+                return <DaySquare key={i} day={day} schedules={schedule} />;
               })}
             </TabsContent>
 
@@ -72,17 +75,23 @@ export default function Schedule() {
               value="secondMonth"
               className="flex flex-wrap mt-0 items-center gap-2"
             >
-              {secondMonth.map((day, i) => (
-                <DaySquare key={i} day={day} />
-              ))}
+              {secondMonth.map((day, i) => {
+                const schedule = schedules?.find(
+                  (s) => s.day.weekDay === day.weekDay.toLowerCase()
+                );
+                return <DaySquare key={i} day={day} schedules={schedule} />;
+              })}
             </TabsContent>
             <TabsContent
               value="thirdMonth"
               className="flex flex-wrap mt-0 items-center gap-2"
             >
-              {thirdMonth.map((day, i) => (
-                <DaySquare key={i} day={day} />
-              ))}
+              {thirdMonth.map((day, i) => {
+                const schedule = schedules?.find(
+                  (s) => s.day.weekDay === day.weekDay.toLowerCase()
+                );
+                return <DaySquare key={i} day={day} schedules={schedule} />;
+              })}
             </TabsContent>
           </div>
         </Tabs>
