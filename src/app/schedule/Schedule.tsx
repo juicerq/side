@@ -60,7 +60,7 @@ export default function Schedule() {
               className="flex flex-wrap mt-0 items-center gap-2"
             >
               {firstMonth.map((day, i) => {
-                const schedule = schedules.find(
+                const schedule = schedules?.find(
                   (s) => s.day.weekDay === day.weekDay.toLowerCase()
                 );
 
