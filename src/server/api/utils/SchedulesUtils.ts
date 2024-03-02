@@ -153,7 +153,15 @@ export const SchedulesUtils = {
           message: "Error when deleting hour.",
         });
 
-      db.delete(hoursOnSchedules).where(eq(hoursOnSchedules.hourUuid, uuid));
+      const deletedRelation = await db
+        .delete(hoursOnSchedules)
+        .where(eq(hoursOnSchedules.hourUuid, uuid))
+        .returning()
+        .then(takeUniqueOrThrow);
+
+      const schedulesToDelete = await db.query.schedules.findMany({
+        where: eq(schedules.uuid, deletedRelation.scheduleUuid),
+      });
 
       return deletedHour;
     },
@@ -188,21 +196,39 @@ export const SchedulesUtils = {
       if (!uuid)
         throw new TRPCError({ code: "BAD_REQUEST", message: "Missing uuid." });
 
-      const deletedDay = await db
-        .delete(scheduleDays)
-        .where(eq(scheduleDays.uuid, uuid))
+      const deletedSchedule = await db
+        .delete(schedules)
+        .where(eq(schedules.dayUuid, uuid))
         .returning()
         .then(takeUniqueOrThrow);
 
-      if (!deletedDay)
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Error when deleting day.",
-        });
+      const res = await db.transaction(async (tx) => {
 
-      db.delete(schedules).where(eq(schedules.dayUuid, uuid));
+        const deletedRelations = await tx
+          .delete(hoursOnSchedules)
+          .where(eq(hoursOnSchedules.scheduleUuid, deletedSchedule.uuid))
+          .returning()
+          .then(takeUniqueOrThrow);
 
-      return deletedDay;
+        const deletedDay = await db
+          .delete(scheduleDays)
+          .where(eq(scheduleDays.uuid, uuid))
+          .returning()
+          .then(takeUniqueOrThrow);
+
+        if (!deletedDay)
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Error when deleting day.",
+          });
+
+        return {
+          deletedSchedule,
+          deletedDay,
+        };
+      });
+
+      return res;
     },
   },
 };

@@ -50,7 +50,7 @@ export default function HoursContent() {
 
   const {
     data: hours,
-    refetch: refetchhours,
+    refetch: refetchHours,
     isLoading: fetchingHours,
   } = api.schedule.hour.getAll.useQuery(undefined, {
     refetchOnWindowFocus: false,
@@ -59,7 +59,7 @@ export default function HoursContent() {
   const { mutate: createHour, isLoading: creatingHour } =
     api.schedule.hour.create.useMutation({
       onSuccess: (response) => {
-        refetchhours();
+        refetchHours();
         <Toast
           message="Hour created successfully"
           icon={<Check className="h-7 w-7 text-[#FFFF]" />}
@@ -80,7 +80,7 @@ export default function HoursContent() {
 
   const { mutate: deleteHour } = api.schedule.hour.delete.useMutation({
     onSuccess: () => {
-      refetchhours();
+      refetchHours();
       <Toast
         message="Hour deleted successfully"
         icon={<Trash className="h-7 w-7 text-[#FFFF]" />}

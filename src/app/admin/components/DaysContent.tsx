@@ -35,10 +35,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useRouter } from "next/navigation";
 
 type CreateDayInput = RouterInputs["schedule"]["day"]["create"];
 
 export default function DaysContent() {
+  const router = useRouter();
+
   const form = useForm<CreateDayInput>({
     resolver: zodResolver(inputSchemas.scheduleDay.pick({ weekDay: true })),
   });
@@ -77,6 +80,7 @@ export default function DaysContent() {
   const { mutate: deleteWeekDay } = api.schedule.day.delete.useMutation({
     onSuccess: () => {
       refetchDays();
+      router.refresh();
       <Toast
         message="Day deleted successfully"
         icon={<Trash className="h-7 w-7 text-[#FFFF]" />}

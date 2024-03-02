@@ -82,7 +82,7 @@ export const schedules = createTable(
   {
     uuid: uuid("uuid").defaultRandom().primaryKey(),
     dayUuid: uuid("day_uuid").notNull().references(() => scheduleDays.uuid, {
-      onDelete: "set null",
+      onDelete: "cascade",
       onUpdate: "cascade",
     }),
     createdAt: timestamp("created_at")
