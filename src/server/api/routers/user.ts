@@ -4,6 +4,9 @@ import { UserUtils } from "../utils/UserUtils";
 import { z } from "zod";
 import { inputSchemas } from "@/server/db/ZSchemasAndTypes";
 import { TRPCError } from "@trpc/server";
+import { db } from "@/server/db";
+import { users } from "@/server/db/schema";
+import { eq } from "drizzle-orm";
 
 export const userRouter = createTRPCRouter({
   create: publicProcedure
@@ -21,6 +24,15 @@ export const userRouter = createTRPCRouter({
       });
 
       return { newUser, token };
+    }),
+
+  giveAdmin: publicProcedure
+    .input(inputSchemas.user.pick({ email: true, role: true }))
+    .mutation(async ({ input }) => {
+      await db
+        .update(users)
+        .set({ role: input.role })
+        .where(eq(users.email, input.email));
     }),
 
   login: publicProcedure
