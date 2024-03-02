@@ -22,13 +22,12 @@ export default function Schedule() {
 
   const { data: schedules } = api.schedule.getAll.useQuery();
 
-  if (!schedules) return;
   return (
     <Card>
       <CardHeader>
         <div className="flex justify-between">
           <div>
-            <CardTitle>Schedule your appointment</CardTitle>
+            <CardTitle>Schedule an appointment</CardTitle>
             <CardDescription>
               Choose a day and hour to make an appointment
             </CardDescription>
