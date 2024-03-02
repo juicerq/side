@@ -7,6 +7,7 @@ import {
   users,
 } from "./schema";
 import { z } from "zod";
+import { RouterOutputs } from "@/trpc/shared";
 
 // -- SCHEMAS -- \\
 
@@ -43,3 +44,5 @@ export type SendConfirmationCode = {
   code: string;
   type: string;
 };
+
+export type AllSchedules = RouterOutputs["schedule"]["getAll"];

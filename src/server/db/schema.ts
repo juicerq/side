@@ -81,10 +81,12 @@ export const schedules = createTable(
   "schedules",
   {
     uuid: uuid("uuid").defaultRandom().primaryKey(),
-    dayUuid: uuid("day_uuid").notNull().references(() => scheduleDays.uuid, {
-      onDelete: "cascade",
-      onUpdate: "cascade",
-    }),
+    dayUuid: uuid("day_uuid")
+      .notNull()
+      .references(() => scheduleDays.uuid, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -145,6 +147,7 @@ export const hoursOnSchedulesRelations = relations(
 export const scheduleHours = createTable("scheduleHours", {
   uuid: uuid("uuid").defaultRandom().primaryKey(),
   hour: varchar("hour", { length: 50 }).notNull(),
+  available: boolean("available").notNull().default(true),
   createdAt: timestamp("created_at")
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
