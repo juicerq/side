@@ -1,6 +1,6 @@
 import { db } from "@/server/db";
 import {
-  ScheduleDay,
+  type ScheduleDay,
   type Schedule,
   type ScheduleHour,
 } from "@/server/db/ZSchemasAndTypes";
@@ -16,22 +16,20 @@ import { takeUniqueOrThrow } from "./DrizzleUtils";
 
 export const SchedulesUtils = {
   async getAll() {
-    const allSchedules = await db.query.schedules.findMany(
-      {
-        with: {
-          day: true,
-          hours: {
-            with: {
-              hourUuid: {
-                columns: {
-                  hour: true,
-                },
+    const allSchedules = await db.query.schedules.findMany({
+      with: {
+        day: true,
+        hours: {
+          with: {
+            hourUuid: {
+              columns: {
+                hour: true,
               },
             },
           },
         },
-      }
-    );
+      },
+    });
 
     return allSchedules;
   },
@@ -68,11 +66,11 @@ export const SchedulesUtils = {
     dayUuid: Schedule["dayUuid"];
     hourUuids: string[];
   }) {
-
-    if (!hourUuids.length) throw new TRPCError({
-      code: "BAD_REQUEST",
-      message: "Hour Uuids are required to create a schedule.",
-    })
+    if (!hourUuids.length)
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Hour Uuids are required to create a schedule.",
+      });
 
     const newSchedule = await db
       .insert(schedules)
@@ -83,28 +81,32 @@ export const SchedulesUtils = {
       .onConflictDoNothing()
       .then(takeUniqueOrThrow);
 
-      const hoursUuids: {
-        hourUuid: string,
-        scheduleUuid: string
-        createdAt: Date,
-        updatedAt: Date | null
-      }[] = []
+    const hoursUuids: {
+      hourUuid: string;
+      scheduleUuid: string;
+      createdAt: Date;
+      updatedAt: Date | null;
+    }[] = [];
 
-      await Promise.all(
-        hourUuids.map(async (hourUuid) => {
-          const hourRelation = await db.insert(hoursOnSchedules).values({
+    await Promise.all(
+      hourUuids.map(async (hourUuid) => {
+        const hourRelation = await db
+          .insert(hoursOnSchedules)
+          .values({
             scheduleUuid: newSchedule.uuid,
             hourUuid,
-          }).onConflictDoNothing().returning().then(takeUniqueOrThrow);
-          hoursUuids.push(hourRelation)
-        }),
-      );
+          })
+          .onConflictDoNothing()
+          .returning()
+          .then(takeUniqueOrThrow);
+        hoursUuids.push(hourRelation);
+      })
+    );
 
     return {
       newSchedule,
       hoursUuids,
-    }
-
+    };
   },
 
   // All Hours Utils
@@ -114,16 +116,15 @@ export const SchedulesUtils = {
     },
 
     async create({ hour }: ScheduleHour) {
-      
       const newHour = await db
-      .insert(scheduleHours)
-      .values({
-        hour: hour,
-      })
-      .returning()
-      .onConflictDoNothing()
-      .then(takeUniqueOrThrow);
-      
+        .insert(scheduleHours)
+        .values({
+          hour: hour,
+        })
+        .returning()
+        .onConflictDoNothing()
+        .then(takeUniqueOrThrow);
+
       if (!newHour)
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
@@ -135,7 +136,10 @@ export const SchedulesUtils = {
 
     async delete({ uuid }: { uuid: string }) {
       if (!uuid)
-        throw new TRPCError({ code: "BAD_REQUEST", message: "A UUID is required to delete a hour." });
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "A UUID is required to delete a hour.",
+        });
 
       const deletedHour = await db
         .delete(scheduleHours)
@@ -149,6 +153,8 @@ export const SchedulesUtils = {
           message: "Error when deleting hour.",
         });
 
+      db.delete(hoursOnSchedules).where(eq(hoursOnSchedules.hourUuid, uuid));
+
       return deletedHour;
     },
   },
@@ -160,17 +166,15 @@ export const SchedulesUtils = {
     },
 
     async create({ weekDay }: ScheduleDay) {
-
-      
       const newDay = await db
-      .insert(scheduleDays)
-      .values({
-        weekDay: weekDay,
-      })
-      .returning()
-      .onConflictDoNothing()
-      .then(takeUniqueOrThrow);
-      
+        .insert(scheduleDays)
+        .values({
+          weekDay: weekDay,
+        })
+        .returning()
+        .onConflictDoNothing()
+        .then(takeUniqueOrThrow);
+
       if (!newDay)
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
@@ -195,6 +199,8 @@ export const SchedulesUtils = {
           code: "INTERNAL_SERVER_ERROR",
           message: "Error when deleting day.",
         });
+
+      db.delete(schedules).where(eq(schedules.dayUuid, uuid));
 
       return deletedDay;
     },
