@@ -2,6 +2,7 @@ import { inputSchemas, outputSchemas } from "@/server/db/ZSchemasAndTypes";
 import { adminProcedure, createTRPCRouter } from "../trpc";
 import { SchedulesUtils } from "../utils/SchedulesUtils";
 import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 
 export const scheduleHourRouter = createTRPCRouter({
   getAll: adminProcedure.query(async () => {
@@ -19,7 +20,12 @@ export const scheduleHourRouter = createTRPCRouter({
 
   delete: adminProcedure
     .input(inputSchemas.scheduleHour.pick({ uuid: true }))
-    .output(outputSchemas.scheduleHour)
+    .output(
+      z.object({
+        deletedHour: outputSchemas.scheduleHour,
+        schedulesAfected: z.array(z.string()),
+      })
+    )
     .mutation(async ({ input }) => {
       if (!input.uuid) {
         throw new TRPCError({
