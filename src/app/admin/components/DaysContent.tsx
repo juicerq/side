@@ -32,7 +32,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@components/ui/select";
+} from "@/components/ui/select";
 import { Skeleton } from "@/app/components/ui/skeleton";
 import { Card } from "@/app/components/ui/card";
 
@@ -126,9 +126,9 @@ export default function DaysContent() {
         <DrawerTrigger>
           <Button
             variant="secondary"
-            className=" mt-2 w-64 justify-center"
+            className="w-64 justify-center"
           >
-            <Plus className="mr-2" />
+            <Plus className="mr-2 size-5" />
             New Day
           </Button>
         </DrawerTrigger>

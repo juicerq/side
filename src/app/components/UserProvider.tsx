@@ -2,7 +2,7 @@
 
 import { api } from "@/trpc/react";
 import { ReactNode, useEffect } from "react";
-import { useStore } from "../lib/utils/useStore";
+import { useStore } from "../utils/hooks/useStore";
 import { usePathname, useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 
@@ -24,8 +24,6 @@ export default function UserProvider({children}: UserProviderProps) {
   useEffect(() => {
     if (userData) setUser(userData)
   }, [userData])
-
-  console.log(!!userData)
 
   return (
     <>

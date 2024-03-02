@@ -1,5 +1,4 @@
 import { User } from '@/server/db/ZSchemasAndTypes'
-import { api } from '@/trpc/react'
 import { create } from 'zustand'
 
 type Store = {

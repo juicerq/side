@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Avatar, AvatarFallback } from "./ui/avatar";
-import { useStore } from "../lib/utils/useStore";
+import { useStore } from "../utils/hooks/useStore";
 
 const links = [
   {

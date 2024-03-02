@@ -32,9 +32,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@components/ui/select";
+} from "@/components/ui/select";
 import { Skeleton } from "@/app/components/ui/skeleton";
-import { ToggleGroup, ToggleGroupItem } from "@components/ui/toggle-group";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Card } from "@/app/components/ui/card";
 
 type CreateScheduleInput = RouterInputs["schedule"]["create"];
@@ -93,17 +93,19 @@ export default function SchedulesContent() {
     });
 
   const handleSubmit = ({ hourUuids, dayUuid }: CreateScheduleInput) => {
-    console.log(hourUuids);
     createSchedule({ hourUuids: form.getValues("hourUuids"), dayUuid });
   };
 
   const handleAddHour = (value: string) => {
+    // If the hour already exists, throw an error
     if (form.getValues("hourUuids").includes(value)) {
       form.setValue(
         "hourUuids",
         form.getValues("hourUuids").filter((hour) => hour !== value),
       );
-      return;
+      return toast("Hour already exists", {
+        position: "bottom-right",
+      });
     }
     form.setValue("hourUuids", [...form.getValues("hourUuids"), value]);
   };

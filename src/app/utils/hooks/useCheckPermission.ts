@@ -1,6 +1,3 @@
-"use client";
-
-import { api } from "@/trpc/react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useStore } from "./useStore";

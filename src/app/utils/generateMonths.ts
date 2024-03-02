@@ -1,30 +1,54 @@
 export function generateMonths() {
-  const date = new Date();
+  type Month = {
+    day: number;
+    weekDay: string;
+    month: string | undefined;
+  };
+  const today = new Date();
 
-  function getNumberOfDaysInMonth(month: number, year: number): number {
-    const date = new Date(year, month, 0);
-    return date.getDate();
-  }
+  const firstMonth: Month[] = [];
+  const secondMonth: Month[] = [];
+  const thirdMonth: Month[] = [];
 
-  const monthDays = getNumberOfDaysInMonth(
-    date.getMonth() + 1,
-    date.getFullYear(),
-  );
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+ ];
 
-  const firstMonth: { day: number; weekDay: string }[] = [];
 
-  for (let i = 1; i <= monthDays; i++) {
-    const day = {
-      day: i,
-      weekDay: new Date(
-        date.getFullYear(),
-        date.getMonth() + 1,
-        i - 1,
-      ).toLocaleDateString("pt-BR", { weekday: "long" }),
-    };
+  for (let i = 0; i < 3; i++) {
+    const currentMonth = (today.getMonth() + i) % 12; // Ensuring currentMonth stays within 0-11 range
+    const year = today.getFullYear();
+    const monthDays = getNumberOfDaysInMonth(currentMonth + 1, year);
+    const month = [];
 
-    firstMonth.push(day);
-  }
+    const monthName = monthNames[currentMonth % 12]; // Ensure currentMonth index stays within 0-11 range
 
-  return firstMonth;
+    for (let day = 1; day <= monthDays; day++) {
+      const weekDay = new Date(year, currentMonth, day).toLocaleDateString(undefined, { weekday: "long" });
+      month.push({ day, weekDay, month: monthName });
+    }
+
+    switch (i) {
+      case 0:
+        month.map((day) => firstMonth.push(day));
+        break;
+      case 1:
+        month.map((day) => secondMonth.push(day));
+        break;
+      case 2:
+        month.map((day) => thirdMonth.push(day));
+        break;
+    }
+ }
+
+  return {
+    firstMonth,
+    secondMonth,
+    thirdMonth
+  };
+}
+
+function getNumberOfDaysInMonth(month: number, year: number): number {
+  return new Date(year, month, 0).getDate();
 }

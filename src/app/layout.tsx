@@ -8,6 +8,7 @@ import { Toaster } from "./components/ui/sonner";
 import { Analytics } from "@vercel/analytics/react";
 import Navbar from "./components/Navbar";
 import UserProvider from "./components/UserProvider";
+import dayjs from "dayjs";
 
 
 const roboto = Roboto({
@@ -29,6 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
 
+  dayjs.locale("pt-br");
 
   return (
     <html lang="en">

@@ -7,7 +7,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "../components/ui/tabs";
-import useCheckPermission from "../lib/utils/useCheckPermission";
+import useCheckPermission from "../utils/hooks/useCheckPermission";
 import DaysContent from "./components/DaysContent";
 import HoursContent from "./components/HoursContent";
 import ReservationsContent from "./components/ReservationsContent";
