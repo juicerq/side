@@ -5,24 +5,24 @@ import { ReactNode, useEffect } from "react";
 import { useStore } from "../utils/hooks/useStore";
 import { usePathname, useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import useIsLogged from "./useIsLogged";
 
 interface UserProviderProps {
   children: ReactNode;
 }
 
 export default function UserProvider({ children }: UserProviderProps) {
-  const { data: isLogged, isLoading } = api.user.verify.useQuery();
+  useIsLogged();
   const pathname = usePathname();
-  const router = useRouter();
   const safePathname = pathname === "/login" || pathname === "/register";
 
-  if (!isLogged && !isLoading && !safePathname) router.push("/login");
-
-  const { data: userData } = api.user.info.useQuery();
+  const { data: userData, isLoading: loadingUser } = api.user.info.useQuery();
   const { setUser } = useStore();
 
   useEffect(() => {
-    if (userData) setUser(userData);
+    if (userData) {
+      setUser(userData);
+    }
   }, [userData]);
 
   return (
