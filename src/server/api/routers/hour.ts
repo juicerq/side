@@ -11,7 +11,7 @@ export const scheduleHourRouter = createTRPCRouter({
 
   create: adminProcedure
     .input(inputSchemas.scheduleHour.pick({ hour: true }))
-    .output(outputSchemas.scheduleHour.required())
+    .output(outputSchemas.scheduleHour)
     .mutation(async ({ input }) => {
       return await SchedulesUtils.hour.create({
         hour: input.hour,
@@ -22,7 +22,7 @@ export const scheduleHourRouter = createTRPCRouter({
     .input(inputSchemas.scheduleHour.pick({ uuid: true }).required())
     .output(
       z.object({
-        deletedHour: outputSchemas.scheduleHour.required(),
+        deletedHour: outputSchemas.scheduleHour,
         schedulesAfected: z.array(z.string()),
       })
     )

@@ -46,6 +46,9 @@ export const users = createTable(
     role: varchar("role", { enum: ["basic", "admin"], length: 256 })
       .notNull()
       .default("basic"),
+    theme: varchar("theme", { enum: ["dark", "light"], length: 256 })
+      .notNull()
+      .default("dark"),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),

@@ -1,5 +1,5 @@
 import { db } from "@/server/db";
-import { inputSchemas } from "@/server/db/ZSchemasAndTypes";
+import { inputSchemas, outputSchemas } from "@/server/db/ZSchemasAndTypes";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { adminProcedure, createTRPCRouter, publicProcedure } from "../trpc";
@@ -18,7 +18,7 @@ export const scheduleRouter = createTRPCRouter({
     }),
 
   delete: adminProcedure
-    .input(inputSchemas.schedule.pick({ uuid: true }).required())
+    .input(outputSchemas.schedule.pick({ uuid: true }))
     .mutation(async ({ input }) => {
       return await SchedulesUtils.delete({
         uuid: input.uuid,

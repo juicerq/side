@@ -20,11 +20,11 @@ export const inputSchemas = {
 };
 
 export const outputSchemas = {
-  user: inputSchemas.user.strict(),
-  schedule: inputSchemas.schedule.strict(),
-  reservation: inputSchemas.reservation.strict(),
-  scheduleHour: inputSchemas.scheduleHour.strict(),
-  scheduleDay: inputSchemas.scheduleDay.strict(),
+  user: inputSchemas.user.required(),
+  schedule: inputSchemas.schedule.required(),
+  reservation: inputSchemas.reservation.required(),
+  scheduleHour: inputSchemas.scheduleHour.required(),
+  scheduleDay: inputSchemas.scheduleDay.required(),
 };
 
 // -- TYPES -- \\

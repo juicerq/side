@@ -35,7 +35,7 @@ export default function RootLayout({
       <body className={`font-roboto ${roboto.variable}`}>
         <>
           <TRPCReactProvider>
-            <ThemeProvider attribute="class" enableSystem defaultTheme="dark">
+            <ThemeProvider attribute="class" enableSystem>
               <Navbar />
               <Toaster />
               <UserProvider>{children}</UserProvider>

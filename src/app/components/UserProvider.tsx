@@ -2,7 +2,7 @@
 
 import { api } from "@/trpc/react";
 import { ReactNode, useEffect } from "react";
-import { useStore } from "../utils/hooks/useStore";
+import { useStore } from "./hooks/useStore";
 import { usePathname, useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import useIsLogged from "./useIsLogged";

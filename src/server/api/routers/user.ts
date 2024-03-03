@@ -2,7 +2,7 @@ import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 
 import { UserUtils } from "../utils/UserUtils";
 import { z } from "zod";
-import { inputSchemas } from "@/server/db/ZSchemasAndTypes";
+import { inputSchemas, outputSchemas } from "@/server/db/ZSchemasAndTypes";
 import { TRPCError } from "@trpc/server";
 import { db } from "@/server/db";
 import { users } from "@/server/db/schema";
@@ -12,7 +12,7 @@ import { takeUniqueOrThrow } from "../utils/DrizzleUtils";
 export const userRouter = createTRPCRouter({
   create: publicProcedure
     .input(inputSchemas.user)
-    .output(z.object({ newUser: inputSchemas.user, token: z.string() }))
+    .output(z.object({ newUser: outputSchemas.user, token: z.string() }))
     .mutation(async ({ input }) => {
       const newUser = await UserUtils.create({
         firstName: input.firstName,
@@ -27,14 +27,19 @@ export const userRouter = createTRPCRouter({
       return { newUser, token };
     }),
 
-  changeRole: publicProcedure
-    .input(inputSchemas.user.pick({ email: true, role: true }).required())
-    .output(z.object({ updatedUser: inputSchemas.user.required() }))
+  update: publicProcedure
+    .input(
+      z.object({
+        uuid: z.string(),
+        update: inputSchemas.user.pick({ role: true, theme: true }).optional(),
+      })
+    )
+    .output(z.object({ updatedUser: outputSchemas.user }))
     .mutation(async ({ input }) => {
       const updatedUser = await db
         .update(users)
-        .set({ role: input.role })
-        .where(eq(users.email, input.email))
+        .set({ role: input.update?.role, theme: input.update?.theme })
+        .where(eq(users.uuid, input.uuid))
         .returning()
         .then(takeUniqueOrThrow);
 
@@ -75,13 +80,11 @@ export const userRouter = createTRPCRouter({
       return res;
     }),
 
-  info: publicProcedure
-    .output(inputSchemas.user.required())
-    .query(({ ctx }) => {
-      if (!ctx.user)
-        throw new TRPCError({ code: "NOT_FOUND", message: "User not found." });
-      return ctx.user;
-    }),
+  info: publicProcedure.output(outputSchemas.user).query(({ ctx }) => {
+    if (!ctx.user)
+      throw new TRPCError({ code: "NOT_FOUND", message: "User not found." });
+    return ctx.user;
+  }),
 
   verify: publicProcedure.query(({ ctx }) => {
     if (ctx.user?.uuid) return true;
