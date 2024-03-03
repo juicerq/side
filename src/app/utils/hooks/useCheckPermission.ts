@@ -7,10 +7,12 @@ export default function useCheckPermission(permission: string) {
 
   const { user } = useStore();
 
-  if (user && user?.role !== permission) {
+  if (user && !(user?.role === permission)) {
     toast("You are not authorized to view this page", {
       position: "bottom-center",
     });
-    router.push("/schedule");
+    return router.push("/schedule");
   }
+
+  return true;
 }
