@@ -9,9 +9,8 @@ export default function HourInfo({ hour }: HourInfoProps) {
   return (
     <div className="flex flex-wrap bg-primary-foreground p-4 rounded-lg mt-4 gap-6">
       {hour.map((hour) => (
-        <div className="flex items-center gap-2">
+        <div key={hour.uuid} className="flex items-center gap-2">
           <Button
-            key={hour.uuid}
             variant="secondary"
             className="flex bg-background items-center gap-2"
           >
