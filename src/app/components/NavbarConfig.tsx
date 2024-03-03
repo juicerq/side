@@ -18,10 +18,6 @@ export function NavbarConfig({ user, setUser }: NavbarConfigProps) {
   const { mutate: updateUser } = api.user.update.useMutation({
     onSuccess: (response) => {
       setUser(response.updatedUser);
-      toast("Role changed successfully", {
-        position: "bottom-center",
-        description: "Your new role is " + response.updatedUser.role,
-      });
     },
     onError: (err) => {
       toast(err.message, {

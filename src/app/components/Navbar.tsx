@@ -45,7 +45,7 @@ export default function Navbar() {
         </div>
         <div className="flex items-center justify-end gap-2">
           <Avatar>
-            <AvatarFallback className="bg-primary-foreground text-primary uppercase">
+            <AvatarFallback className="bg-secondary text-primary uppercase">
               {user?.firstName[0]}
               {user?.lastName[0]}
             </AvatarFallback>
