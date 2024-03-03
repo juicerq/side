@@ -2,7 +2,7 @@ import { db } from "@/server/db";
 import { inputSchemas } from "@/server/db/ZSchemasAndTypes";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { adminProcedure, createTRPCRouter } from "../trpc";
+import { adminProcedure, createTRPCRouter, publicProcedure } from "../trpc";
 import { SchedulesUtils } from "../utils/SchedulesUtils";
 import { scheduleDaysRouter } from "./day";
 import { scheduleHourRouter } from "./hour";
@@ -25,7 +25,7 @@ export const scheduleRouter = createTRPCRouter({
       });
     }),
 
-  getAll: adminProcedure.query(() => {
+  getAll: publicProcedure.query(() => {
     return SchedulesUtils.getAll();
   }),
 

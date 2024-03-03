@@ -12,10 +12,15 @@ import DaysContent from "./components/DaysContent";
 import HoursContent from "./components/HoursContent";
 import ReservationsContent from "./components/ReservationsContent";
 import SchedulesContent from "./components/SchedulesContent";
+import { useStore } from "../utils/hooks/useStore";
 
 export default function AdminPage() {
   unstable_noStore();
   useCheckPermission("admin");
+
+  const { user } = useStore();
+
+  if (!(user?.role === "admin")) return;
 
   return (
     <div className="flex min-h-screen w-screen items-center justify-center">
