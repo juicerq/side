@@ -50,7 +50,7 @@ export function NavbarConfig({ user, setUser }: NavbarConfigProps) {
               <div className="space-y-0.5">
                 <p className="text-sm">Admin</p>
                 <p className="text-xs text-muted-foreground">
-                  With every power comes responsibility
+                  With great power comes great responsibility
                 </p>
               </div>
             </div>
