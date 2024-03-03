@@ -15,6 +15,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import HourInfo from "./HourInfo";
 
 const today = new Date().getDate();
 
@@ -28,6 +29,8 @@ export function DaySquare({ day, schedules }: DaySquareProps) {
   const noSchedules = !schedules;
 
   console.log(schedules);
+
+  const allHours = schedules?.hours.map((hour) => hour.hourUuid);
 
   return (
     <TooltipProvider delayDuration={100}>
@@ -48,8 +51,7 @@ export function DaySquare({ day, schedules }: DaySquareProps) {
                   <p>Schedules for {day.weekDay}</p>
                 </DialogTitle>
                 <DialogDescription>
-                  This action cannot be undone. This will permanently delete
-                  your account and remove your data from our servers.
+                  {allHours && <HourInfo hour={allHours} />}
                 </DialogDescription>
               </DialogHeader>
             </DialogContent>

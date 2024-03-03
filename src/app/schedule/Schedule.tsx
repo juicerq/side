@@ -29,7 +29,7 @@ export default function Schedule() {
           <div>
             <CardTitle>Schedule an appointment</CardTitle>
             <CardDescription>
-              Choose a day and hour to make an appointment
+              Select the day you want to schedule an appointment
             </CardDescription>
           </div>
 

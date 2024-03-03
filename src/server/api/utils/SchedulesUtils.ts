@@ -23,11 +23,7 @@ export const SchedulesUtils = {
         day: true,
         hours: {
           with: {
-            hourUuid: {
-              columns: {
-                hour: true,
-              },
-            },
+            hourUuid: true,
           },
         },
       },
