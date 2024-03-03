@@ -7,6 +7,7 @@ import { TRPCError } from "@trpc/server";
 import { db } from "@/server/db";
 import { users } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
+import { takeUniqueOrThrow } from "../utils/DrizzleUtils";
 
 export const userRouter = createTRPCRouter({
   create: publicProcedure
@@ -26,13 +27,20 @@ export const userRouter = createTRPCRouter({
       return { newUser, token };
     }),
 
-  giveAdmin: publicProcedure
-    .input(inputSchemas.user.pick({ email: true, role: true }))
+  changeRole: publicProcedure
+    .input(inputSchemas.user.pick({ email: true, role: true }).required())
+    .output(z.object({ updatedUser: inputSchemas.user.required() }))
     .mutation(async ({ input }) => {
-      await db
+      const updatedUser = await db
         .update(users)
         .set({ role: input.role })
-        .where(eq(users.email, input.email));
+        .where(eq(users.email, input.email))
+        .returning()
+        .then(takeUniqueOrThrow);
+
+      return {
+        updatedUser,
+      };
     }),
 
   login: publicProcedure

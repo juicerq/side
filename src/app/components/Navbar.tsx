@@ -8,6 +8,7 @@ import { useStore } from "../utils/hooks/useStore";
 import { Checkbox } from "./ui/checkbox";
 import { Label } from "./ui/label";
 import { api } from "@/trpc/react";
+import { toast } from "sonner";
 
 const links = [
   {
@@ -23,11 +24,24 @@ const links = [
 export default function Navbar() {
   const router = useRouter();
   const path = usePathname();
-  const { user } = useStore();
+  const { user, setUser } = useStore();
   const shouldRender =
     path !== "/login" && path !== "/register" && path !== "/";
 
-  const { mutate: giveAdmin, isLoading } = api.user.giveAdmin.useMutation();
+  const { mutate: changeRole, isLoading } = api.user.changeRole.useMutation({
+    onSuccess: (response) => {
+      setUser(response.updatedUser);
+      toast("Role changed successfully", {
+        position: "bottom-center",
+        description: "Your new role is " + response.updatedUser.role,
+      });
+    },
+    onError: (err) => {
+      toast(err.message, {
+        position: "bottom-center",
+      });
+    },
+  });
 
   if (shouldRender && user)
     return (
@@ -47,10 +61,10 @@ export default function Navbar() {
           <div className="flex items-center gap-2">
             <Checkbox
               id="checkbox"
-              checked={user?.role === "admin"}
+              checked={user.role === "admin"}
               disabled={isLoading}
               onCheckedChange={(e) =>
-                giveAdmin({
+                changeRole({
                   email: user.email,
                   role: e.valueOf() ? "admin" : "basic",
                 })

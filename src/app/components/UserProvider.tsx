@@ -16,7 +16,7 @@ export default function UserProvider({ children }: UserProviderProps) {
   const pathname = usePathname();
   const safePathname = pathname === "/login" || pathname === "/register";
 
-  const { data: userData, isLoading: loadingUser } = api.user.info.useQuery();
+  const { data: userData } = api.user.info.useQuery();
   const { setUser } = useStore();
 
   useEffect(() => {
