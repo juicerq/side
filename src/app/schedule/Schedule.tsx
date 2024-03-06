@@ -16,6 +16,7 @@ import {
 } from "../components/ui/tabs";
 import { generateMonths } from "../utils/generateMonths";
 import { DaySquare } from "./components/DaySquare";
+import { Skeleton } from "../components/ui/skeleton";
 
 export default function Schedule() {
   const { firstMonth, secondMonth, thirdMonth } = generateMonths();
@@ -23,8 +24,6 @@ export default function Schedule() {
   const { data: schedules } = api.schedule.getAll.useQuery();
 
   const { data: appointments } = api.appointment.getAll.useQuery();
-
-  if (!appointments) return;
 
   return (
     <Card>
@@ -49,76 +48,89 @@ export default function Schedule() {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="flex w-[650px] flex-wrap gap-4">
-        <Tabs defaultValue="firstMonth" className="flex w-full flex-col gap-8">
-          <TabsList className="w-fit">
-            <TabsTrigger value="firstMonth">{firstMonth[0]?.month}</TabsTrigger>
-            <TabsTrigger value="secondMonth">
-              {secondMonth[0]?.month}
-            </TabsTrigger>
-            <TabsTrigger value="thirdMonth">{thirdMonth[0]?.month}</TabsTrigger>
-          </TabsList>
-          <div className="h-36">
-            <TabsContent
-              value="firstMonth"
-              className="flex flex-wrap mt-0 items-center gap-2"
-            >
-              {firstMonth.map((day, i) => {
-                const schedule = schedules?.find(
-                  (s) => s.day.weekDay === day.weekDay.toLowerCase()
-                );
+      {appointments ? (
+        <CardContent className="flex w-[650px] flex-wrap gap-4">
+          <Tabs
+            defaultValue="firstMonth"
+            className="flex w-full flex-col gap-8"
+          >
+            <TabsList className="w-fit">
+              <TabsTrigger value="firstMonth">
+                {firstMonth[0]?.month}
+              </TabsTrigger>
+              <TabsTrigger value="secondMonth">
+                {secondMonth[0]?.month}
+              </TabsTrigger>
+              <TabsTrigger value="thirdMonth">
+                {thirdMonth[0]?.month}
+              </TabsTrigger>
+            </TabsList>
+            <div className="h-36">
+              <TabsContent
+                value="firstMonth"
+                className="flex flex-wrap mt-0 items-center gap-2"
+              >
+                {firstMonth.map((day, i) => {
+                  const schedule = schedules?.find(
+                    (s) => s.day.weekDay === day.weekDay.toLowerCase()
+                  );
 
-                return (
-                  <DaySquare
-                    key={i}
-                    day={day}
-                    schedule={schedule}
-                    appointments={appointments}
-                  />
-                );
-              })}
-            </TabsContent>
+                  return (
+                    <DaySquare
+                      key={i}
+                      day={day}
+                      schedule={schedule}
+                      appointments={appointments}
+                    />
+                  );
+                })}
+              </TabsContent>
 
-            <TabsContent
-              value="secondMonth"
-              className="flex flex-wrap mt-0 items-center gap-2"
-            >
-              {secondMonth.map((day, i) => {
-                const schedule = schedules?.find(
-                  (s) => s.day.weekDay === day.weekDay.toLowerCase()
-                );
+              <TabsContent
+                value="secondMonth"
+                className="flex flex-wrap mt-0 items-center gap-2"
+              >
+                {secondMonth.map((day, i) => {
+                  const schedule = schedules?.find(
+                    (s) => s.day.weekDay === day.weekDay.toLowerCase()
+                  );
 
-                return (
-                  <DaySquare
-                    key={i}
-                    day={day}
-                    schedule={schedule}
-                    appointments={appointments}
-                  />
-                );
-              })}
-            </TabsContent>
-            <TabsContent
-              value="thirdMonth"
-              className="flex flex-wrap mt-0 items-center gap-2"
-            >
-              {thirdMonth.map((day, i) => {
-                const schedule = schedules?.find(
-                  (s) => s.day.weekDay === day.weekDay.toLowerCase()
-                );
-                return (
-                  <DaySquare
-                    key={i}
-                    day={day}
-                    schedule={schedule}
-                    appointments={appointments}
-                  />
-                );
-              })}
-            </TabsContent>
-          </div>
-        </Tabs>
-      </CardContent>
+                  return (
+                    <DaySquare
+                      key={i}
+                      day={day}
+                      schedule={schedule}
+                      appointments={appointments}
+                    />
+                  );
+                })}
+              </TabsContent>
+              <TabsContent
+                value="thirdMonth"
+                className="flex flex-wrap mt-0 items-center gap-2"
+              >
+                {thirdMonth.map((day, i) => {
+                  const schedule = schedules?.find(
+                    (s) => s.day.weekDay === day.weekDay.toLowerCase()
+                  );
+                  return (
+                    <DaySquare
+                      key={i}
+                      day={day}
+                      schedule={schedule}
+                      appointments={appointments}
+                    />
+                  );
+                })}
+              </TabsContent>
+            </div>
+          </Tabs>
+        </CardContent>
+      ) : (
+        <div className="flex w-full justify-center">
+          <Skeleton className="h-20 w-64 rounded-md" />
+        </div>
+      )}
     </Card>
   );
 }
