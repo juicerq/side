@@ -1,6 +1,6 @@
 import { createInsertSchema } from "drizzle-zod";
 import {
-  reservations,
+  appointments,
   scheduleDays,
   scheduleHours,
   schedules,
@@ -14,7 +14,7 @@ import { RouterOutputs } from "@/trpc/shared";
 export const inputSchemas = {
   user: createInsertSchema(users),
   schedule: createInsertSchema(schedules),
-  reservation: createInsertSchema(reservations),
+  appointment: createInsertSchema(appointments),
   scheduleHour: createInsertSchema(scheduleHours),
   scheduleDay: createInsertSchema(scheduleDays),
 };
@@ -22,14 +22,14 @@ export const inputSchemas = {
 export const outputSchemas = {
   user: inputSchemas.user.required(),
   schedule: inputSchemas.schedule.required(),
-  reservation: inputSchemas.reservation.required(),
+  appointment: inputSchemas.appointment.required(),
   scheduleHour: inputSchemas.scheduleHour.required(),
   scheduleDay: inputSchemas.scheduleDay.required(),
 };
 
 // -- TYPES -- \\
 
-export type Reservation = z.infer<typeof inputSchemas.reservation>;
+export type Appointment = z.infer<typeof inputSchemas.appointment>;
 
 export type User = z.infer<typeof inputSchemas.user>;
 

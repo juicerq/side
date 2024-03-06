@@ -59,21 +59,22 @@ export const users = createTable(
   })
 );
 
-export const reservations = createTable("reservations", {
+export const appointments = createTable("appointments", {
   uuid: uuid("uuid").defaultRandom().primaryKey(),
-  userUuid: uuid("user_uuid")
-    .notNull()
-    .references(() => users.uuid, {
-      onDelete: "set null",
-      onUpdate: "cascade",
-    }),
-  scheduleUuid: uuid("schedule_uuid")
-    .notNull()
-    .references(() => schedules.uuid, {
-      onDelete: "cascade",
-      onUpdate: "cascade",
-    }),
-  observations: varchar("observations", { length: 256 }),
+  userUuid: uuid("user_uuid").references(() => users.uuid, {
+    onDelete: "set null",
+    onUpdate: "cascade",
+  }),
+  scheduleUuid: uuid("schedule_uuid").references(() => schedules.uuid, {
+    onDelete: "set null",
+    onUpdate: "cascade",
+  }),
+  hourUuid: uuid("hour_uuid").references(() => scheduleHours.uuid, {
+    onDelete: "set null",
+    onUpdate: "cascade",
+  }),
+  date: timestamp("date").notNull(),
+  observations: varchar("observations", { length: 500 }),
   status: varchar("status", {
     enum: ["scheduled", "concluded", "canceled"],
     length: 10,
@@ -176,13 +177,17 @@ export const scheduleDaysRelations = relations(scheduleDays, ({ many }) => ({
   schedules: many(schedules),
 }));
 
-export const reservartionsRelations = relations(reservations, ({ one }) => ({
+export const appointmentsRelations = relations(appointments, ({ one }) => ({
   userUuid: one(users, {
-    fields: [reservations.userUuid],
+    fields: [appointments.userUuid],
     references: [users.uuid],
   }),
   scheduleUuid: one(schedules, {
-    fields: [reservations.scheduleUuid],
+    fields: [appointments.scheduleUuid],
     references: [schedules.uuid],
+  }),
+  hourUuid: one(scheduleHours, {
+    fields: [appointments.hourUuid],
+    references: [scheduleHours.uuid],
   }),
 }));

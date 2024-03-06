@@ -29,21 +29,18 @@ export const DaysUtils = {
     return newDay;
   },
 
-  async delete({ uuid }: { uuid: ScheduleDay["uuid"] }) {
-    if (!uuid)
-      throw new TRPCError({ code: "BAD_REQUEST", message: "Missing uuid." });
+  async delete({ uuid }: { uuid: string }) {
+    const deletedDay = await db
+      .delete(scheduleDays)
+      .where(eq(scheduleDays.uuid, uuid))
+      .returning()
+      .then(takeUniqueOrThrow);
 
-      const deletedDay = await db
-        .delete(scheduleDays)
-        .where(eq(scheduleDays.uuid, uuid))
-        .returning()
-        .then(takeUniqueOrThrow);
-
-      if (!deletedDay)
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Error when deleting day.",
-        });
+    if (!deletedDay)
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Error when deleting day.",
+      });
 
     return deletedDay;
   },

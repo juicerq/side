@@ -22,6 +22,10 @@ export default function Schedule() {
 
   const { data: schedules } = api.schedule.getAll.useQuery();
 
+  const { data: appointments } = api.appointment.getAll.useQuery();
+
+  if (!appointments) return;
+
   return (
     <Card>
       <CardHeader>
@@ -64,9 +68,14 @@ export default function Schedule() {
                   (s) => s.day.weekDay === day.weekDay.toLowerCase()
                 );
 
-                console.log(schedule);
-
-                return <DaySquare key={i} day={day} schedules={schedule} />;
+                return (
+                  <DaySquare
+                    key={i}
+                    day={day}
+                    schedule={schedule}
+                    appointments={appointments}
+                  />
+                );
               })}
             </TabsContent>
 
@@ -78,7 +87,15 @@ export default function Schedule() {
                 const schedule = schedules?.find(
                   (s) => s.day.weekDay === day.weekDay.toLowerCase()
                 );
-                return <DaySquare key={i} day={day} schedules={schedule} />;
+
+                return (
+                  <DaySquare
+                    key={i}
+                    day={day}
+                    schedule={schedule}
+                    appointments={appointments}
+                  />
+                );
               })}
             </TabsContent>
             <TabsContent
@@ -89,7 +106,14 @@ export default function Schedule() {
                 const schedule = schedules?.find(
                   (s) => s.day.weekDay === day.weekDay.toLowerCase()
                 );
-                return <DaySquare key={i} day={day} schedules={schedule} />;
+                return (
+                  <DaySquare
+                    key={i}
+                    day={day}
+                    schedule={schedule}
+                    appointments={appointments}
+                  />
+                );
               })}
             </TabsContent>
           </div>

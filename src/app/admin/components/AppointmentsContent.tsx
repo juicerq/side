@@ -29,7 +29,7 @@ import {
   TooltipTrigger,
 } from "../../components/ui/tooltip";
 
-export default function ReservationsContent() {
+export default function AppointmentsContent() {
   return (
     <>
       <div className="ml-auto">

@@ -103,11 +103,9 @@ export default function SchedulesContent() {
         "hourUuids",
         form.getValues("hourUuids").filter((hour) => hour !== value)
       );
-      return (
-        toast("Hour already exists", {
-          position: "bottom-center",
-        })
-      );
+      return toast("Hour already exists", {
+        position: "bottom-center",
+      });
     }
     form.setValue("hourUuids", [...form.getValues("hourUuids"), value]);
   };

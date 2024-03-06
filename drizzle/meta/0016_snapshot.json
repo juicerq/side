@@ -1,0 +1,387 @@
+{
+  "id": "78b8b691-105d-4976-b914-40de9bc58d0a",
+  "prevId": "5f4b8aaf-e1ae-4e65-a854-fded340fefa8",
+  "version": "5",
+  "dialect": "pg",
+  "tables": {
+    "juit_appointments": {
+      "name": "juit_appointments",
+      "schema": "",
+      "columns": {
+        "uuid": {
+          "name": "uuid",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "user_uuid": {
+          "name": "user_uuid",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "schedule_uuid": {
+          "name": "schedule_uuid",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hour_uuid": {
+          "name": "hour_uuid",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "observations": {
+          "name": "observations",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "juit_appointments_user_uuid_juit_users_uuid_fk": {
+          "name": "juit_appointments_user_uuid_juit_users_uuid_fk",
+          "tableFrom": "juit_appointments",
+          "tableTo": "juit_users",
+          "columnsFrom": [
+            "user_uuid"
+          ],
+          "columnsTo": [
+            "uuid"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "cascade"
+        },
+        "juit_appointments_schedule_uuid_juit_schedules_uuid_fk": {
+          "name": "juit_appointments_schedule_uuid_juit_schedules_uuid_fk",
+          "tableFrom": "juit_appointments",
+          "tableTo": "juit_schedules",
+          "columnsFrom": [
+            "schedule_uuid"
+          ],
+          "columnsTo": [
+            "uuid"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "cascade"
+        },
+        "juit_appointments_hour_uuid_juit_scheduleHours_uuid_fk": {
+          "name": "juit_appointments_hour_uuid_juit_scheduleHours_uuid_fk",
+          "tableFrom": "juit_appointments",
+          "tableTo": "juit_scheduleHours",
+          "columnsFrom": [
+            "hour_uuid"
+          ],
+          "columnsTo": [
+            "uuid"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "juit_hoursOnSchedules": {
+      "name": "juit_hoursOnSchedules",
+      "schema": "",
+      "columns": {
+        "schedule_uuid": {
+          "name": "schedule_uuid",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hour_uuid": {
+          "name": "hour_uuid",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "juit_hoursOnSchedules_schedule_uuid_juit_schedules_uuid_fk": {
+          "name": "juit_hoursOnSchedules_schedule_uuid_juit_schedules_uuid_fk",
+          "tableFrom": "juit_hoursOnSchedules",
+          "tableTo": "juit_schedules",
+          "columnsFrom": [
+            "schedule_uuid"
+          ],
+          "columnsTo": [
+            "uuid"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "juit_hoursOnSchedules_hour_uuid_juit_scheduleHours_uuid_fk": {
+          "name": "juit_hoursOnSchedules_hour_uuid_juit_scheduleHours_uuid_fk",
+          "tableFrom": "juit_hoursOnSchedules",
+          "tableTo": "juit_scheduleHours",
+          "columnsFrom": [
+            "hour_uuid"
+          ],
+          "columnsTo": [
+            "uuid"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {
+        "juit_hoursOnSchedules_schedule_uuid_hour_uuid_pk": {
+          "name": "juit_hoursOnSchedules_schedule_uuid_hour_uuid_pk",
+          "columns": [
+            "schedule_uuid",
+            "hour_uuid"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "juit_scheduleDays": {
+      "name": "juit_scheduleDays",
+      "schema": "",
+      "columns": {
+        "uuid": {
+          "name": "uuid",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "week_day": {
+          "name": "week_day",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "juit_scheduleHours": {
+      "name": "juit_scheduleHours",
+      "schema": "",
+      "columns": {
+        "uuid": {
+          "name": "uuid",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "hour": {
+          "name": "hour",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "available": {
+          "name": "available",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "juit_schedules": {
+      "name": "juit_schedules",
+      "schema": "",
+      "columns": {
+        "uuid": {
+          "name": "uuid",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "day_uuid": {
+          "name": "day_uuid",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "schedule_idx": {
+          "name": "schedule_idx",
+          "columns": [
+            "uuid"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "juit_schedules_day_uuid_juit_scheduleDays_uuid_fk": {
+          "name": "juit_schedules_day_uuid_juit_scheduleDays_uuid_fk",
+          "tableFrom": "juit_schedules",
+          "tableTo": "juit_scheduleDays",
+          "columnsFrom": [
+            "day_uuid"
+          ],
+          "columnsTo": [
+            "uuid"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "juit_users": {
+      "name": "juit_users",
+      "schema": "",
+      "columns": {
+        "uuid": {
+          "name": "uuid",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "first_name": {
+          "name": "first_name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "last_name": {
+          "name": "last_name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "role": {
+          "name": "role",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'basic'"
+        },
+        "theme": {
+          "name": "theme",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'dark'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "user_idx": {
+          "name": "user_idx",
+          "columns": [
+            "email"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "juit_users_email_unique": {
+          "name": "juit_users_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      }
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

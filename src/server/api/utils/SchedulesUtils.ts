@@ -33,12 +33,6 @@ export const SchedulesUtils = {
   },
 
   async delete({ uuid }: { uuid: string }) {
-    if (!uuid)
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "Uuid is required to delete a schedule.",
-      });
-
     const deletedSchedule = await db
       .delete(schedules)
       .where(eq(schedules.uuid, uuid))
@@ -65,7 +59,7 @@ export const SchedulesUtils = {
     if (!hourUuids.length)
       throw new TRPCError({
         code: "BAD_REQUEST",
-        message: "Hour Uuids are required to create a schedule.",
+        message: "Array of hour Uuids is required to create a schedule.",
       });
 
     const newSchedule = await db

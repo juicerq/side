@@ -9,7 +9,7 @@ import {
 import useCheckPermission from "../components/hooks/useCheckPermission";
 import DaysContent from "./components/DaysContent";
 import HoursContent from "./components/HoursContent";
-import ReservationsContent from "./components/ReservationsContent";
+import AppointmentsContent from "./components/AppointmentsContent";
 import SchedulesContent from "./components/SchedulesContent";
 
 export default function AdminPage() {
@@ -19,19 +19,19 @@ export default function AdminPage() {
   return (
     <div className="flex min-h-screen w-screen items-center justify-center">
       <Tabs
-        defaultValue="reservations"
+        defaultValue="appointment"
         className="flex w-full flex-col items-center justify-center"
       >
         <TabsList className="w-fit">
-          <TabsTrigger value="reservations">Reservations</TabsTrigger>
+          <TabsTrigger value="appointment">Appointment</TabsTrigger>
           <TabsTrigger value="customization">Customization</TabsTrigger>
         </TabsList>
         <div className="h-96">
           <TabsContent
-            value="reservations"
+            value="appointment"
             className="mx-auto flex w-[700px] flex-col items-center justify-center gap-6"
           >
-            <ReservationsContent />
+            <AppointmentsContent />
           </TabsContent>
 
           <TabsContent

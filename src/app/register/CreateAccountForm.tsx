@@ -36,7 +36,7 @@ const CreateAccountSchema = z.object({
   email: z.string().email("The email must be a valid email."),
 });
 
-type FormType = z.infer<typeof CreateAccountSchema>;
+type CreateAccount = z.infer<typeof CreateAccountSchema>;
 
 export default function CreateAccountForm() {
   const [codeSent, setCodeSent] = useState<boolean>(false);
@@ -44,7 +44,7 @@ export default function CreateAccountForm() {
   const [codeInput, setCodeInput] = useState<string>("");
   const router = useRouter();
 
-  const form = useForm<FormType>({
+  const form = useForm<CreateAccount>({
     resolver: zodResolver(CreateAccountSchema),
     defaultValues: {
       firstName: "",
@@ -93,7 +93,7 @@ export default function CreateAccountForm() {
       },
     });
 
-  const handleSubmit = (data: FormType) => {
+  const handleSubmit = (data: CreateAccount) => {
     if (codeInput === "XXXX") return createAccount(data);
     if (!codeSent) {
       const codeToSend = generateCode();

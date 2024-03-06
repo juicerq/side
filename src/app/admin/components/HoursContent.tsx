@@ -98,7 +98,7 @@ export default function HoursContent() {
               className="flex w-64 items-center justify-between rounded-md bg-primary-foreground p-2 text-primary"
             >
               <div className="flex items-center gap-2">
-                <Clock className="h-5 w-5" />
+                <Clock className="size-5" />
                 {hour.hour}
               </div>
               <div
@@ -112,7 +112,7 @@ export default function HoursContent() {
         ) : (
           <div className="my-4 flex w-64 justify-center rounded-lg p-3 text-primary">
             <div className="flex items-center gap-2">
-              <Hourglass className="h-5 w-5" />
+              <Hourglass className="size-5" />
               No hours found
             </div>
           </div>
