@@ -34,13 +34,16 @@ export default function Navbar() {
       <div className="fixed left-0 top-0 flex h-16 border-b w-screen items-center justify-between bg-transparent px-12">
         <div className="flex flex-1 items-center gap-8">
           <ul className="flex items-center justify-center gap-6 pl-36">
-            {links.map((link) => (
-              <li key={link.name}>
-                <Link href={link.href} className="text-sm hover:opacity-80">
-                  {link.name}
-                </Link>
-              </li>
-            ))}
+            {links.map((link) => {
+              if (user.role !== "admin" && link.href === "/admin") return null;
+              return (
+                <li key={link.name}>
+                  <Link href={link.href} className="text-sm hover:opacity-80">
+                    {link.name}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
         <div className="flex items-center justify-end gap-2">
