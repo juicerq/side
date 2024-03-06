@@ -20,6 +20,7 @@ const config = {
     "@typescript-eslint/no-unsafe-assignment": "off",
     "@typescript-eslint/no-floating-promises": "off",
     "@typescript-eslint/prefer-nullish-coalescing": "off",
+    "@typescript-eslint/prefer-optional-chain": "off",
     "@typescript-eslint/consistent-type-imports": [
       "warn",
       {
