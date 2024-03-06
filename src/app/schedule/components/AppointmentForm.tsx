@@ -25,7 +25,7 @@ import { toast } from "sonner";
 interface AppointmentFormProps {
   allHours: ScheduleHour[] | undefined;
   schedule: AllSchedules[number] | undefined;
-  appointments: RouterOutputs["appointment"]["getAll"];
+  appointments: RouterOutputs["appointment"]["getAll"] | undefined;
   day: Month;
 }
 
@@ -72,21 +72,6 @@ export default function AppointmentForm({
     form.setValue("hourUuid", value);
   };
 
-  const monthMap: Record<string, number> = {
-    January: 1,
-    February: 2,
-    March: 3,
-    April: 4,
-    May: 5,
-    June: 6,
-    July: 7,
-    August: 8,
-    September: 9,
-    October: 10,
-    November: 11,
-    December: 12,
-  };
-
   const handleSubmit = (data: CreateAppointment) => {
     if (!day.month) return console.log("No month selected");
     const date = getTimestamp(day.month, day.weekDay, selectedHour);
@@ -117,7 +102,7 @@ export default function AppointmentForm({
                 >
                   {allHours &&
                     allHours.map((hour) => {
-                      const hourUsed = appointments.find(
+                      const hourUsed = appointments?.find(
                         (appointment) =>
                           appointment.hourUuid?.uuid === hour.uuid &&
                           appointment.scheduleUuid?.dayUuid ===

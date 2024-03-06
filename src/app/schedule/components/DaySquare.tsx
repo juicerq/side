@@ -20,7 +20,7 @@ const today = new Date().getDate();
 interface DaySquareProps {
   day: Month;
   schedule: AllSchedules[number] | undefined;
-  appointments: RouterOutputs["appointment"]["getAll"];
+  appointments: RouterOutputs["appointment"]["getAll"] | undefined;
 }
 
 export function DaySquare({ day, schedule, appointments }: DaySquareProps) {
