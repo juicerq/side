@@ -1,48 +1,37 @@
-export function getTimestamp(month: string, weekDay: string, hour: string) {
-  // Converting month and week day to lowercase
-  month = month.toLowerCase();
-  weekDay = weekDay.toLowerCase();
-
-  // Mapping month names to their numerical representation
+export function getTimestamp(
+  month: string,
+  day: number,
+  hour: string
+): Date | null {
+  // Mapping month numbers to their numerical representation
   const months: Record<string, number> = {
-    january: 0,
-    february: 1,
-    march: 2,
-    april: 3,
-    may: 4,
-    june: 5,
-    july: 6,
-    august: 7,
-    september: 8,
-    october: 9,
-    november: 10,
-    december: 11,
-  };
-
-  // Mapping week day names to their numerical representation
-  const weekDays: Record<string, number> = {
-    sunday: 0,
-    monday: 1,
-    tuesday: 2,
-    wednesday: 3,
-    thursday: 4,
-    friday: 5,
-    saturday: 6,
+    January: 0,
+    February: 1,
+    March: 2,
+    April: 3,
+    May: 4,
+    June: 5,
+    July: 6,
+    August: 7,
+    September: 8,
+    October: 9,
+    November: 10,
+    December: 11,
   };
 
   // Splitting hour and minute
   const [hourPart, minutePart] = hour.split(":");
 
   const monthToUse = months[month];
-  const weekDayToUse = weekDays[weekDay];
 
   if (
-    !month ||
-    !weekDay ||
+    month === undefined ||
+    day === undefined ||
     !hourPart ||
     !minutePart ||
     !monthToUse ||
-    !weekDayToUse
+    day < 1 ||
+    day > 31
   ) {
     return null;
   }
@@ -52,22 +41,11 @@ export function getTimestamp(month: string, weekDay: string, hour: string) {
 
   // Set month, day, hour, and minute based on provided strings
   currentDate.setMonth(monthToUse);
-  currentDate.setDate(
-    currentDate.getDate() + ((weekDayToUse + 7 - currentDate.getDay()) % 7)
-  ); // Set to next week if needed
+  currentDate.setDate(day);
   currentDate.setHours(parseInt(hourPart, 10));
   currentDate.setMinutes(parseInt(minutePart, 10));
   currentDate.setSeconds(0);
   currentDate.setMilliseconds(0);
 
-  currentDate.setUTCHours(
-    currentDate.getUTCHours() - currentDate.getTimezoneOffset() / 60
-  );
-
-  const formattedDate = currentDate
-    .toISOString()
-    .replace("T", " ")
-    .replace(/\.\d{3}Z$/, ".000");
-
-  return formattedDate;
+  return currentDate;
 }

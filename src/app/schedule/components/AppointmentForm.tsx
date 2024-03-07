@@ -17,6 +17,7 @@ import {
 import { api } from "@/trpc/react";
 import { RouterInputs, RouterOutputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
+import dayjs from "dayjs";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -37,7 +38,7 @@ export default function AppointmentForm({
   appointments,
   day,
 }: AppointmentFormProps) {
-  const [selectedHour, setSelectedHour] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const { mutate: createAppointment, isLoading: creatingAppointment } =
     api.appointment.create.useMutation({
@@ -69,23 +70,19 @@ export default function AppointmentForm({
   });
 
   const handleAddSingleHour = (value: string) => {
+    if (selectedDate) form.setValue("date", selectedDate);
     form.setValue("hourUuid", value);
   };
 
   const handleSubmit = (data: CreateAppointment) => {
-    if (!day.month) return console.log("No month selected");
-    const date = getTimestamp(day.month, day.weekDay, selectedHour);
-
-    if (!date) return console.log("No date selected");
-
-    createAppointment({ ...data, date: date });
+    createAppointment({ ...data });
   };
 
-  const handleClickHour = (data: { hour: string; uuid: string }) => {
-    const { hour, uuid } = data;
-    if (selectedHour === hour) return setSelectedHour("");
-    handleAddSingleHour(uuid ?? "");
-    setSelectedHour(hour);
+  const handleClickHour = (data: { thisDay: Date; hourUuid: string }) => {
+    const { thisDay, hourUuid } = data;
+    if (thisDay === selectedDate) return setSelectedDate(null);
+    handleAddSingleHour(hourUuid ?? "");
+    setSelectedDate(thisDay);
   };
 
   return (
@@ -109,12 +106,17 @@ export default function AppointmentForm({
                 >
                   {allHours &&
                     allHours.map((hour) => {
-                      const hourUsed = appointments?.find(
-                        (appointment) =>
-                          appointment.hourUuid?.uuid === hour.uuid &&
-                          appointment.scheduleUuid?.dayUuid ===
-                            schedule?.dayUuid
+                      const thisDay = getTimestamp(
+                        day.month ?? "",
+                        day.day,
+                        hour.hour
                       );
+
+                      if (!thisDay) return null;
+
+                      const hourUsed = appointments?.some((appointment) => {
+                        return appointment.date.getTime() === thisDay.getTime();
+                      });
 
                       return (
                         <ToggleGroupItem
@@ -124,15 +126,15 @@ export default function AppointmentForm({
                           key={hour.uuid}
                           onClick={() =>
                             handleClickHour({
-                              hour: hour.hour,
-                              uuid: hour.uuid ?? "",
+                              thisDay,
+                              hourUuid: hour.uuid ?? "",
                             })
                           }
                           className="bg-primary-foreground transition-all active:scale-105"
                         >
                           <div
-                            className="size-2 data-[notused=false]:bg-emerald-500 mr-2 bg-red-500 rounded-full"
-                            data-notused={!!hourUsed}
+                            className="size-2 data-[notused=true]:bg-emerald-500 data-[notused=false]:bg-red-500 mr-2 rounded-full"
+                            data-notused={!!!hourUsed}
                           />
                           {hour.hour}
                         </ToggleGroupItem>
@@ -145,7 +147,7 @@ export default function AppointmentForm({
         />
         <Button
           type="submit"
-          disabled={creatingAppointment || !!!selectedHour}
+          disabled={creatingAppointment || !!!selectedDate}
           onClick={() =>
             handleSubmit({
               userUuid: form.getValues("userUuid"),

@@ -11,17 +11,14 @@ export const appointmentRouter = createTRPCRouter({
 
   create: publicProcedure
     .input(
-      inputSchemas.appointment
-        .pick({
-          userUuid: true,
-          scheduleUuid: true,
-          hourUuid: true,
-          observations: true,
-          status: true,
-        })
-        .extend({
-          date: z.string().transform((date) => dayjs(date).toDate()),
-        })
+      inputSchemas.appointment.pick({
+        userUuid: true,
+        scheduleUuid: true,
+        hourUuid: true,
+        observations: true,
+        status: true,
+        date: true,
+      })
     )
     .output(inputSchemas.appointment.required())
     .mutation(async ({ input, ctx }) => {
