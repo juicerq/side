@@ -81,6 +81,13 @@ export default function AppointmentForm({
     createAppointment({ ...data, date: date });
   };
 
+  const handleClickHour = (data: { hour: string; uuid: string }) => {
+    const { hour, uuid } = data;
+    if (selectedHour === hour) return setSelectedHour("");
+    handleAddSingleHour(uuid ?? "");
+    setSelectedHour(hour);
+  };
+
   return (
     <Form {...form}>
       <form
@@ -115,12 +122,12 @@ export default function AppointmentForm({
                           aria-label="Toggle bold"
                           disabled={!!hourUsed}
                           key={hour.uuid}
-                          onClick={() => {
-                            handleAddSingleHour(hour.uuid ?? "");
-                            if (!!!selectedHour)
-                              return setSelectedHour(hour.hour);
-                            setSelectedHour("");
-                          }}
+                          onClick={() =>
+                            handleClickHour({
+                              hour: hour.hour,
+                              uuid: hour.uuid ?? "",
+                            })
+                          }
                           className="bg-primary-foreground transition-all active:scale-105"
                         >
                           <div
@@ -138,7 +145,7 @@ export default function AppointmentForm({
         />
         <Button
           type="submit"
-          disabled={creatingAppointment || !selectedHour}
+          disabled={creatingAppointment || !!!selectedHour}
           onClick={() =>
             handleSubmit({
               userUuid: form.getValues("userUuid"),
