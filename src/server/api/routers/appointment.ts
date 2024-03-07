@@ -3,6 +3,7 @@ import { createTRPCRouter, publicProcedure } from "../trpc";
 import { AppointmentUtils } from "../utils/AppointmentUtils";
 import { z } from "zod";
 import dayjs from "dayjs";
+import { adminAppointmentRoute } from "./adminAppointment";
 
 export const appointmentRouter = createTRPCRouter({
   getAll: publicProcedure.query(async () => {
@@ -33,4 +34,6 @@ export const appointmentRouter = createTRPCRouter({
 
       return newAppointment;
     }),
+
+  admin: adminAppointmentRoute,
 });

@@ -28,8 +28,16 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../../components/ui/tooltip";
+import { api } from "@/trpc/react";
+import dayjs from "dayjs";
+
+dayjs.locale("pt-br");
 
 export default function AppointmentsContent() {
+  const { data: appointments } = api.appointment.admin.getAll.useQuery();
+
+  if (!appointments) return null;
+
   return (
     <>
       <div className="ml-auto">
@@ -84,11 +92,16 @@ export default function AppointmentsContent() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow>
-            <TableCell>Júlio Cerqueira</TableCell>
-            <TableCell>Paid</TableCell>
-            <TableCell>Credit Card</TableCell>
-          </TableRow>
+          {appointments?.map((appointment) => (
+            <TableRow key={appointment.uuid}>
+              <TableCell>{`${appointment.userUuid?.firstName} ${appointment.userUuid?.lastName}`}</TableCell>
+              <TableCell>{dayjs(appointment.date).toString()}</TableCell>
+              <TableCell>{dayjs(appointment.createdAt).toString()}</TableCell>
+              <TableCell>
+                <Trash2 className="size-5 text-red-500 hover:text-red-600" />
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </>

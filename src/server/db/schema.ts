@@ -79,6 +79,10 @@ export const appointments = createTable("appointments", {
     enum: ["scheduled", "concluded", "canceled"],
     length: 10,
   }),
+  createdAt: timestamp("created_at")
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at"),
 });
 
 export const schedules = createTable(
