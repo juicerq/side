@@ -1,4 +1,4 @@
-import { Plus, Trash2 } from "lucide-react";
+import { CalendarRange, Plus, Trash2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -30,13 +30,31 @@ import {
 } from "../../components/ui/tooltip";
 import { api } from "@/trpc/react";
 import dayjs from "dayjs";
+import { toast } from "sonner";
+import { Skeleton } from "@/app/components/ui/skeleton";
 
 dayjs.locale("pt-br");
 
 export default function AppointmentsContent() {
-  const { data: appointments } = api.appointment.admin.getAll.useQuery();
-
-  if (!appointments) return null;
+  const {
+    data: appointments,
+    refetch: refetchAppointments,
+    isLoading: fetchingAppointments,
+  } = api.appointment.admin.getAll.useQuery();
+  const { mutate: deleteAppointment } =
+    api.appointment.admin.delete.useMutation({
+      onSuccess: () => {
+        refetchAppointments();
+        toast("Schedule deleted successfully", {
+          position: "bottom-center",
+        });
+      },
+      onError: (err) => {
+        toast(err.message, {
+          position: "bottom-center",
+        });
+      },
+    });
 
   return (
     <>
@@ -70,40 +88,57 @@ export default function AppointmentsContent() {
           </DrawerContent>
         </Drawer>
       </div>
-      <Table>
-        <TableCaption>A list of your recent schedules</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-1/3">Name</TableHead>
-            <TableHead className="w-1/3">Time</TableHead>
-            <TableHead className="w-1/3">Created at</TableHead>
-            <TableHead className="flex items-center justify-end pr-2">
-              <TooltipProvider delayDuration={50}>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Trash2 className="h-5 w-5 justify-end text-red-500" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Delete Schedule</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {appointments?.map((appointment) => (
-            <TableRow key={appointment.uuid}>
-              <TableCell>{`${appointment.userUuid?.firstName} ${appointment.userUuid?.lastName}`}</TableCell>
-              <TableCell>{dayjs(appointment.date).toString()}</TableCell>
-              <TableCell>{dayjs(appointment.createdAt).toString()}</TableCell>
-              <TableCell>
-                <Trash2 className="size-5 text-red-500 hover:text-red-600" />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      {appointments?.length ? (
+        fetchingAppointments ? (
+          Array.from({ length: 6 }, (_, i) => (
+            <Skeleton key={i} className="h-10 w-64 rounded-md" />
+          ))
+        ) : (
+          <Table>
+            <TableCaption>A list of your recent schedules</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="flex-1">Name</TableHead>
+                <TableHead className="flex-1">Time</TableHead>
+                <TableHead className="flex-1">Created at</TableHead>
+                <TableHead className="flex items-center justify-end pr-2"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {appointments?.map((appointment) => (
+                <TableRow key={appointment.uuid}>
+                  <TableCell>{`${appointment.userUuid?.firstName} ${appointment.userUuid?.lastName}`}</TableCell>
+                  <TableCell>{dayjs(appointment.date).toString()}</TableCell>
+                  <TableCell>
+                    {dayjs(appointment.createdAt).toString()}
+                  </TableCell>
+                  <TableCell>
+                    <TooltipProvider delayDuration={50}>
+                      <Tooltip>
+                        <TooltipTrigger
+                          onClick={() =>
+                            deleteAppointment({ uuid: appointment.uuid })
+                          }
+                        >
+                          <Trash2 className="h-5 w-5 justify-end text-red-500" />
+                        </TooltipTrigger>
+                        <TooltipContent>Delete Schedule</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )
+      ) : (
+        <div className="my-4 flex w-64 justify-center rounded-md p-3 text-primary">
+          <div className="flex items-center gap-2">
+            <CalendarRange className="h-5 w-5" />
+            No schedules found
+          </div>
+        </div>
+      )}
     </>
   );
 }
