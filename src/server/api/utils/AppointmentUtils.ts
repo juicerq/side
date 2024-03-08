@@ -76,4 +76,34 @@ export const AppointmentUtils = {
 
     return deletedAppointment;
   },
+
+  admin: {
+    async getAll() {
+      const allAppointments = await db.query.appointments.findMany({
+        with: {
+          userUuid: true,
+          scheduleUuid: true,
+          hourUuid: true,
+        },
+      });
+
+      return allAppointments;
+    },
+
+    async delete({ uuid }: { uuid: string }) {
+      const deletedAppointment = await db
+        .delete(appointments)
+        .where(eq(appointments.uuid, uuid))
+        .returning()
+        .then(takeUniqueOrThrow);
+
+      if (!deletedAppointment)
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Error when deleting appointment.",
+        });
+
+      return deletedAppointment;
+    },
+  },
 };
