@@ -17,7 +17,6 @@ import {
 import { api } from "@/trpc/react";
 import { RouterInputs, RouterOutputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
-import dayjs from "dayjs";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -69,20 +68,19 @@ export default function AppointmentForm({
     },
   });
 
-  const handleAddSingleHour = (value: string) => {
-    if (selectedDate) form.setValue("date", selectedDate);
-    form.setValue("hourUuid", value);
-  };
-
   const handleSubmit = (data: CreateAppointment) => {
     createAppointment({ ...data });
   };
 
   const handleClickHour = (data: { thisDay: Date; hourUuid: string }) => {
     const { thisDay, hourUuid } = data;
-    if (thisDay === selectedDate) return setSelectedDate(null);
-    handleAddSingleHour(hourUuid ?? "");
-    setSelectedDate(thisDay);
+    if (selectedDate === null) {
+      form.setValue("date", thisDay);
+      setSelectedDate(thisDay);
+      return form.setValue("hourUuid", hourUuid);
+    }
+    if (thisDay.getTime() === selectedDate?.getTime())
+      return setSelectedDate(null);
   };
 
   return (
