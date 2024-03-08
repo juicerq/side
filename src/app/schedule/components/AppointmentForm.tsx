@@ -146,16 +146,6 @@ export default function AppointmentForm({
         <Button
           type="submit"
           disabled={creatingAppointment || !!!selectedDate}
-          onClick={() =>
-            handleSubmit({
-              userUuid: form.getValues("userUuid"),
-              scheduleUuid: form.getValues("scheduleUuid"),
-              hourUuid: form.getValues("hourUuid"),
-              observations: form.getValues("observations"),
-              status: form.getValues("status"),
-              date: form.getValues("date"),
-            })
-          }
           className="w-fit"
         >
           {creatingAppointment ? (
