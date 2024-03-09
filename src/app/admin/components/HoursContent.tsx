@@ -92,12 +92,16 @@ export default function HoursContent({
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    const allowedKeys = /[0-9\n\b:]/;
+    const allowedKeys = /[0-9]/;
     const key = event.key;
 
-    console.log(key);
-
-    if (key === "Backspace" || key === "Enter" || key === "Scape") return;
+    if (
+      key === "Backspace" ||
+      key === "Enter" ||
+      key === "Escape" ||
+      key === ":"
+    )
+      return;
 
     if (!allowedKeys.test(key)) {
       event.preventDefault();
@@ -163,14 +167,19 @@ export default function HoursContent({
                   <FormField
                     control={form.control}
                     name="hour"
-                    render={({ field }) => (
+                    render={({ field: { onChange, value } }) => (
                       <FormItem>
                         <FormLabel>Hour</FormLabel>
                         <FormControl>
                           <Input
-                            {...field}
                             placeholder="12:30"
                             inputMode="numeric"
+                            value={value}
+                            onChange={(e) => {
+                              const maxContet = value.length > 4;
+                              if (maxContet) return;
+                              onChange(e.target.value);
+                            }}
                             onKeyDown={handleKeyDown}
                           />
                         </FormControl>
