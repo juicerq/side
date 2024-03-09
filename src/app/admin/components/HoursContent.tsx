@@ -176,11 +176,13 @@ export default function HoursContent({
                             inputMode="numeric"
                             value={value}
                             onChange={(e) => {
-                              const maxContet = value.length > 4;
+                              const maxContet = value
+                                ? value.length > 4
+                                : false;
+                              console.log(maxContet);
                               if (maxContet) return;
                               onChange(e.target.value);
                             }}
-                            onKeyDown={handleKeyDown}
                           />
                         </FormControl>
                         <FormMessage />
