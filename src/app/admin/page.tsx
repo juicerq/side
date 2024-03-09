@@ -11,9 +11,18 @@ import DaysContent from "./components/DaysContent";
 import HoursContent from "./components/HoursContent";
 import AppointmentsContent from "./components/AppointmentsContent";
 import SchedulesContent from "./components/SchedulesContent";
+import { useAdminHours } from "../components/hooks/useAdminHours";
+import { useAdminSchedules } from "../components/hooks/useAdminSchedules";
+import { useAdminDays } from "../components/hooks/useAdminDays";
 
 export default function AdminPage() {
   const checked = useCheckPermission("admin");
+
+  const { hours, refetchHours, fetchingHours } = useAdminHours();
+
+  const { data, fetchingSchedules, refetchSchedules } = useAdminSchedules();
+
+  const { days, refetchDays, fetchingDays } = useAdminDays();
 
   if (checked)
     return (
@@ -38,9 +47,23 @@ export default function AdminPage() {
               value="customization"
               className=" flex w-full justify-between gap-12"
             >
-              <HoursContent />
-              <DaysContent />
-              <SchedulesContent />
+              <HoursContent
+                hours={hours}
+                refetchHours={refetchHours}
+                fetchingHours={fetchingHours}
+                refetchSchedules={refetchSchedules}
+              />
+              <DaysContent
+                days={days}
+                refetchDays={refetchDays}
+                fetchingDays={fetchingDays}
+                refetchSchedules={refetchSchedules}
+              />
+              <SchedulesContent
+                data={data}
+                refetchSchedules={refetchSchedules}
+                fetchingSchedules={fetchingSchedules}
+              />
             </TabsContent>
           </div>
         </Tabs>

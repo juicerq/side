@@ -14,7 +14,7 @@ import {
 
 import { Card } from "@/app/components/ui/card";
 import { Skeleton } from "@/app/components/ui/skeleton";
-import { inputSchemas } from "@/server/db/ZSchemasAndTypes";
+import { ScheduleHour, inputSchemas } from "@/server/db/ZSchemasAndTypes";
 import { api } from "@/trpc/react";
 import { type RouterInputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,10 +28,25 @@ import {
   FormLabel,
   FormMessage,
 } from "../../components/ui/form";
+import { useAdminHours } from "@/app/components/hooks/useAdminHours";
+import { revalidatePath } from "next/cache";
+import { KeyboardEventHandler } from "react";
 
 type CreateHour = RouterInputs["schedule"]["hour"]["create"];
 
-export default function HoursContent() {
+interface HoursContentProps {
+  hours: ScheduleHour[] | undefined;
+  refetchHours: () => void;
+  fetchingHours: boolean;
+  refetchSchedules: () => void;
+}
+
+export default function HoursContent({
+  hours,
+  refetchHours,
+  fetchingHours,
+  refetchSchedules,
+}: HoursContentProps) {
   const form = useForm<CreateHour>({
     resolver: zodResolver(
       inputSchemas.scheduleHour.pick({
@@ -40,18 +55,11 @@ export default function HoursContent() {
     ),
   });
 
-  const {
-    data: hours,
-    refetch: refetchHours,
-    isLoading: fetchingHours,
-  } = api.schedule.hour.getAll.useQuery(undefined, {
-    refetchOnWindowFocus: false,
-  });
-
   const { mutate: createHour, isLoading: creatingHour } =
     api.schedule.hour.create.useMutation({
       onSuccess: (response) => {
         refetchHours();
+        refetchSchedules();
         toast("Hour created successfully", {
           position: "bottom-center",
           description: `New hour created (${response.hour ?? "BUG!"})`,
@@ -83,6 +91,19 @@ export default function HoursContent() {
     createHour({ hour });
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    const allowedKeys = /[0-9\n\b:]/;
+    const key = event.key;
+
+    console.log(key);
+
+    if (key === "Backspace" || key === "Enter" || key === "Scape") return;
+
+    if (!allowedKeys.test(key)) {
+      event.preventDefault();
+    }
+  };
+
   return (
     <Card className="flex p-4 flex-col items-center gap-4">
       <div className="flex flex-col space-y-4">
@@ -102,7 +123,7 @@ export default function HoursContent() {
                 {hour.hour}
               </div>
               <div
-                onClick={() => deleteHour({ uuid: hour.uuid })}
+                onClick={() => deleteHour({ uuid: hour.uuid ?? "" })}
                 className="cursor-pointer"
               >
                 <Trash className="size-5 text-red-500 hover:text-red-600" />
@@ -146,7 +167,12 @@ export default function HoursContent() {
                       <FormItem>
                         <FormLabel>Hour</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="12:30" />
+                          <Input
+                            {...field}
+                            placeholder="12:30"
+                            inputMode="numeric"
+                            onKeyDown={handleKeyDown}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

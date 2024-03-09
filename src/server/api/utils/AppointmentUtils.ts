@@ -26,13 +26,13 @@ export const AppointmentUtils = {
     status,
     date,
   }: Appointment) {
-    const alreadyExistis = await db
+    const alreadyExist = await db
       .select()
       .from(appointments)
       .where(eq(appointments.date, date))
       .then(takeUniqueOrThrow);
 
-    if (alreadyExistis)
+    if (alreadyExist)
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Appointment already exists or something went wrong.",
@@ -49,7 +49,6 @@ export const AppointmentUtils = {
         date,
       })
       .returning()
-      .onConflictDoNothing()
       .then(takeUniqueOrThrow);
 
     if (!newAppointment)

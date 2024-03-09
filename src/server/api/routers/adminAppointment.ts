@@ -14,6 +14,10 @@ export const adminAppointmentRoute = createTRPCRouter({
     .input(inputSchemas.appointment.pick({ uuid: true }).required())
     .output(inputSchemas.appointment.required())
     .mutation(async ({ input }) => {
-      return await AppointmentUtils.admin.delete({ uuid: input.uuid });
+      const deletedAppointment = await AppointmentUtils.admin.delete({
+        uuid: input.uuid,
+      });
+
+      return deletedAppointment;
     }),
 });

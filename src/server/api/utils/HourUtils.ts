@@ -11,6 +11,15 @@ export const HoursUtils = {
   },
 
   async create({ hour }: ScheduleHour) {
+    const pattern = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+
+    if (!pattern.test(hour)) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Hour must be in the format 00:00 to 23:59",
+      });
+    }
+
     const newHour = await db
       .insert(scheduleHours)
       .values({

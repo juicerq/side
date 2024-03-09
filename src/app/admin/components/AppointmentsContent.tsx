@@ -1,4 +1,4 @@
-import { CalendarRange, Plus, Trash2 } from "lucide-react";
+import { CalendarRange, Frown, Plus, Trash2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -41,7 +41,8 @@ export default function AppointmentsContent() {
     refetch: refetchAppointments,
     isLoading: fetchingAppointments,
   } = api.appointment.admin.getAll.useQuery();
-  const { mutate: deleteAppointment } =
+
+  const { mutate: deleteAppointment, isLoading: deletingAppointment } =
     api.appointment.admin.delete.useMutation({
       onSuccess: () => {
         refetchAppointments();
@@ -99,7 +100,8 @@ export default function AppointmentsContent() {
             <TableHeader>
               <TableRow>
                 <TableHead className="flex-1">Name</TableHead>
-                <TableHead className="flex-1">Time</TableHead>
+                <TableHead className="flex-1">Date</TableHead>
+                <TableHead className="flex-1">Hour</TableHead>
                 <TableHead className="flex-1">Created at</TableHead>
                 <TableHead className="flex items-center justify-end pr-2"></TableHead>
               </TableRow>
@@ -108,9 +110,14 @@ export default function AppointmentsContent() {
               {appointments?.map((appointment) => (
                 <TableRow key={appointment.uuid}>
                   <TableCell>{`${appointment.userUuid?.firstName} ${appointment.userUuid?.lastName}`}</TableCell>
-                  <TableCell>{dayjs(appointment.date).toString()}</TableCell>
                   <TableCell>
-                    {dayjs(appointment.createdAt).toString()}
+                    {dayjs(appointment.date).format("DD/MM/YYYY")}
+                  </TableCell>
+                  <TableCell>
+                    {dayjs(appointment.date).format("HH:mm")}
+                  </TableCell>
+                  <TableCell>
+                    {dayjs(appointment.createdAt).format("DD/MM/YYYY HH:mm")}
                   </TableCell>
                   <TableCell>
                     <TooltipProvider delayDuration={50}>
@@ -119,6 +126,7 @@ export default function AppointmentsContent() {
                           onClick={() =>
                             deleteAppointment({ uuid: appointment.uuid })
                           }
+                          disabled={deletingAppointment}
                         >
                           <Trash2 className="h-5 w-5 justify-end text-red-500" />
                         </TooltipTrigger>
@@ -134,8 +142,8 @@ export default function AppointmentsContent() {
       ) : (
         <div className="my-4 flex w-64 justify-center rounded-md p-3 text-primary">
           <div className="flex items-center gap-2">
-            <CalendarRange className="h-5 w-5" />
-            No schedules found
+            No appointments found
+            <Frown className="size-5" />
           </div>
         </div>
       )}

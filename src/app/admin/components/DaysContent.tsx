@@ -13,7 +13,7 @@ import {
 
 import { inputSchemas } from "@/server/db/ZSchemasAndTypes";
 import { api } from "@/trpc/react";
-import { type RouterInputs } from "@/trpc/shared";
+import { RouterOutputs, type RouterInputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -38,20 +38,25 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 type CreateDayInput = RouterInputs["schedule"]["day"]["create"];
+type DaysOutput = RouterOutputs["schedule"]["day"]["getAll"];
 
-export default function DaysContent() {
+interface DaysContentProps {
+  days: DaysOutput | undefined;
+  refetchDays: () => void;
+  fetchingDays: boolean;
+  refetchSchedules: () => void;
+}
+
+export default function DaysContent({
+  days,
+  refetchDays,
+  fetchingDays,
+  refetchSchedules,
+}: DaysContentProps) {
   const router = useRouter();
 
   const form = useForm<CreateDayInput>({
     resolver: zodResolver(inputSchemas.scheduleDay.pick({ weekDay: true })),
-  });
-
-  const {
-    data: days,
-    isLoading: fetchingDays,
-    refetch: refetchDays,
-  } = api.schedule.day.getAll.useQuery(undefined, {
-    refetchOnWindowFocus: false,
   });
 
   const { mutate: createDay, isLoading: creatingDay } =
@@ -59,6 +64,7 @@ export default function DaysContent() {
       onSuccess: (response) => {
         form.reset();
         refetchDays();
+        refetchSchedules();
         toast("Day created successfully", {
           position: "bottom-center",
           description: `New day created (${response.weekDay.charAt(0).toUpperCase() + response.weekDay.slice(1)})`,

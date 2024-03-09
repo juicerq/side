@@ -11,9 +11,13 @@ import {
   DrawerTrigger,
 } from "../../components/ui/drawer";
 
-import { inputSchemas } from "@/server/db/ZSchemasAndTypes";
+import {
+  AllSchedules,
+  Schedule,
+  inputSchemas,
+} from "@/server/db/ZSchemasAndTypes";
 import { api } from "@/trpc/react";
-import { type RouterInputs } from "@/trpc/shared";
+import { RouterOutputs, type RouterInputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -39,7 +43,19 @@ import { Card } from "@/app/components/ui/card";
 
 type CreateScheduleInput = RouterInputs["schedule"]["create"];
 
-export default function SchedulesContent() {
+type SchedulesOutput = RouterOutputs["schedule"]["getAllWithOptions"];
+
+interface SchedulesContentProps {
+  data: SchedulesOutput | undefined;
+  refetchSchedules: () => void;
+  fetchingSchedules: boolean;
+}
+
+export default function SchedulesContent({
+  data,
+  refetchSchedules,
+  fetchingSchedules,
+}: SchedulesContentProps) {
   const form = useForm<CreateScheduleInput>({
     resolver: zodResolver(
       inputSchemas.schedule.pick({
@@ -50,14 +66,6 @@ export default function SchedulesContent() {
     defaultValues: {
       hourUuids: [],
     },
-  });
-
-  const {
-    data,
-    isLoading: fetchingSchedules,
-    refetch: refetchSchedules,
-  } = api.schedule.getAllWithOptions.useQuery(undefined, {
-    refetchOnWindowFocus: false,
   });
 
   const { mutate: deleteSchedule } = api.schedule.delete.useMutation({
