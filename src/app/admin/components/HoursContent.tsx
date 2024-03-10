@@ -14,9 +14,9 @@ import {
 
 import { Card } from "@/app/components/ui/card";
 import { Skeleton } from "@/app/components/ui/skeleton";
-import { ScheduleHour, inputSchemas } from "@/server/db/ZSchemasAndTypes";
+import { inputSchemas } from "@/server/db/ZSchemasAndTypes";
 import { api } from "@/trpc/react";
-import { type RouterInputs } from "@/trpc/shared";
+import { RouterOutputs, type RouterInputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -28,14 +28,13 @@ import {
   FormLabel,
   FormMessage,
 } from "../../components/ui/form";
-import { useAdminHours } from "@/app/components/hooks/useAdminHours";
-import { revalidatePath } from "next/cache";
-import { KeyboardEventHandler } from "react";
 
 type CreateHour = RouterInputs["schedule"]["hour"]["create"];
 
+type HoursOutput = RouterOutputs["schedule"]["hour"]["getAll"];
+
 interface HoursContentProps {
-  hours: ScheduleHour[] | undefined;
+  hours: HoursOutput | undefined;
   refetchHours: () => void;
   fetchingHours: boolean;
   refetchSchedules: () => void;
@@ -89,23 +88,6 @@ export default function HoursContent({
   });
   const handleSubmit = ({ hour }: CreateHour) => {
     createHour({ hour });
-  };
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    const allowedKeys = /[0-9]/;
-    const key = event.key;
-
-    if (
-      key === "Backspace" ||
-      key === "Enter" ||
-      key === "Escape" ||
-      key === ":"
-    )
-      return;
-
-    if (!allowedKeys.test(key)) {
-      event.preventDefault();
-    }
   };
 
   return (

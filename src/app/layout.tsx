@@ -3,12 +3,12 @@ import "@/styles/globals.css";
 import { Roboto } from "next/font/google";
 
 import { TRPCReactProvider } from "@/trpc/react";
-import { ThemeProvider } from "./components/ThemeProvider";
-import { Toaster } from "./components/ui/sonner";
 import { Analytics } from "@vercel/analytics/react";
-import Navbar from "./components/Navbar";
-import UserProvider from "./components/UserProvider";
 import dayjs from "dayjs";
+import Navbar from "./components/Navbar";
+import { ThemeProvider } from "./components/ThemeProvider";
+import UserProvider from "./components/UserProvider";
+import { Toaster } from "./components/ui/sonner";
 
 const roboto = Roboto({
   weight: ["400", "500", "700"],

@@ -1,13 +1,13 @@
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 
-import { UserUtils } from "../utils/UserUtils";
-import { z } from "zod";
-import { inputSchemas, outputSchemas } from "@/server/db/ZSchemasAndTypes";
-import { TRPCError } from "@trpc/server";
 import { db } from "@/server/db";
+import { inputSchemas, outputSchemas } from "@/server/db/ZSchemasAndTypes";
 import { users } from "@/server/db/schema";
+import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
+import { z } from "zod";
 import { takeUniqueOrThrow } from "../utils/DrizzleUtils";
+import { UserUtils } from "../utils/UserUtils";
 
 export const userRouter = createTRPCRouter({
   create: publicProcedure

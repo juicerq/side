@@ -1,6 +1,6 @@
 import { db } from "@/server/db";
 import { type ScheduleHour } from "@/server/db/ZSchemasAndTypes";
-import { scheduleHours, hoursOnSchedules, schedules } from "@/server/db/schema";
+import { hoursOnSchedules, scheduleHours } from "@/server/db/schema";
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import { takeUniqueOrThrow } from "./DrizzleUtils";

@@ -1,17 +1,16 @@
+import { env } from "@/env";
 import { db } from "@/server/db";
+import { SendConfirmationCode, User } from "@/server/db/ZSchemasAndTypes";
 import { users } from "@/server/db/schema";
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import jwt from "jsonwebtoken";
 import { takeUniqueOrThrow } from "./DrizzleUtils";
-import { env } from "@/env";
-import { getUser } from "./getUser";
 import { Email } from "./Email";
-import { SendConfirmationCode, User } from "@/server/db/ZSchemasAndTypes";
+import { getUser } from "./getUser";
 
 export const UserUtils = {
   async create({ firstName, lastName, email }: User) {
-
     const newUser = await db
       .insert(users)
       .values({ firstName, lastName, email })

@@ -6,7 +6,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -27,7 +26,7 @@ export function DaySquare({ day, schedule, appointments }: DaySquareProps) {
   const validDay = today <= day.day;
   const noSchedule = !schedule;
 
-  const allHours = schedule?.hours.map((hour) => hour.hourUuid);
+  const allHours = schedule?.hours.map((hour) => hour.hour);
 
   return (
     <Dialog>

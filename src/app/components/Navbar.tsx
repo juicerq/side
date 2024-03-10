@@ -3,13 +3,9 @@
 import Cookies from "js-cookie";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Avatar, AvatarFallback } from "./ui/avatar";
-import { useStore } from "./hooks/useStore";
-import { Checkbox } from "./ui/checkbox";
-import { Label } from "./ui/label";
-import { api } from "@/trpc/react";
-import { toast } from "sonner";
 import { NavbarConfig } from "./NavbarConfig";
+import { useStore } from "./hooks/useStore";
+import { Avatar, AvatarFallback } from "./ui/avatar";
 
 const links = [
   {

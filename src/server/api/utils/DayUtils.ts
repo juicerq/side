@@ -1,9 +1,9 @@
 import { db } from "@/server/db";
 import { ScheduleDay } from "@/server/db/ZSchemasAndTypes";
-import { hoursOnSchedules, scheduleDays, schedules } from "@/server/db/schema";
-import { takeUniqueOrThrow } from "./DrizzleUtils";
+import { scheduleDays } from "@/server/db/schema";
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
+import { takeUniqueOrThrow } from "./DrizzleUtils";
 
 export const DaysUtils = {
   async getAll() {

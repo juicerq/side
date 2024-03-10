@@ -1,5 +1,5 @@
 import { Button } from "@/app/components/ui/button";
-import { CalendarRange, Check, Info, Loader2, Plus, Trash } from "lucide-react";
+import { CalendarRange, Info, Loader2, Plus, Trash } from "lucide-react";
 import {
   Drawer,
   DrawerClose,

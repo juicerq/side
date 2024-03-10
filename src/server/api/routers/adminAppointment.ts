@@ -1,7 +1,6 @@
-import { db } from "@/server/db";
+import { inputSchemas } from "@/server/db/ZSchemasAndTypes";
 import { adminProcedure, createTRPCRouter } from "../trpc";
 import { AppointmentUtils } from "../utils/AppointmentUtils";
-import { inputSchemas } from "@/server/db/ZSchemasAndTypes";
 
 export const adminAppointmentRoute = createTRPCRouter({
   getAll: adminProcedure.query(async () => {

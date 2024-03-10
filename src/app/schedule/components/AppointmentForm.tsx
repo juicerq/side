@@ -11,8 +11,7 @@ import { Month } from "@/app/utils/generateMonths";
 import { getTimestamp } from "@/app/utils/getTimestamp";
 import {
   AllSchedules,
-  ScheduleHour,
-  inputSchemas,
+  inputSchemas
 } from "@/server/db/ZSchemasAndTypes";
 import { api } from "@/trpc/react";
 import { RouterInputs, RouterOutputs } from "@/trpc/shared";
@@ -22,8 +21,10 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+type AllHours = RouterOutputs["schedule"]["hour"]["getAll"];
+
 interface AppointmentFormProps {
-  allHours: ScheduleHour[] | undefined;
+  allHours: AllHours | undefined;
   schedule: AllSchedules[number] | undefined;
   appointments: RouterOutputs["appointment"]["getAll"] | undefined;
   day: Month;

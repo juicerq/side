@@ -1,5 +1,5 @@
 import { Button } from "@/app/components/ui/button";
-import { CalendarRange, Check, Info, Loader2, Plus, Trash } from "lucide-react";
+import { CalendarRange, Loader2, Plus, Trash } from "lucide-react";
 import {
   Drawer,
   DrawerClose,
@@ -12,9 +12,7 @@ import {
 } from "../../components/ui/drawer";
 
 import {
-  AllSchedules,
-  Schedule,
-  inputSchemas,
+  inputSchemas
 } from "@/server/db/ZSchemasAndTypes";
 import { api } from "@/trpc/react";
 import { RouterOutputs, type RouterInputs } from "@/trpc/shared";
@@ -30,6 +28,8 @@ import {
   FormMessage,
 } from "../../components/ui/form";
 
+import { Card } from "@/app/components/ui/card";
+import { Skeleton } from "@/app/components/ui/skeleton";
 import {
   Select,
   SelectContent,
@@ -37,9 +37,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Skeleton } from "@/app/components/ui/skeleton";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { Card } from "@/app/components/ui/card";
 
 type CreateScheduleInput = RouterInputs["schedule"]["create"];
 
@@ -137,7 +135,7 @@ export default function SchedulesContent({
               <div className="flex items-center gap-2">
                 <CalendarRange className="h-5 w-5" />
                 {schedule.day.weekDay} -{" "}
-                {schedule.hours.map((hour) => hour.hourUuid.hour).join(", ")}
+                {schedule.hours.map((hour) => hour.hour.hour).join("- ")}
               </div>
               <div
                 onClick={() => deleteSchedule({ uuid: schedule.uuid })}

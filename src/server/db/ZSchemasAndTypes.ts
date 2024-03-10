@@ -1,4 +1,6 @@
+import { RouterOutputs } from "@/trpc/shared";
 import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod";
 import {
   appointments,
   scheduleDays,
@@ -6,8 +8,6 @@ import {
   schedules,
   users,
 } from "./schema";
-import { z } from "zod";
-import { RouterOutputs } from "@/trpc/shared";
 
 // -- SCHEMAS -- \\
 

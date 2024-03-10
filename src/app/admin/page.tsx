@@ -1,19 +1,19 @@
 "use client";
 
+import { useAdminDays } from "../components/hooks/useAdminDays";
+import { useAdminHours } from "../components/hooks/useAdminHours";
+import { useAdminSchedules } from "../components/hooks/useAdminSchedules";
+import useCheckPermission from "../components/hooks/useCheckPermission";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "../components/ui/tabs";
-import useCheckPermission from "../components/hooks/useCheckPermission";
+import AppointmentsContent from "./components/AppointmentsContent";
 import DaysContent from "./components/DaysContent";
 import HoursContent from "./components/HoursContent";
-import AppointmentsContent from "./components/AppointmentsContent";
 import SchedulesContent from "./components/SchedulesContent";
-import { useAdminHours } from "../components/hooks/useAdminHours";
-import { useAdminSchedules } from "../components/hooks/useAdminSchedules";
-import { useAdminDays } from "../components/hooks/useAdminDays";
 
 export default function AdminPage() {
   const checked = useCheckPermission("admin");

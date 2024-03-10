@@ -1,8 +1,6 @@
 import { inputSchemas } from "@/server/db/ZSchemasAndTypes";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { AppointmentUtils } from "../utils/AppointmentUtils";
-import { z } from "zod";
-import dayjs from "dayjs";
 import { adminAppointmentRoute } from "./adminAppointment";
 
 export const appointmentRouter = createTRPCRouter({

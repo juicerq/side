@@ -1,19 +1,10 @@
 import { db } from "@/server/db";
-import {
-  type ScheduleDay,
-  type Schedule,
-  type ScheduleHour,
-} from "@/server/db/ZSchemasAndTypes";
-import {
-  hoursOnSchedules,
-  scheduleDays,
-  scheduleHours,
-  schedules,
-} from "@/server/db/schema";
+import { type Schedule } from "@/server/db/ZSchemasAndTypes";
+import { hoursOnSchedules, schedules } from "@/server/db/schema";
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
-import { takeUniqueOrThrow } from "./DrizzleUtils";
 import { DaysUtils } from "./DayUtils";
+import { takeUniqueOrThrow } from "./DrizzleUtils";
 import { HoursUtils } from "./HourUtils";
 
 export const SchedulesUtils = {
@@ -23,7 +14,7 @@ export const SchedulesUtils = {
         day: true,
         hours: {
           with: {
-            hourUuid: true,
+            hour: true,
           },
         },
       },

@@ -1,8 +1,8 @@
 import { userRouter } from "@/server/api/routers/user";
 import { createTRPCRouter } from "@/server/api/trpc";
+import { appointmentRouter } from "./routers/appointment";
 import { scheduleRouter } from "./routers/schedule";
 import { testeRouter } from "./routers/teste";
-import { appointmentRouter } from "./routers/appointment";
 
 /**
  * This is the primary router for your server.

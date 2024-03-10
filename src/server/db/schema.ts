@@ -141,11 +141,11 @@ export const hoursOnSchedules = createTable(
 export const hoursOnSchedulesRelations = relations(
   hoursOnSchedules,
   ({ one }) => ({
-    scheduleUuid: one(schedules, {
+    schedule: one(schedules, {
       fields: [hoursOnSchedules.scheduleUuid],
       references: [schedules.uuid],
     }),
-    hourUuid: one(scheduleHours, {
+    hour: one(scheduleHours, {
       fields: [hoursOnSchedules.hourUuid],
       references: [scheduleHours.uuid],
     }),
@@ -183,15 +183,15 @@ export const scheduleDaysRelations = relations(scheduleDays, ({ many }) => ({
 }));
 
 export const appointmentsRelations = relations(appointments, ({ one }) => ({
-  userUuid: one(users, {
+  user: one(users, {
     fields: [appointments.userUuid],
     references: [users.uuid],
   }),
-  scheduleUuid: one(schedules, {
+  schedule: one(schedules, {
     fields: [appointments.scheduleUuid],
     references: [schedules.uuid],
   }),
-  hourUuid: one(scheduleHours, {
+  hour: one(scheduleHours, {
     fields: [appointments.hourUuid],
     references: [scheduleHours.uuid],
   }),

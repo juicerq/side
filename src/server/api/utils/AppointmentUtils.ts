@@ -1,17 +1,17 @@
 import { db } from "@/server/db";
-import { appointments } from "@/server/db/schema";
-import { takeUniqueOrThrow } from "./DrizzleUtils";
 import { Appointment } from "@/server/db/ZSchemasAndTypes";
+import { appointments } from "@/server/db/schema";
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
+import { takeUniqueOrThrow } from "./DrizzleUtils";
 
 export const AppointmentUtils = {
   async getAll() {
     const allAppointments = await db.query.appointments.findMany({
       with: {
-        userUuid: true,
-        scheduleUuid: true,
-        hourUuid: true,
+        user: true,
+        schedule: true,
+        hour: true,
       },
     });
 
@@ -80,9 +80,9 @@ export const AppointmentUtils = {
     async getAll() {
       const allAppointments = await db.query.appointments.findMany({
         with: {
-          userUuid: true,
-          scheduleUuid: true,
-          hourUuid: true,
+          user: true,
+          schedule: true,
+          hour: true,
         },
       });
 

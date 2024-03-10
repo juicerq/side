@@ -1,6 +1,5 @@
 import { db } from "@/server/db";
-import { inputSchemas, outputSchemas } from "@/server/db/ZSchemasAndTypes";
-import { TRPCError } from "@trpc/server";
+import { outputSchemas } from "@/server/db/ZSchemasAndTypes";
 import { z } from "zod";
 import { adminProcedure, createTRPCRouter, publicProcedure } from "../trpc";
 import { SchedulesUtils } from "../utils/SchedulesUtils";
@@ -37,7 +36,7 @@ export const scheduleRouter = createTRPCRouter({
             day: true,
             hours: {
               with: {
-                hourUuid: {
+                hour: {
                   columns: {
                     hour: true,
                   },

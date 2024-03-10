@@ -1,8 +1,7 @@
 import { inputSchemas, outputSchemas } from "@/server/db/ZSchemasAndTypes";
+import { z } from "zod";
 import { adminProcedure, createTRPCRouter } from "../trpc";
 import { SchedulesUtils } from "../utils/SchedulesUtils";
-import { TRPCError } from "@trpc/server";
-import { z } from "zod";
 
 export const scheduleHourRouter = createTRPCRouter({
   getAll: adminProcedure.query(async () => {

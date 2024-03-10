@@ -1,4 +1,4 @@
-import { CalendarRange, Frown, Plus, Trash2 } from "lucide-react";
+import { Frown, Plus, Trash2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -20,6 +20,10 @@ import {
   DrawerTrigger,
 } from "../../components/ui/drawer";
 
+import { Skeleton } from "@/app/components/ui/skeleton";
+import { api } from "@/trpc/react";
+import dayjs from "dayjs";
+import { toast } from "sonner";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import {
@@ -28,10 +32,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../../components/ui/tooltip";
-import { api } from "@/trpc/react";
-import dayjs from "dayjs";
-import { toast } from "sonner";
-import { Skeleton } from "@/app/components/ui/skeleton";
 
 dayjs.locale("pt-br");
 
@@ -108,7 +108,7 @@ export default function AppointmentsContent() {
             <TableBody>
               {appointments?.map((appointment) => (
                 <TableRow key={appointment.uuid}>
-                  <TableCell>{`${appointment.userUuid?.firstName} ${appointment.userUuid?.lastName}`}</TableCell>
+                  <TableCell>{`${appointment.user?.firstName} ${appointment.user?.lastName}`}</TableCell>
                   <TableCell>
                     {dayjs(appointment.date).format("DD/MM/YYYY HH:mm")}
                   </TableCell>

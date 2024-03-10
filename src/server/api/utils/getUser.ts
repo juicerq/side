@@ -1,8 +1,8 @@
 import { db } from "@/server/db";
 import { users } from "@/server/db/schema";
+import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import { takeUniqueOrThrow } from "./DrizzleUtils";
-import { TRPCError } from "@trpc/server";
 
 export async function getUser(userIdentifier: {
   userUuid?: string | null;
