@@ -113,7 +113,9 @@ export default function AppointmentsContent() {
                     {dayjs(appointment.date).format("DD/MM/YYYY HH:mm")}
                   </TableCell>
                   <TableCell>
-                    {dayjs(appointment.createdAt).format("DD/MM/YYYY HH:mm")}
+                    {dayjs(appointment.createdAt)
+                      .add(3, "hour")
+                      .format("DD/MM/YYYY HH:mm")}
                   </TableCell>
                   <TableCell>
                     <TooltipProvider delayDuration={50}>
