@@ -29,7 +29,7 @@ export function NavbarConfig({ user, setUser }: NavbarConfigProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <MoreVertical className="size-9 ml-4 hover:bg-secondary rounded-md p-1 cursor-pointer" />
+        <MoreVertical className="size-8 ml-4 hover:bg-secondary rounded-md p-1 cursor-pointer active:scale-105" />
       </PopoverTrigger>
       <PopoverContent className="w-[350px] space-y-4 divide-y mr-8">
         <div className="flex text-muted-foreground gap-2 items-center">
@@ -72,7 +72,7 @@ export function NavbarConfig({ user, setUser }: NavbarConfigProps) {
               <div className="space-y-0.5">
                 <p className="text-sm">Dark mode</p>
                 <p className="text-xs text-muted-foreground">
-                  Swap to dark mode or light mode.
+                  Swap between dark and light mode
                 </p>
               </div>
             </div>

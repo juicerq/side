@@ -101,7 +101,6 @@ export default function AppointmentsContent() {
               <TableRow>
                 <TableHead className="flex-1">Name</TableHead>
                 <TableHead className="flex-1">Date</TableHead>
-                <TableHead className="flex-1">Hour</TableHead>
                 <TableHead className="flex-1">Created at</TableHead>
                 <TableHead className="flex items-center justify-end pr-2"></TableHead>
               </TableRow>
@@ -111,10 +110,7 @@ export default function AppointmentsContent() {
                 <TableRow key={appointment.uuid}>
                   <TableCell>{`${appointment.userUuid?.firstName} ${appointment.userUuid?.lastName}`}</TableCell>
                   <TableCell>
-                    {dayjs(appointment.date).format("DD/MM/YYYY")}
-                  </TableCell>
-                  <TableCell>
-                    {dayjs(appointment.date).format("HH:mm")}
+                    {dayjs(appointment.date).format("DD/MM/YYYY HH:mm")}
                   </TableCell>
                   <TableCell>
                     {dayjs(appointment.createdAt).format("DD/MM/YYYY HH:mm")}

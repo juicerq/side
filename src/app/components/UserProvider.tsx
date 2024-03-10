@@ -1,10 +1,10 @@
 "use client";
 
 import { api } from "@/trpc/react";
+import { Loader2 } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { ReactNode, useEffect } from "react";
 import { useStore } from "./hooks/useStore";
-import { usePathname, useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
 import useIsLogged from "./useIsLogged";
 
 interface UserProviderProps {
