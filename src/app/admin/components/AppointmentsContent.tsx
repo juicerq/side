@@ -89,54 +89,53 @@ export default function AppointmentsContent() {
           </DrawerContent>
         </Drawer>
       </div>
-      {appointments?.length ? (
-        fetchingAppointments ? (
-          Array.from({ length: 6 }, (_, i) => (
-            <Skeleton key={i} className="h-10 w-64 rounded-md" />
-          ))
-        ) : (
-          <Table>
-            <TableCaption>A list of your recent schedules</TableCaption>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="flex-1">Created by</TableHead>
-                <TableHead className="flex-1">Scheduled to</TableHead>
-                <TableHead className="flex-1">Created at</TableHead>
-                <TableHead className="flex items-center justify-end pr-2"></TableHead>
+      {fetchingAppointments ? (
+        Array.from({ length: 6 }, (_, i) => (
+          <Skeleton key={i} className="h-9 w-full rounded-md" />
+        ))
+      ) : appointments?.length ? (
+        <Table>
+          <TableCaption>A list of your recent schedules</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="flex-1">Created by</TableHead>
+              <TableHead className="flex-1">Scheduled to</TableHead>
+              <TableHead className="flex-1">Created at</TableHead>
+              <TableHead className="flex-1">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {appointments?.map((appointment) => (
+              <TableRow key={appointment.uuid} className="h-16">
+                <TableCell>{`${appointment.user?.firstName} ${appointment.user?.lastName}`}</TableCell>
+                <TableCell>
+                  {dayjs(appointment.date).format("DD/MM/YYYY HH:mm")}
+                </TableCell>
+                <TableCell>
+                  {dayjs(appointment.createdAt)
+                    .add(3, "hour")
+                    .format("DD/MM/YYYY HH:mm")}
+                </TableCell>
+                {/* Cell height so it stay in middle */}
+                <TableCell className="flex h-16 items-center">
+                  <TooltipProvider delayDuration={50}>
+                    <Tooltip>
+                      <TooltipTrigger
+                        onClick={() =>
+                          deleteAppointment({ uuid: appointment.uuid })
+                        }
+                        disabled={deletingAppointment}
+                      >
+                        <Trash2 className="h-5 w-5 justify-end text-red-500" />
+                      </TooltipTrigger>
+                      <TooltipContent>Delete Schedule</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {appointments?.map((appointment) => (
-                <TableRow key={appointment.uuid}>
-                  <TableCell>{`${appointment.user?.firstName} ${appointment.user?.lastName}`}</TableCell>
-                  <TableCell>
-                    {dayjs(appointment.date).format("DD/MM/YYYY HH:mm")}
-                  </TableCell>
-                  <TableCell>
-                    {dayjs(appointment.createdAt)
-                      .add(3, "hour")
-                      .format("DD/MM/YYYY HH:mm")}
-                  </TableCell>
-                  <TableCell>
-                    <TooltipProvider delayDuration={50}>
-                      <Tooltip>
-                        <TooltipTrigger
-                          onClick={() =>
-                            deleteAppointment({ uuid: appointment.uuid })
-                          }
-                          disabled={deletingAppointment}
-                        >
-                          <Trash2 className="h-5 w-5 justify-end text-red-500" />
-                        </TooltipTrigger>
-                        <TooltipContent>Delete Schedule</TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        )
+            ))}
+          </TableBody>
+        </Table>
       ) : (
         <div className="my-4 flex w-64 justify-center rounded-md p-3 text-primary">
           <div className="flex items-center gap-2">
