@@ -22,7 +22,8 @@ export default function Schedule() {
 
   const { data: schedules } = api.schedule.getAll.useQuery();
 
-  const { data: appointments } = api.appointment.getAll.useQuery();
+  const { data: appointments, refetch: refetchAppointments } =
+    api.appointment.getAll.useQuery();
 
   return (
     <Card>
@@ -72,6 +73,7 @@ export default function Schedule() {
                     day={day}
                     schedule={schedule}
                     appointments={appointments}
+                    refetchAppointments={refetchAppointments}
                   />
                 );
               })}
@@ -92,6 +94,7 @@ export default function Schedule() {
                     day={day}
                     schedule={schedule}
                     appointments={appointments}
+                    refetchAppointments={refetchAppointments}
                   />
                 );
               })}
@@ -110,6 +113,7 @@ export default function Schedule() {
                     day={day}
                     schedule={schedule}
                     appointments={appointments}
+                    refetchAppointments={refetchAppointments}
                   />
                 );
               })}

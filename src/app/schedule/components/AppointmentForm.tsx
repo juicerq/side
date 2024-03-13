@@ -9,10 +9,7 @@ import {
 import { ToggleGroup, ToggleGroupItem } from "@/app/components/ui/toggle-group";
 import { Month } from "@/app/utils/generateMonths";
 import { getTimestamp } from "@/app/utils/getTimestamp";
-import {
-  AllSchedules,
-  inputSchemas
-} from "@/server/db/ZSchemasAndTypes";
+import { AllSchedules, inputSchemas } from "@/server/db/ZSchemasAndTypes";
 import { api } from "@/trpc/react";
 import { RouterInputs, RouterOutputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,6 +25,7 @@ interface AppointmentFormProps {
   schedule: AllSchedules[number] | undefined;
   appointments: RouterOutputs["appointment"]["getAll"] | undefined;
   day: Month;
+  refetchAppointments: () => void;
 }
 
 type CreateAppointment = RouterInputs["appointment"]["create"];
@@ -37,12 +35,14 @@ export default function AppointmentForm({
   schedule,
   appointments,
   day,
+  refetchAppointments,
 }: AppointmentFormProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const { mutate: createAppointment, isLoading: creatingAppointment } =
     api.appointment.create.useMutation({
       onSuccess: () => {
+        refetchAppointments();
         toast("Appointment created successfully", {
           position: "bottom-center",
         });

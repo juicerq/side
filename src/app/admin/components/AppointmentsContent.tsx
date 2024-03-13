@@ -58,7 +58,7 @@ export default function AppointmentsContent() {
     });
 
   return (
-    <>
+    <div className="w-full h-max border p-6 rounded-md space-y-3 flex flex-col">
       <div className="ml-auto">
         <Drawer>
           <DrawerTrigger>
@@ -99,8 +99,8 @@ export default function AppointmentsContent() {
             <TableCaption>A list of your recent schedules</TableCaption>
             <TableHeader>
               <TableRow>
-                <TableHead className="flex-1">Name</TableHead>
-                <TableHead className="flex-1">Date</TableHead>
+                <TableHead className="flex-1">Created by</TableHead>
+                <TableHead className="flex-1">Scheduled to</TableHead>
                 <TableHead className="flex-1">Created at</TableHead>
                 <TableHead className="flex items-center justify-end pr-2"></TableHead>
               </TableRow>
@@ -145,6 +145,6 @@ export default function AppointmentsContent() {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }

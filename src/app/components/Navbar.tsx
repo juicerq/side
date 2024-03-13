@@ -15,6 +15,7 @@ const links = [
   {
     name: "Admin",
     href: "/admin",
+    defaultPath: "path=appointments",
   },
 ];
 
@@ -27,14 +28,21 @@ export default function Navbar() {
 
   if (shouldRender && user)
     return (
-      <div className="fixed left-0 top-0 flex h-16 border-b w-screen items-center justify-between bg-transparent px-12">
+      <div className="fixed z-10 left-0 top-0 flex h-16 border-b w-screen items-center justify-between bg-background-secondary pl-36 pr-12">
         <div className="flex flex-1 items-center gap-8">
           <ul className="flex items-center justify-center gap-6 pl-36">
             {links.map((link) => {
               if (user.role !== "admin" && link.href === "/admin") return null;
               return (
                 <li key={link.name}>
-                  <Link href={link.href} className="text-sm hover:opacity-80">
+                  <Link
+                    href={
+                      link.defaultPath
+                        ? link.href + "?" + link.defaultPath
+                        : link.href
+                    }
+                    className="text-sm hover:opacity-80"
+                  >
                     {link.name}
                   </Link>
                 </li>

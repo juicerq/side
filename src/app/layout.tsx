@@ -33,7 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`font-roboto bg-gray-100 dark:bg-background ${roboto.variable}`}
+        className={`font-roboto max-h-[100vh] bg-gray-100 dark:bg-background ${roboto.variable}`}
       >
         <>
           <TRPCReactProvider>
