@@ -25,7 +25,6 @@ interface AppointmentFormProps {
   schedule: AllSchedules[number] | undefined;
   appointments: RouterOutputs["appointment"]["getAll"] | undefined;
   day: Month;
-  refetchAppointments: () => void;
 }
 
 type CreateAppointment = RouterInputs["appointment"]["create"];
@@ -35,14 +34,14 @@ export default function AppointmentForm({
   schedule,
   appointments,
   day,
-  refetchAppointments,
 }: AppointmentFormProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
+  const utils = api.useUtils();
 
   const { mutate: createAppointment, isLoading: creatingAppointment } =
     api.appointment.create.useMutation({
       onSuccess: () => {
-        refetchAppointments();
         toast("Appointment created successfully", {
           position: "bottom-center",
         });
@@ -51,6 +50,9 @@ export default function AppointmentForm({
         toast(err.message, {
           position: "bottom-center",
         });
+      },
+      onSettled: () => {
+        utils.appointment.getAll.refetch();
       },
     });
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface Props {
   path: string;
@@ -9,13 +9,16 @@ interface Props {
 
 export default function SidebarLink({ path, name }: Props) {
   const searchParams = useSearchParams();
-  const pathname = usePathname();
   const router = useRouter();
   const isActive = searchParams.get("path") === path;
 
   const setPath = (path: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("path", path);
+    if (path === "appointments") {
+      params.set("page", "1");
+      params.set("limit", "10");
+    }
     router.push("admin" + "?" + params.toString());
   };
 

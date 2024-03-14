@@ -2,7 +2,6 @@ import { Frown, Plus, Trash2 } from "lucide-react";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -23,6 +22,7 @@ import {
 import { Skeleton } from "@/app/components/ui/skeleton";
 import { api } from "@/trpc/react";
 import dayjs from "dayjs";
+import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
@@ -33,13 +33,16 @@ import {
   TooltipTrigger,
 } from "../../components/ui/tooltip";
 import Pagination from "./Pagination";
-import { useState } from "react";
 
 dayjs.locale("pt-br");
 
 export default function AppointmentsContent() {
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const searchParams = useSearchParams();
+  const params = new URLSearchParams(searchParams.toString());
+  const page = searchParams.get("page") ? Number(searchParams.get("page")) : 1;
+  const limit = searchParams.get("limit")
+    ? Number(searchParams.get("limit"))
+    : 10;
 
   const {
     data: response,
@@ -146,7 +149,6 @@ export default function AppointmentsContent() {
               </TableBody>
             </Table>
           </div>
-          <Pagination page={page} setPage={setPage} />
         </>
       ) : (
         <div className="my-4 flex w-64 justify-center rounded-md mx-auto p-3 text-primary">
@@ -156,6 +158,7 @@ export default function AppointmentsContent() {
           </div>
         </div>
       )}
+      <Pagination page={page} queryTotal={response?.count ?? 0} />
     </div>
   );
 }

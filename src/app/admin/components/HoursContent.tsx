@@ -35,16 +35,12 @@ type HoursOutput = RouterOutputs["schedule"]["hour"]["getAll"];
 
 interface HoursContentProps {
   hours: HoursOutput | undefined;
-  refetchHours: () => void;
   fetchingHours: boolean;
-  refetchSchedules: () => void;
 }
 
 export default function HoursContent({
   hours,
-  refetchHours,
   fetchingHours,
-  refetchSchedules,
 }: HoursContentProps) {
   const form = useForm<CreateHour>({
     resolver: zodResolver(
@@ -54,11 +50,11 @@ export default function HoursContent({
     ),
   });
 
+  const utils = api.useUtils();
+
   const { mutate: createHour, isLoading: creatingHour } =
     api.schedule.hour.create.useMutation({
       onSuccess: (response) => {
-        refetchHours();
-        refetchSchedules();
         toast("Hour created successfully", {
           position: "bottom-center",
           description: `New hour created (${response.hour ?? "BUG!"})`,
@@ -70,11 +66,14 @@ export default function HoursContent({
           description: "Please, try again.",
         });
       },
+      onSettled: () => {
+        utils.schedule.hour.getAll.refetch();
+        utils.schedule.getAll.refetch();
+      },
     });
 
   const { mutate: deleteHour } = api.schedule.hour.delete.useMutation({
     onSuccess: () => {
-      refetchHours();
       toast("Hour deleted successfully", {
         position: "bottom-center",
       });
@@ -84,6 +83,10 @@ export default function HoursContent({
         position: "bottom-center",
         description: "Please, try again.",
       });
+    },
+    onSettled: () => {
+      utils.schedule.hour.getAll.refetch();
+      utils.schedule.getAll.refetch();
     },
   });
   const handleSubmit = ({ hour }: CreateHour) => {

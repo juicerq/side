@@ -73,7 +73,6 @@ export default function Schedule() {
                     day={day}
                     schedule={schedule}
                     appointments={appointments}
-                    refetchAppointments={refetchAppointments}
                   />
                 );
               })}
@@ -94,7 +93,6 @@ export default function Schedule() {
                     day={day}
                     schedule={schedule}
                     appointments={appointments}
-                    refetchAppointments={refetchAppointments}
                   />
                 );
               })}
@@ -113,7 +111,6 @@ export default function Schedule() {
                     day={day}
                     schedule={schedule}
                     appointments={appointments}
-                    refetchAppointments={refetchAppointments}
                   />
                 );
               })}

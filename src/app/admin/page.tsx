@@ -23,7 +23,7 @@ export default function AdminPage() {
   const path = searchParams.get("path");
   const router = useRouter();
 
-  const { hours, refetchHours, fetchingHours } = useAdminHours();
+  const { hours, fetchingHours } = useAdminHours();
 
   const { data, fetchingSchedules, refetchSchedules } = useAdminSchedules();
 
@@ -49,18 +49,8 @@ export default function AdminPage() {
         )}
         {path === "customization" && (
           <>
-            <HoursContent
-              hours={hours}
-              refetchHours={refetchHours}
-              fetchingHours={fetchingHours}
-              refetchSchedules={refetchSchedules}
-            />
-            <DaysContent
-              days={days}
-              refetchDays={refetchDays}
-              fetchingDays={fetchingDays}
-              refetchSchedules={refetchSchedules}
-            />
+            <HoursContent hours={hours} fetchingHours={fetchingHours} />
+            <DaysContent days={days} fetchingDays={fetchingDays} />
             <SchedulesContent
               data={data}
               refetchSchedules={refetchSchedules}

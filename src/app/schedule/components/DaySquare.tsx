@@ -20,15 +20,9 @@ interface DaySquareProps {
   day: Month;
   schedule: AllSchedules[number] | undefined;
   appointments: RouterOutputs["appointment"]["getAll"] | undefined;
-  refetchAppointments: () => void;
 }
 
-export function DaySquare({
-  day,
-  schedule,
-  appointments,
-  refetchAppointments,
-}: DaySquareProps) {
+export function DaySquare({ day, schedule, appointments }: DaySquareProps) {
   const validDay = today <= day.day;
   const noSchedule = !schedule;
 
@@ -57,7 +51,6 @@ export function DaySquare({
             schedule={schedule}
             appointments={appointments}
             day={day}
-            refetchAppointments={refetchAppointments}
           />
         </div>
       </DialogContent>

@@ -42,29 +42,20 @@ type DaysOutput = RouterOutputs["schedule"]["day"]["getAll"];
 
 interface DaysContentProps {
   days: DaysOutput | undefined;
-  refetchDays: () => void;
   fetchingDays: boolean;
-  refetchSchedules: () => void;
 }
 
-export default function DaysContent({
-  days,
-  refetchDays,
-  fetchingDays,
-  refetchSchedules,
-}: DaysContentProps) {
-  const router = useRouter();
-
+export default function DaysContent({ days, fetchingDays }: DaysContentProps) {
   const form = useForm<CreateDayInput>({
     resolver: zodResolver(inputSchemas.scheduleDay.pick({ weekDay: true })),
   });
+
+  const utils = api.useUtils();
 
   const { mutate: createDay, isLoading: creatingDay } =
     api.schedule.day.create.useMutation({
       onSuccess: (response) => {
         form.reset();
-        refetchDays();
-        refetchSchedules();
         toast("Day created successfully", {
           position: "bottom-center",
           description: `New day created (${response.weekDay.charAt(0).toUpperCase() + response.weekDay.slice(1)})`,
@@ -75,12 +66,14 @@ export default function DaysContent({
           position: "bottom-center",
         });
       },
+      onSettled: () => {
+        utils.schedule.day.getAll.refetch();
+        utils.schedule.getAll.refetch();
+      },
     });
 
   const { mutate: deleteWeekDay } = api.schedule.day.delete.useMutation({
     onSuccess: () => {
-      refetchDays();
-      router.refresh();
       toast("Day deleted successfully", {
         position: "bottom-center",
       });
@@ -92,6 +85,9 @@ export default function DaysContent({
         description: "Please, try again.",
         position: "bottom-center",
       });
+    },
+    onSettled: () => {
+      utils.schedule.day.getAll.refetch();
     },
   });
 
