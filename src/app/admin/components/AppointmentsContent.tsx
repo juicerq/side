@@ -149,7 +149,7 @@ export default function AppointmentsContent() {
           <Pagination page={page} setPage={setPage} />
         </>
       ) : (
-        <div className="my-4 flex w-64 justify-center rounded-md p-3 text-primary">
+        <div className="my-4 flex w-64 justify-center rounded-md mx-auto p-3 text-primary">
           <div className="flex items-center gap-2">
             No appointments found
             <Frown className="size-5" />
