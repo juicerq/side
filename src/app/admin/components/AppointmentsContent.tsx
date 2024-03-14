@@ -32,15 +32,23 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../../components/ui/tooltip";
+import Pagination from "./Pagination";
+import { useState } from "react";
 
 dayjs.locale("pt-br");
 
 export default function AppointmentsContent() {
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+
   const {
-    data: appointments,
+    data: response,
     refetch: refetchAppointments,
     isLoading: fetchingAppointments,
-  } = api.appointment.admin.getAll.useQuery();
+  } = api.appointment.admin.getAll.useQuery({
+    page,
+    limit,
+  });
 
   const { mutate: deleteAppointment, isLoading: deletingAppointment } =
     api.appointment.admin.delete.useMutation({
@@ -58,7 +66,7 @@ export default function AppointmentsContent() {
     });
 
   return (
-    <div className="w-full h-max border p-6 rounded-md space-y-3 flex flex-col">
+    <div className="w-full max-h-[68dvh] border p-6 rounded-md space-y-3 flex flex-col">
       <div className="ml-auto">
         <Drawer>
           <DrawerTrigger>
@@ -93,49 +101,53 @@ export default function AppointmentsContent() {
         Array.from({ length: 6 }, (_, i) => (
           <Skeleton key={i} className="h-16 w-full rounded-md" />
         ))
-      ) : appointments?.length ? (
-        <Table>
-          <TableCaption>A list of your recent schedules</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="flex-1">Created by</TableHead>
-              <TableHead className="flex-1">Scheduled to</TableHead>
-              <TableHead className="flex-1">Created at</TableHead>
-              <TableHead className="flex-1">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {appointments?.map((appointment) => (
-              <TableRow key={appointment.uuid} className="h-16">
-                <TableCell>{`${appointment.user?.firstName} ${appointment.user?.lastName}`}</TableCell>
-                <TableCell>
-                  {dayjs(appointment.date).format("DD/MM/YYYY HH:mm")}
-                </TableCell>
-                <TableCell>
-                  {dayjs(appointment.createdAt)
-                    .add(3, "hour")
-                    .format("DD/MM/YYYY HH:mm")}
-                </TableCell>
-                {/* Cell height so it stay in middle */}
-                <TableCell className="flex h-16 items-center">
-                  <TooltipProvider delayDuration={50}>
-                    <Tooltip>
-                      <TooltipTrigger
-                        onClick={() =>
-                          deleteAppointment({ uuid: appointment.uuid })
-                        }
-                        disabled={deletingAppointment}
-                      >
-                        <Trash2 className="h-5 w-5 justify-end text-red-500" />
-                      </TooltipTrigger>
-                      <TooltipContent>Delete Schedule</TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+      ) : response?.allAppointments?.length ? (
+        <>
+          <div className="min-h-[60dvh] max-h-[60dvh] overflow-y-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="flex-1">Created by</TableHead>
+                  <TableHead className="flex-1">Scheduled to</TableHead>
+                  <TableHead className="flex-1">Created at</TableHead>
+                  <TableHead className="flex-1">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {response?.allAppointments?.map((appointment) => (
+                  <TableRow key={appointment.uuid} className="h-16">
+                    <TableCell>{`${appointment.user?.firstName} ${appointment.user?.lastName}`}</TableCell>
+                    <TableCell>
+                      {dayjs(appointment.date).format("DD/MM/YYYY HH:mm")}
+                    </TableCell>
+                    <TableCell>
+                      {dayjs(appointment.createdAt)
+                        .add(3, "hour")
+                        .format("DD/MM/YYYY HH:mm")}
+                    </TableCell>
+                    {/* Cell height so it stay in middle */}
+                    <TableCell className="flex h-16 items-center">
+                      <TooltipProvider delayDuration={50}>
+                        <Tooltip>
+                          <TooltipTrigger
+                            onClick={() =>
+                              deleteAppointment({ uuid: appointment.uuid })
+                            }
+                            disabled={deletingAppointment}
+                          >
+                            <Trash2 className="h-5 w-5 justify-end text-red-500" />
+                          </TooltipTrigger>
+                          <TooltipContent>Delete Schedule</TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+          <Pagination page={page} setPage={setPage} />
+        </>
       ) : (
         <div className="my-4 flex w-64 justify-center rounded-md p-3 text-primary">
           <div className="flex items-center gap-2">

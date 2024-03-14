@@ -1,13 +1,19 @@
 import { inputSchemas } from "@/server/db/ZSchemasAndTypes";
 import { adminProcedure, createTRPCRouter } from "../trpc";
 import { AppointmentUtils } from "../utils/AppointmentUtils";
+import { z } from "zod";
 
 export const adminAppointmentRoute = createTRPCRouter({
-  getAll: adminProcedure.query(async () => {
-    const allAppointments = AppointmentUtils.admin.getAll();
+  getAll: adminProcedure
+    .input(z.object({ page: z.number(), limit: z.number() }))
+    .query(async ({ input }) => {
+      const allAppointments = AppointmentUtils.admin.getAll(
+        input.page,
+        input.limit
+      );
 
-    return allAppointments;
-  }),
+      return allAppointments;
+    }),
 
   delete: adminProcedure
     .input(inputSchemas.appointment.pick({ uuid: true }).required())

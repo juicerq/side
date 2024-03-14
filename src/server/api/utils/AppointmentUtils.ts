@@ -77,16 +77,21 @@ export const AppointmentUtils = {
   },
 
   admin: {
-    async getAll() {
+    async getAll(page: number, limit: number) {
       const allAppointments = await db.query.appointments.findMany({
         with: {
           user: true,
           schedule: true,
           hour: true,
         },
+        offset: (page - 1) * limit,
+        limit,
       });
 
-      return allAppointments;
+      return {
+        count: allAppointments.length,
+        allAppointments,
+      };
     },
 
     async delete({ uuid }: { uuid: string }) {
