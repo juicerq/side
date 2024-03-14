@@ -91,7 +91,7 @@ export default function AppointmentsContent() {
       </div>
       {fetchingAppointments ? (
         Array.from({ length: 6 }, (_, i) => (
-          <Skeleton key={i} className="h-9 w-full rounded-md" />
+          <Skeleton key={i} className="h-16 w-full rounded-md" />
         ))
       ) : appointments?.length ? (
         <Table>
