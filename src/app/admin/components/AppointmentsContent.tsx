@@ -104,9 +104,11 @@ export default function AppointmentsContent() {
           </Drawer>
         </div>
         {fetchingAppointments ? (
-          Array.from({ length: 6 }, (_, i) => (
-            <Skeleton key={i} className="h-16 pt-10 w-full rounded-md" />
-          ))
+          <div className="min-h-[60dvh] pt-10 space-y-6 border">
+            {Array.from({ length: 6 }, (_, i) => (
+              <Skeleton key={i} className="h-16 w-full rounded-none" />
+            ))}
+          </div>
         ) : response?.allAppointments?.length ? (
           <>
             <div className="min-h-[60dvh] max-h-[60dvh] overflow-y-auto">
