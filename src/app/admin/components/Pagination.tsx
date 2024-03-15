@@ -2,7 +2,6 @@ import {
   Pagination as PaginationCN,
   PaginationContent,
   PaginationItem,
-  PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
@@ -10,12 +9,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 interface PaginationProps {
   page: number;
-  queryTotal: number;
+  totalPage: number;
 }
 
-export default function Pagination({ page, queryTotal }: PaginationProps) {
+export default function Pagination({ page, totalPage }: PaginationProps) {
   const searchParams = useSearchParams();
-  const totalPage = Math.ceil(queryTotal / page);
   const router = useRouter();
 
   const handlePageChangeBack = () => {
@@ -30,13 +28,8 @@ export default function Pagination({ page, queryTotal }: PaginationProps) {
     router.push("admin" + "?" + params.toString());
   };
 
-  console.log({
-    totalPage,
-    queryTotal,
-  });
-
   return (
-    <PaginationCN className="pt-4">
+    <PaginationCN>
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious

@@ -2,7 +2,7 @@ import { db } from "@/server/db";
 import { Appointment } from "@/server/db/ZSchemasAndTypes";
 import { appointments } from "@/server/db/schema";
 import { TRPCError } from "@trpc/server";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { takeUniqueOrThrow } from "./DrizzleUtils";
 
 export const AppointmentUtils = {
@@ -78,18 +78,23 @@ export const AppointmentUtils = {
 
   admin: {
     async getAll(page: number, limit: number) {
+      const countResult = await db
+        .select({ count: sql<number>`COUNT(*)` })
+        .from(appointments);
+      const total = Number(countResult[0]?.count);
+
       const allAppointments = await db.query.appointments.findMany({
         with: {
           user: true,
           schedule: true,
           hour: true,
         },
-        offset: (page - 1) * limit,
+        offset: page,
         limit,
       });
 
       return {
-        count: allAppointments.length,
+        count: total,
         allAppointments,
       };
     },
