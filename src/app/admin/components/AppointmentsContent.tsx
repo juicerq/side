@@ -33,12 +33,12 @@ import {
   TooltipTrigger,
 } from "../../components/ui/tooltip";
 import Pagination from "./Pagination";
+import Status from "./Status";
 
 dayjs.locale("pt-br");
 
 export default function AppointmentsContent() {
   const searchParams = useSearchParams();
-  const params = new URLSearchParams(searchParams.toString());
   const page = searchParams.get("page") ? Number(searchParams.get("page")) : 1;
   const limit = searchParams.get("limit")
     ? Number(searchParams.get("limit"))
@@ -104,7 +104,7 @@ export default function AppointmentsContent() {
           </Drawer>
         </div>
         {fetchingAppointments ? (
-          <div className="min-h-[60dvh] pt-10 space-y-6 border">
+          <div className="min-h-[60dvh] pt-10 space-y-6">
             {Array.from({ length: 6 }, (_, i) => (
               <Skeleton key={i} className="h-16 w-full rounded-none" />
             ))}
@@ -118,6 +118,7 @@ export default function AppointmentsContent() {
                     <TableHead className="flex-1">Created by</TableHead>
                     <TableHead className="flex-1">Scheduled to</TableHead>
                     <TableHead className="flex-1">Created at</TableHead>
+                    <TableHead className="flex-1">Status</TableHead>
                     <TableHead className="flex-1">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -132,6 +133,9 @@ export default function AppointmentsContent() {
                         {dayjs(appointment.createdAt)
                           .add(3, "hour")
                           .format("DD/MM/YYYY HH:mm")}
+                      </TableCell>
+                      <TableCell>
+                        <Status appointmentStatus={appointment.status} />
                       </TableCell>
                       {/* Cell height so it stay in middle */}
                       <TableCell className="flex h-16 items-center">

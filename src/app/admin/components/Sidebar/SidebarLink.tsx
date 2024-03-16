@@ -18,7 +18,11 @@ export default function SidebarLink({ path, name }: Props) {
     if (path === "appointments") {
       params.set("page", "1");
       params.set("limit", "10");
+    } else if (path === "customization") {
+      params.delete("page");
+      params.delete("limit");
     }
+
     router.push("admin" + "?" + params.toString());
   };
 

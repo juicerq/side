@@ -78,7 +78,9 @@ export const appointments = createTable("appointments", {
   status: varchar("status", {
     enum: ["scheduled", "concluded", "canceled"],
     length: 10,
-  }),
+  })
+    .notNull()
+    .default("scheduled"),
   createdAt: timestamp("created_at")
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
