@@ -11,9 +11,7 @@ import {
   DrawerTrigger,
 } from "../../components/ui/drawer";
 
-import {
-  inputSchemas
-} from "@/server/db/ZSchemasAndTypes";
+import { inputSchemas } from "@/server/db/ZSchemasAndTypes";
 import { api } from "@/trpc/react";
 import { RouterOutputs, type RouterInputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -70,13 +68,13 @@ export default function SchedulesContent({
     onSuccess: () => {
       refetchSchedules();
       toast("Schedule deleted successfully", {
-        position: "bottom-center",
+        position: "bottom-right",
       });
     },
     onError: (err) => {
       toast(err.message, {
         description: "Please, try again.",
-        position: "bottom-center",
+        position: "bottom-right",
       });
     },
   });
@@ -87,12 +85,12 @@ export default function SchedulesContent({
         form.reset();
         refetchSchedules();
         toast("Schedule created successfully", {
-          position: "bottom-center",
+          position: "bottom-right",
         });
       },
       onError: (err) => {
         toast(err.message, {
-          position: "bottom-center",
+          position: "bottom-right",
           description: "Please, try again.",
         });
       },
@@ -110,7 +108,7 @@ export default function SchedulesContent({
         form.getValues("hourUuids").filter((hour) => hour !== value)
       );
       return toast("Hour already exists", {
-        position: "bottom-center",
+        position: "bottom-right",
       });
     }
     form.setValue("hourUuids", [...form.getValues("hourUuids"), value]);

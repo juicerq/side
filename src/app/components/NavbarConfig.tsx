@@ -21,7 +21,7 @@ export function NavbarConfig({ user, setUser }: NavbarConfigProps) {
     },
     onError: (err) => {
       toast(err.message, {
-        position: "bottom-center",
+        position: "bottom-right",
       });
     },
   });

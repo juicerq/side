@@ -1,6 +1,5 @@
 import { CalendarDays, Settings } from "lucide-react";
 import SidebarLink from "./components/Sidebar/SidebarLink";
-import { useSearchParams } from "next/navigation";
 
 const SidebarItems = [
   {

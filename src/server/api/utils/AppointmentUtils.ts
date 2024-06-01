@@ -2,7 +2,7 @@ import { db } from "@/server/db";
 import { Appointment } from "@/server/db/ZSchemasAndTypes";
 import { appointments } from "@/server/db/schema";
 import { TRPCError } from "@trpc/server";
-import { asc, eq, sql } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import { takeUniqueOrThrow } from "./DrizzleUtils";
 
 export const AppointmentUtils = {
@@ -91,7 +91,7 @@ export const AppointmentUtils = {
         },
         offset: page,
         limit,
-        orderBy: asc(appointments.createdAt),
+        orderBy: desc(appointments.createdAt),
       });
 
       return {

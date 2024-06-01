@@ -27,7 +27,7 @@ export default function AdminPage() {
 
   const { data, fetchingSchedules, refetchSchedules } = useAdminSchedules();
 
-  const { days, refetchDays, fetchingDays } = useAdminDays();
+  const { days, fetchingDays } = useAdminDays();
 
   useEffect(() => {
     if (!path) return router.push("/admin?path=appointments");
@@ -37,7 +37,7 @@ export default function AdminPage() {
     return (
       <div className="flex h-full w-[1440px] mx-32 px-4 pt-10">
         {path === "appointments" && (
-          <div className="h-full space-y-10 w-full flex flex-col">
+          <div className="h-full space-y-6 w-full flex flex-col">
             <div>
               <h1 className="text-3xl">All Appointments</h1>
               <p className="text-sm text-muted-foreground">
@@ -50,12 +50,12 @@ export default function AdminPage() {
         {path === "customization" && (
           <>
             <HoursContent hours={hours} fetchingHours={fetchingHours} />
-            <DaysContent days={days} fetchingDays={fetchingDays} />
+            {/* <DaysContent days={days} fetchingDays={fetchingDays} />
             <SchedulesContent
               data={data}
               refetchSchedules={refetchSchedules}
               fetchingSchedules={fetchingSchedules}
-            />
+            /> */}
           </>
         )}
       </div>

@@ -25,7 +25,7 @@ export const Email = {
         to: userEmail,
         bodyHtml: `<h1>${code}</h1>`,
       },
-    }).catch((err) => toast(err.message, { position: "bottom-center" }));
+    }).catch((err) => toast(err.message, { position: "bottom-right" }));
 
     const parsedRes = resSchema.parse(res);
 

@@ -56,13 +56,13 @@ export default function HoursContent({
     api.schedule.hour.create.useMutation({
       onSuccess: (response) => {
         toast("Hour created successfully", {
-          position: "bottom-center",
+          position: "bottom-right",
           description: `New hour created (${response.hour ?? "BUG!"})`,
         });
       },
       onError: (err) => {
         toast(err.message, {
-          position: "bottom-center",
+          position: "bottom-right",
           description: "Please, try again.",
         });
       },
@@ -75,12 +75,12 @@ export default function HoursContent({
   const { mutate: deleteHour } = api.schedule.hour.delete.useMutation({
     onSuccess: () => {
       toast("Hour deleted successfully", {
-        position: "bottom-center",
+        position: "bottom-right",
       });
     },
     onError: (err) => {
       toast(err.message, {
-        position: "bottom-center",
+        position: "bottom-right",
         description: "Please, try again.",
       });
     },
@@ -93,41 +93,39 @@ export default function HoursContent({
     createHour({ hour });
   };
 
+  const showHours = !!hours?.length;
+
   return (
-    <Card className="flex p-4 flex-col items-center gap-4">
+    <Card className="flex p-4 flex-col h-max gap-4">
+      {!showHours && !fetchingHours && (
+        <div className="my-4 flex w-64 justify-center rounded-lg p-3 text-primary">
+          <div className="flex items-center gap-2">
+            <Hourglass className="size-5" />
+            No hours found
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col space-y-4">
-        <h1 className="text-center">Hours</h1>
-        {fetchingHours ? (
+        <h1>Hours</h1>
+        {fetchingHours &&
           Array.from({ length: 6 }, (_, i) => (
             <Skeleton key={i} className="h-10 w-64 rounded-md" />
-          ))
-        ) : !!hours?.length ? (
-          hours?.map((hour) => (
-            <div
-              key={hour.uuid}
-              className="flex w-64 items-center justify-between rounded-md bg-primary-foreground p-2 text-primary"
-            >
-              <div className="flex items-center gap-2">
-                <Clock className="size-5" />
-                {hour.hour}
-              </div>
+          ))}
+        <div className="flex gap-2">
+          {showHours &&
+            !fetchingHours &&
+            hours?.map((hour) => (
               <div
-                onClick={() => deleteHour({ uuid: hour.uuid ?? "" })}
-                className="cursor-pointer"
+                key={hour.uuid}
+                className="flex w-max items-center justify-between rounded-md bg-primary-foreground p-2 text-primary"
               >
-                <Trash className="size-5 text-red-500 hover:text-red-600" />
+                <div className="flex items-center gap-2">{hour.hour}</div>
               </div>
-            </div>
-          ))
-        ) : (
-          <div className="my-4 flex w-64 justify-center rounded-lg p-3 text-primary">
-            <div className="flex items-center gap-2">
-              <Hourglass className="size-5" />
-              No hours found
-            </div>
-          </div>
-        )}
+            ))}
+        </div>
       </div>
+
       <Drawer>
         <DrawerTrigger>
           <Button variant="secondary" className="mt-2 w-64 justify-center ">
@@ -194,4 +192,13 @@ export default function HoursContent({
       </Drawer>
     </Card>
   );
+}
+
+{
+  /* <div
+                onClick={() => deleteHour({ uuid: hour.uuid ?? "" })}
+                className="cursor-pointer"
+              >
+                <Trash className="size-5 text-red-500 hover:text-red-600" />
+              </div> */
 }

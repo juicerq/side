@@ -60,12 +60,12 @@ export default function AppointmentsContent() {
       onSuccess: () => {
         refetchAppointments();
         toast("Schedule deleted successfully", {
-          position: "bottom-center",
+          position: "bottom-right",
         });
       },
       onError: (err) => {
         toast(err.message, {
-          position: "bottom-center",
+          position: "bottom-right",
         });
       },
     });

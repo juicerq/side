@@ -57,13 +57,13 @@ export default function DaysContent({ days, fetchingDays }: DaysContentProps) {
       onSuccess: (response) => {
         form.reset();
         toast("Day created successfully", {
-          position: "bottom-center",
+          position: "bottom-right",
           description: `New day created (${response.weekDay.charAt(0).toUpperCase() + response.weekDay.slice(1)})`,
         });
       },
       onError: (err) => {
         toast(err.message, {
-          position: "bottom-center",
+          position: "bottom-right",
         });
       },
       onSettled: () => {
@@ -75,7 +75,7 @@ export default function DaysContent({ days, fetchingDays }: DaysContentProps) {
   const { mutate: deleteWeekDay } = api.schedule.day.delete.useMutation({
     onSuccess: () => {
       toast("Day deleted successfully", {
-        position: "bottom-center",
+        position: "bottom-right",
       });
     },
     onError: (err) => {
@@ -83,7 +83,7 @@ export default function DaysContent({ days, fetchingDays }: DaysContentProps) {
         style: { borderLeft: "2px solid #B71C1C" },
         icon: <Info className="h-5 w-5 text-[#FFFF]" />,
         description: "Please, try again.",
-        position: "bottom-center",
+        position: "bottom-right",
       });
     },
     onSettled: () => {

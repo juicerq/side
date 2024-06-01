@@ -1,15 +1,7 @@
-const statusMap: Record<string, string> = {
-  scheduled: "Scheduled",
-  concluded: "Concluded",
-  canceled: "Canceled",
-};
-
-type ColorMap = "yellow" | "emerald" | "red";
-
-const statusColorMap: Record<string, ColorMap> = {
-  scheduled: "yellow",
-  concluded: "emerald",
-  canceled: "red",
+const statusColorMap: Record<string, string> = {
+  scheduled: "bg-yellow-100 text-yellow-800 border border-yellow-700",
+  concluded: "bg-emerald-700 text-emerald-100 border border-emerald-400",
+  canceled: "bg-red-700 text-red-100 border border-red-400",
 };
 
 export default function Status({
@@ -17,14 +9,15 @@ export default function Status({
 }: {
   appointmentStatus: string;
 }) {
-  const status = statusColorMap[appointmentStatus];
+  const color = statusColorMap[appointmentStatus];
 
-  if (!status) return null;
+  if (!color) return null;
 
   return (
     <div className="flex items-center gap-2">
-      <div className={`size-1.5 rounded-full bg-${status}-500`}></div>{" "}
-      <p className="text-xs">{statusMap[appointmentStatus]}</p>
+      <p className={`text-xs ${color} p-1 rounded-md`}>
+        {appointmentStatus.charAt(0).toUpperCase() + appointmentStatus.slice(1)}
+      </p>
     </div>
   );
 }

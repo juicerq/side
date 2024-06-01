@@ -52,7 +52,7 @@ export function LoginUser() {
     },
     onError: (err) => {
       toast(err.message, {
-        position: "bottom-center",
+        position: "bottom-right",
         description: "Please, try again.",
       });
     },
@@ -64,14 +64,14 @@ export function LoginUser() {
         if (response.success === true) {
           setcodeSent(true);
           toast("Code sent successfully", {
-            position: "bottom-center",
+            position: "bottom-right",
             description: "It will probably be in your spam box.",
           });
         }
       },
       onError: (err) => {
         toast(err.message, {
-          position: "bottom-center",
+          position: "bottom-right",
           description: "Please, try again.",
         });
       },
@@ -88,14 +88,14 @@ export function LoginUser() {
 
     if (codeSent && codeInput === "") {
       return toast("Please, enter the code.", {
-        position: "bottom-center",
+        position: "bottom-right",
         description: "The code cannot be empty.",
       });
     }
 
     if (codeSent && codeInput !== code) {
       return toast("The code is not correct.", {
-        position: "bottom-center",
+        position: "bottom-right",
         description: "Please, check the code and try again.",
       });
     }
@@ -103,7 +103,7 @@ export function LoginUser() {
     if (codeInput === code) return login(data);
 
     toast("Something went wrong!", {
-      position: "bottom-center",
+      position: "bottom-right",
       description: "It's probably a bug. Sorry!",
     });
   };

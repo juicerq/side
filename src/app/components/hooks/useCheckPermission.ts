@@ -9,7 +9,7 @@ export default function useCheckPermission(permission: string) {
 
   if (user && !(user?.role === permission)) {
     toast("You are not authorized to view this page", {
-      position: "bottom-center",
+      position: "bottom-right",
     });
     return router.push("/schedule");
   }

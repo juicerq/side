@@ -43,12 +43,12 @@ export default function AppointmentForm({
     api.appointment.create.useMutation({
       onSuccess: () => {
         toast("Appointment created successfully", {
-          position: "bottom-center",
+          position: "bottom-right",
         });
       },
       onError: (err) => {
         toast(err.message, {
-          position: "bottom-center",
+          position: "bottom-right",
         });
       },
       onSettled: () => {
@@ -90,16 +90,13 @@ export default function AppointmentForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
-        className="w-[400px] space-y-4 rounded-md"
+        className="space-y-6 rounded-md"
       >
         <FormField
           control={form.control}
           name="hourUuid"
           render={() => (
-            <FormItem className="flex justify-start pt-4 flex-col">
-              <FormLabel>
-                All hour available for {schedule?.day.weekDay}
-              </FormLabel>
+            <FormItem className="flex justify-start flex-col">
               <FormControl>
                 <ToggleGroup
                   type="single"
@@ -149,7 +146,7 @@ export default function AppointmentForm({
         <Button
           type="submit"
           disabled={creatingAppointment || !!!selectedDate}
-          className="w-fit"
+          className="w-full"
         >
           {creatingAppointment ? (
             <Loader2 className="size-5 animate-spin" />

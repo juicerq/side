@@ -57,7 +57,7 @@ export default function CreateAccountForm() {
     api.user.create.useMutation({
       onSuccess: (response) => {
         toast("Account successfully created", {
-          position: "bottom-center",
+          position: "bottom-right",
           description:
             "You will be redirected to the schedule page in a few seconds.",
         });
@@ -68,7 +68,7 @@ export default function CreateAccountForm() {
       },
       onError: (error) => {
         toast(error.message, {
-          position: "bottom-center",
+          position: "bottom-right",
           description: "Please, try again.",
         });
       },
@@ -80,14 +80,14 @@ export default function CreateAccountForm() {
         if (response.success === true) {
           setCodeSent(true);
           toast("Code sent successfully", {
-            position: "bottom-center",
+            position: "bottom-right",
             description: "It will probably be in your spam box.",
           });
         }
       },
       onError: (err) => {
         toast(err.message, {
-          position: "bottom-center",
+          position: "bottom-right",
           description: "Please, try again.",
         });
       },
@@ -107,14 +107,14 @@ export default function CreateAccountForm() {
 
     if (codeSent && codeInput === "") {
       return toast("Please, enter the code.", {
-        position: "bottom-center",
+        position: "bottom-right",
         description: "The code cannot be empty.",
       });
     }
 
     if (codeSent && codeInput !== code) {
       return toast("The code is not correct.", {
-        position: "bottom-center",
+        position: "bottom-right",
         description: "Please, check the code and try again.",
       });
     }
@@ -122,7 +122,7 @@ export default function CreateAccountForm() {
     if (codeInput === code) return createAccount(data);
 
     toast("Something went wrong!", {
-      position: "bottom-center",
+      position: "bottom-right",
       description: "It's probably a bug. Sorry!",
     });
   };
